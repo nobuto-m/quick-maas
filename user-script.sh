@@ -71,6 +71,7 @@ maas admin maas set-config name=completed_intro value=true
 eatmydata apt-get install -y jq
 
 maas admin subnet update 192.168.151.0/24 \
+    gateway_ip=192.168.151.1 \
     dns_servers=192.168.151.1
 
 fabric=$(maas admin subnets read | jq -r \
