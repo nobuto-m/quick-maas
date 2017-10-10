@@ -42,6 +42,8 @@ virsh net-autostart maas-ext
 virsh net-start maas-ext
 
 # maas package install
+echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
+    | sudo debconf-set-selections
 eatmydata apt-get install -y maas || true
 
 # bump limit for avahi-daemon
