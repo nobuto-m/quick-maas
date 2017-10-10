@@ -62,6 +62,7 @@ maas login admin http://localhost/MAAS "$(sudo maas apikey --username ubuntu)"
 # start importing image
 if [ -n "$http_proxy" ]; then
     maas admin maas set-config name=http_proxy value="$http_proxy"
+    maas admin boot-resources stop-import
     maas admin boot-resources import
 fi
 
