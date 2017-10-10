@@ -8,7 +8,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
-    http_proxy='http://squid-deb-proxy.lxd:8000/'
+    http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
     echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
 fi
 
@@ -63,10 +63,14 @@ if [ -n "$http_proxy" ]; then
     maas admin maas set-config name=http_proxy value="$http_proxy"
     maas admin boot-resources import
 fi
+
 maas admin maas set-config name=completed_intro value=true
 
-# configure DHCP
+# configure network / DHCP
 eatmydata apt-get install -y jq
+
+maas admin subnet update 192.168.151.0/24 \
+    dns_servers=192.168.151.1
 
 fabric=$(maas admin subnets read | jq -r \
     '.[] | select(.cidr=="192.168.151.0/24").vlan.fabric')
