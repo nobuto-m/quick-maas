@@ -112,6 +112,10 @@ for i in {1..4}; do
         memory=2048 \
         storage='default:8'
 done
+# add more NIC
+for machine in $(virsh list --all --name); do
+    virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
+done
 
 # juju
 eatmydata apt-get install -y squashfuse
