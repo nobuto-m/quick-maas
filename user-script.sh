@@ -115,10 +115,13 @@ done
 
 # juju
 eatmydata apt-get install -y squashfuse
-systemctl restart snapd
-snap install --classic juju
 
-juju add-cloud maas /dev/stdin <<EOF
+# try snap install twice due to an error:
+# - Setup snap "core" (3017) security profiles (cannot setup udev for
+#   snap "core": cannot reload udev rules: exit status 2
+snap install --classic juju || snap install --classic juju
+
+juju add-cloud maas -f /dev/stdin <<EOF
 clouds:
   maas:
     type: maas
