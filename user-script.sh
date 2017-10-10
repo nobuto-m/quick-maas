@@ -114,6 +114,7 @@ done
 
 # juju
 eatmydata apt-get install -y squashfuse
+systemctl restart snapd
 snap install --classic juju
 
 juju add-cloud maas /dev/stdin <<EOF
