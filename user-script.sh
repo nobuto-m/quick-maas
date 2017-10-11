@@ -71,6 +71,8 @@ if [ -n "$http_proxy" ]; then
     maas admin boot-resources import
 fi
 
+maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,115200n8'
+
 maas admin maas set-config name=completed_intro value=true
 
 # configure network / DHCP
@@ -151,4 +153,5 @@ juju add-credential maas -f credentials.yaml
 
 ssh-keygen -f ~/.ssh/id_rsa -N ''
 
-juju bootstrap maas maas-controller --debug
+juju bootstrap maas maas-controller --debug \
+    --bootstrap-constraints 'mem=2G'
