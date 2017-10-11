@@ -5,6 +5,8 @@ set -u
 set -x
 
 export DEBIAN_FRONTEND=noninteractive
+export PATH="$PATH:/snap/bin"
+export JUJU_DATA='/root/.local/share/juju'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
@@ -128,7 +130,6 @@ eatmydata apt-get install -y squashfuse
 # - Setup snap "core" (3017) security profiles (cannot setup udev for
 #   snap "core": cannot reload udev rules: exit status 2
 snap install --classic juju || snap install --classic juju
-export PATH="$PATH:/snap/bin"
 
 cat > clouds.yaml <<EOF
 clouds:
@@ -147,5 +148,7 @@ credentials:
       maas-oauth: $(sudo maas apikey --username ubuntu)
 EOF
 juju add-credential maas -f credentials.yaml
+
+ssh-keygen -f ~/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug
