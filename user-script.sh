@@ -133,6 +133,21 @@ eatmydata apt-get install -y squashfuse
 #   snap "core": cannot reload udev rules: exit status 2
 snap install --classic juju || snap install --classic juju
 
+# additional subnets
+while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '4' ]; do
+    sleep 15
+done
+system_ids=$(maas admin machines read | jq -r '.[] | select(.status_name=="Ready").system_id')
+for system_id in $system_ids; do
+    interface_ids=$(maas admin interfaces read "$system_id" | jq -r '.[].id')
+    for interface_id in $interface_ids; do
+        if [ "$(maas admin interface read "$system_id" "$interface_id" | jq -r '.links | .[].subnet.cidr')" = '192.168.152.0/24' ]; then
+            maas admin interface link-subnet "$system_id" "$interface_id" subnet=192.168.152.0/24 mode=auto
+        fi
+    done
+done
+
+# bootstrap
 cat > clouds.yaml <<EOF
 clouds:
   maas:
