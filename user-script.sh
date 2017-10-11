@@ -63,6 +63,9 @@ maas login admin http://localhost/MAAS "$(sudo maas apikey --username ubuntu)"
 if [ -n "$http_proxy" ]; then
     maas admin maas set-config name=http_proxy value="$http_proxy"
     maas admin boot-resources stop-import
+    while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+        sleep 15
+    done
     maas admin boot-resources import
 fi
 
