@@ -125,21 +125,24 @@ eatmydata apt-get install -y squashfuse
 # - Setup snap "core" (3017) security profiles (cannot setup udev for
 #   snap "core": cannot reload udev rules: exit status 2
 snap install --classic juju || snap install --classic juju
+export PATH="$PATH:/snap/bin"
 
-juju add-cloud maas -f /dev/stdin <<EOF
+cat > clouds.yaml <<EOF
 clouds:
   maas:
     type: maas
     auth-types: [oauth1]
     endpoint: http://192.168.151.1/MAAS
 EOF
+juju add-cloud maas -f clouds.yaml
 
-juju add-credential maas -f /dev/stdin <<EOF
+cat > credentials.yaml <<EOF
 credentials:
   maas:
     maas-credential:
       auth-type: oauth1
       maas-oauth: $(sudo maas apikey --username ubuntu)
 EOF
+juju add-credential maas -f credentials.yaml
 
 juju bootstrap maas maas-controller --debug
