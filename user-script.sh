@@ -128,9 +128,14 @@ for i in {1..4}; do
         memory=2048 \
         storage='default:8'
 done
-# add more NIC
 for machine in $(virsh list --all --name); do
+    # one more NIC
     virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
+
+    # one more disk
+    virsh vol-create-as default "${machine}_vdb" 8G
+    virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_vdb" vdb \
+        --live --persistent
 done
 
 # juju
