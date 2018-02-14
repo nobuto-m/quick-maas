@@ -12,6 +12,8 @@ export JUJU_DATA='/root/.local/share/juju'
 if host squid-deb-proxy.lxd >/dev/null; then
     http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
     echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
+else
+    http_proxy=
 fi
 
 apt-get update
