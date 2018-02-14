@@ -130,6 +130,10 @@ for i in {1..4}; do
         memory=2048 \
         storage='default:8'
 done
+
+# wait for a while until Pod machines will be booted
+sleep 15
+
 for machine in $(virsh list --all --name); do
     # one more NIC
     virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
