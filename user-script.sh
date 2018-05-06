@@ -16,6 +16,9 @@ else
     http_proxy=
 fi
 
+# ppa
+apt-add-repository -y ppa:maas/stable
+
 apt-get update
 
 # KVM setup
