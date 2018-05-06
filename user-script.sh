@@ -63,6 +63,9 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost/MAAS "$(sudo maas apikey --username ubuntu)"
 
+# explicitly set xenial, LP: #1767137
+maas admin boot-source-selection update 1 1 release=xenial
+
 # start importing image
 if [ -n "$http_proxy" ]; then
     maas admin maas set-config name=http_proxy value="$http_proxy"
