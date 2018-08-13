@@ -159,7 +159,7 @@ eatmydata apt-get install -y squashfuse
 snap install --classic juju || snap install --classic juju
 
 # additional subnets
-while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '4' ]; do
+while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '6' ]; do
     sleep 15
 done
 system_ids=$(maas admin machines read | jq -r '.[] | select(.status_name=="Ready").system_id')
