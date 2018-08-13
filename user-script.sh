@@ -130,11 +130,11 @@ maas admin pods create \
     power_address="qemu+ssh://root@localhost/system"
 
 # compose machines
-for i in {1..4}; do
+for i in {1..6}; do
     maas admin pod compose 1 \
         cores=2 \
-        memory=2048 \
-        storage='default:8'
+        memory=4096 \
+        storage='default:16'
 done
 
 # wait for a while until Pod machines will be booted
