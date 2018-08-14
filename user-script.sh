@@ -134,7 +134,7 @@ for i in {1..6}; do
     maas admin pod compose 1 \
         cores=2 \
         memory=4096 \
-        storage='default:16'
+        storage='default:24'
 done
 
 # wait for a while until Pod machines will be booted
