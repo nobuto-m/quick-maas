@@ -79,6 +79,8 @@ if [ -n "$http_proxy" ]; then
     maas admin boot-resources import
 fi
 
+maas admin maas set-config name=maas_name value='Demo'
+
 maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,115200n8'
 
 maas admin maas set-config name=completed_intro value=true
