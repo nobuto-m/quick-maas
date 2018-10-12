@@ -136,7 +136,7 @@ for i in {1..6}; do
     maas admin pod compose 1 \
         cores=8 \
         memory=32768 \
-        storage='default:40'
+        storage='default:64'
 done
 
 # wait for a while until Pod machines will be booted
@@ -148,7 +148,7 @@ for machine in $(virsh list --all --name); do
     virsh attach-interface "$machine" network maas --model virtio --live --persistent
 
     # one more disk
-    virsh vol-create-as default "${machine}_vdb" 40G
+    virsh vol-create-as default "${machine}_vdb" 64G
     virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_vdb" vdb \
         --live --persistent
 done
@@ -200,3 +200,10 @@ ssh-keygen -f ~/.ssh/id_rsa -N ''
 juju bootstrap maas maas-controller --debug \
     --bootstrap-series xenial
 #    --bootstrap-constraints 'mem=2G'
+
+
+# To remove
+juju deploy openstack-base-51
+
+juju config ceph-osd osd-devices='/dev/vdb' ## TODO
+juju config neutron-gateway data-port='br-ex:ens8'
