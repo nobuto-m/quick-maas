@@ -132,9 +132,9 @@ maas admin pods create \
 # compose machines
 for i in {1..6}; do
     maas admin pod compose 1 \
-        cores=2 \
-        memory=4096 \
-        storage='default:24'
+        cores=8 \
+        memory=32768 \
+        storage='default:40'
 done
 
 # wait for a while until Pod machines will be booted
@@ -142,10 +142,10 @@ sleep 15
 
 for machine in $(virsh list --all --name); do
     # one more NIC
-    virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
+    ## virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
 
     # one more disk
-    virsh vol-create-as default "${machine}_vdb" 8G
+    virsh vol-create-as default "${machine}_vdb" 40G
     virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_vdb" vdb \
         --live --persistent
 done
@@ -167,7 +167,7 @@ for system_id in $system_ids; do
     interface_ids=$(maas admin interfaces read "$system_id" | jq -r '.[].id')
     for interface_id in $interface_ids; do
         if [ "$(maas admin interface read "$system_id" "$interface_id" | jq -r '.links | .[].subnet.cidr')" = '192.168.152.0/24' ]; then
-            maas admin interface link-subnet "$system_id" "$interface_id" subnet=192.168.152.0/24 mode=auto
+            ## maas admin interface link-subnet "$system_id" "$interface_id" subnet=192.168.152.0/24 mode=auto
         fi
     done
 done
@@ -194,4 +194,4 @@ juju add-credential maas -f credentials.yaml
 ssh-keygen -f ~/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
-    --bootstrap-constraints 'mem=2G'
+#    --bootstrap-constraints 'mem=2G'
