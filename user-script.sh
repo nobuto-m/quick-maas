@@ -145,6 +145,7 @@ sleep 15
 for machine in $(virsh list --all --name); do
     # one more NIC
     ## virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
+    virsh attach-interface "$machine" network maas --model virtio --live --persistent
 
     # one more disk
     virsh vol-create-as default "${machine}_vdb" 40G
@@ -170,6 +171,7 @@ for system_id in $system_ids; do
     for interface_id in $interface_ids; do
         if [ "$(maas admin interface read "$system_id" "$interface_id" | jq -r '.links | .[].subnet.cidr')" = '192.168.152.0/24' ]; then
             ## maas admin interface link-subnet "$system_id" "$interface_id" subnet=192.168.152.0/24 mode=auto
+            true
         fi
     done
 done
@@ -196,4 +198,5 @@ juju add-credential maas -f credentials.yaml
 ssh-keygen -f ~/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
+    --bootstrap-series xenial
 #    --bootstrap-constraints 'mem=2G'
