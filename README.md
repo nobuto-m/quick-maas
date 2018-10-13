@@ -119,8 +119,9 @@ $ ssh demo-maas
 
 Open sshuttle.
 
+```bash
 [local] $ sshuttle -r demo-maas -N
-
+```
 
 ## TODO
 

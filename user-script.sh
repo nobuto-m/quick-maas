@@ -134,7 +134,11 @@ for machine in $(virsh list --all --name); do
     virsh attach-interface "$machine" network maas --model virtio --config
 
     # use SATA bus
-    virt-xml --edit --disk bus=sata,target=sda "$machine"
+    disk_source=$(virsh dumpxml "$machine" | grep '<source file' | cut -d "'" -f2)
+    virsh detach-disk "$machine" vda --config
+    virsh attach-disk "$machine" "$disk_source" sda \
+        --targetbus sata --config
+
     # one more disk
     virsh vol-create-as default "${machine}_sdb" 64G
     virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_sdb" sdb \
