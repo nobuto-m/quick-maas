@@ -151,10 +151,6 @@ Open sshuttle for web browser.
 [local] $ sshuttle -r demo-maas -N
 ```
 
-## TODO
-
-juju deploy kubernetes-core-346 # 1.10
-
 
 ## how to destroy the environment and rebuild
 

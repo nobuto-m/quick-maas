@@ -207,6 +207,8 @@ juju bootstrap openstack --debug \
     --model-default use-floating-ip=true \
     --model-default update-status-hook-interval=1h
 
+juju deploy kubernetes-core-346 # 1.10
+
 time juju-wait -w
 
 # fix permission
