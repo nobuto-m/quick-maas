@@ -20,7 +20,7 @@ lxc config device set quick-maas eth0 ipv4.address 10.0.10.10
 
 lxc start quick-maas
 
-lxc file push --uid 1000 --gid 1000 -m 0600 ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
+lxc file push --uid 1000 --gid 1000 --mode 0600 ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
 lxc file push openstack-bundles/development/shared/* quick-maas/home/ubuntu/
 
 sleep 5
