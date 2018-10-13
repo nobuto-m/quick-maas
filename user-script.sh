@@ -213,4 +213,5 @@ time juju-wait -w
 juju run-action --wait kubernetes-worker/0 microbot replicas=3
 
 # fix permission
-chown ubuntu:ubuntu -R ~ubuntu/.local/share/juju/
+chown ubuntu:ubuntu -R ~ubuntu/.local/
+chown ubuntu:ubuntu /tmp/juju-store-lock-*
