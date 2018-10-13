@@ -36,7 +36,7 @@ virsh net-start maas
 
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
-    | sudo debconf-set-selections
+    | debconf-set-selections
 eatmydata apt-get install -y maas || true
 
 # bump limit for avahi-daemon
@@ -49,7 +49,7 @@ eatmydata apt-get install -y maas
 maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
 
-maas login admin http://localhost/MAAS "$(sudo maas apikey --username ubuntu)"
+maas login admin http://localhost/MAAS "$(maas apikey --username ubuntu)"
 
 # explicitly set xenial, LP: #1767137
 maas admin boot-source-selection update 1 1 release=xenial
@@ -142,6 +142,8 @@ while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready
 done
 
 # bootstrap
+export JUJU_DATA=~ubuntu/.local/share/juju
+
 cat > clouds.yaml <<EOF
 clouds:
   maas:
@@ -149,7 +151,7 @@ clouds:
     auth-types: [oauth1]
     endpoint: http://192.168.151.1/MAAS
 EOF
-sudo -u ubuntu -H juju add-cloud maas -f clouds.yaml
+juju add-cloud maas -f clouds.yaml
 
 cat > credentials.yaml <<EOF
 credentials:
@@ -158,24 +160,25 @@ credentials:
       auth-type: oauth1
       maas-oauth: $(maas apikey --username ubuntu)
 EOF
-sudo -u ubuntu -H juju add-credential maas -f credentials.yaml
+juju add-credential maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
-sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
+juju bootstrap maas maas-controller --debug \
     --bootstrap-series xenial \
     --model-default update-status-hook-interval=1h
 
 
 # deploy openstack cloud:xenial-pike
-sudo -u ubuntu -H -- juju deploy openstack-base-51
-sudo -u ubuntu -H -- juju config keystone preferred-api-version=3
-sudo -u ubuntu -H -- juju config neutron-gateway data-port='br-ex:ens7'
 
-sudo -u ubuntu -H -- juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
-sudo -u ubuntu -H -- juju add-relation keystone glance-simplestreams-sync
+juju deploy openstack-base-51
+juju config keystone preferred-api-version=3
+juju config neutron-gateway data-port='br-ex:ens7'
 
-sudo -u ubuntu -H -- time -p juju-wait -w
+juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
+juju add-relation keystone glance-simplestreams-sync
+
+time juju-wait -w
 
 
 # setup openstack
@@ -183,7 +186,6 @@ add-apt-repository -y -u cloud-archive:queens
 apt-get install -y python-openstackclient
 
 
-export JUJU_DATA=~ubuntu/.local/share/juju # use ubuntu user's juju credential
 . ~ubuntu/openrc
 
 ~ubuntu/neutron-ext-net-ksv3 --network-type flat \
@@ -198,3 +200,5 @@ openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
 
 openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
+# fix permission
+chown ubuntu:ubuntu -R ~ubuntu/.local/share/juju/
