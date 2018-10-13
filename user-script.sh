@@ -6,15 +6,6 @@ set -x
 
 export DEBIAN_FRONTEND=noninteractive
 export PATH="$PATH:/snap/bin"
-export JUJU_DATA='/root/.local/share/juju'
-
-# proxy
-if host squid-deb-proxy.lxd >/dev/null; then
-    http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
-    echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
-else
-    http_proxy=
-fi
 
 # ppa
 apt-add-repository -y ppa:maas/stable
@@ -62,16 +53,6 @@ maas login admin http://localhost/MAAS "$(sudo maas apikey --username ubuntu)"
 
 # explicitly set xenial, LP: #1767137
 maas admin boot-source-selection update 1 1 release=xenial
-
-# start importing image
-if [ -n "$http_proxy" ]; then
-    maas admin maas set-config name=http_proxy value="$http_proxy"
-    maas admin boot-resources stop-import
-    while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
-        sleep 15
-    done
-    maas admin boot-resources import
-fi
 
 maas admin maas set-config name=maas_name value='Demo'
 
