@@ -121,7 +121,7 @@ for machine in $(virsh list --all --name); do
         --targetbus sata --config
 
     # one more disk
-    virsh vol-create-as default "${machine}_sdb" 64G
+    virsh vol-create-as default "${machine}_sdb" 64000000000
     virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_sdb" sdb \
         --targetbus sata --config
 
@@ -135,6 +135,7 @@ eatmydata apt-get install -y squashfuse
 # - Setup snap "core" (3017) security profiles (cannot setup udev for
 #   snap "core": cannot reload udev rules: exit status 2
 snap install --classic juju || snap install --classic juju
+snap install --classic juju-wait
 
 while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '6' ]; do
     sleep 15
@@ -166,5 +167,6 @@ sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
 
 
 # deploy openstack cloud:xenial-pike
-sudo -u ubuntu -H juju deploy openstack-base-51
-sudo -u ubuntu -H juju config neutron-gateway data-port='br-ex:ens7'
+sudo -u ubuntu -H -- juju deploy openstack-base-51
+sudo -u ubuntu -H -- juju config neutron-gateway data-port='br-ex:ens7'
+sudo -u ubuntu -H -- juju-wait -w
