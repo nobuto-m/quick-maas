@@ -84,7 +84,7 @@ maas admin vlan update "$fabric_id" 0 space=space-first
 while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
-sleep 60
+sleep 120
 
 # MAAS Pod
 sudo -u maas ssh-keygen -f ~maas/.ssh/id_rsa -N ''
@@ -188,12 +188,12 @@ apt-get install -y python-openstackclient
 . ~ubuntu/openrc
 
 ~ubuntu/neutron-ext-net-ksv3 --network-type flat \
-    -g 10.0.10.1 -c 10.0.10.0/24 \
-    -f 10.0.10.201:10.0.10.254 \
+    -g 192.168.151.1 -c 192.168.151.0/24 \
+    -f 192.168.151.51:192.168.151.100 \
     ext_net
 
 ~ubuntu/neutron-tenant-net-ksv3 -p admin -r provider-router \
-    -N 8.8.8.8 internal 192.168.200.0/24
+    -N 8.8.8.8 internal 10.5.5.0/24 # TODO: check internal DNS
 
 openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
 
