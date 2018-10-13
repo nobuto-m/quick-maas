@@ -24,6 +24,9 @@ apt-get update
 # KVM setup
 eatmydata apt-get install -y virt-host^
 
+virsh net-destroy default
+virsh net-autostart --disable default
+
 virsh pool-define-as default dir --target /var/lib/libvirt/images
 virsh pool-autostart default
 virsh pool-start default
