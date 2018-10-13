@@ -128,12 +128,13 @@ for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
 
     # expose CPU model
-    virt-xml --edit --cpu mode=host-passthrough
+    virt-xml --edit --cpu mode=host-passthrough "$machine"
 
     # one more NIC
     virsh attach-interface "$machine" network maas --model virtio --config
 
-    # virt-xml --edit --disk target_bus=sata
+    # use SATA bus
+    virt-xml --edit --disk bus=sata,target=sda "$machine"
     # one more disk
     virsh vol-create-as default "${machine}_sdb" 64G
     virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_sdb" sdb \
