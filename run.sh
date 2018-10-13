@@ -20,5 +20,6 @@ lxc config device set quick-maas eth0 ipv4.address 10.0.10.10
 
 lxc start quick-maas
 lxc file push -p --uid 1000 --gid 1000 ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
+lxc file push -p --uid 1000 --gid 1000 openrcv3_project quick-maas/home/ubuntu/openrcv3_project
 sleep 5
 lxc exec quick-maas -- tail -f -n+1 /var/log/cloud-init-output.log
