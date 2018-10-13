@@ -6,6 +6,7 @@ set -x
 
 export DEBIAN_FRONTEND=noninteractive
 export PATH="$PATH:/snap/bin"
+export JUJU_DATA=~ubuntu/.local/share/juju
 
 # ppa
 apt-add-repository -y ppa:maas/stable
@@ -142,8 +143,6 @@ while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready
 done
 
 # bootstrap
-export JUJU_DATA=~ubuntu/.local/share/juju
-
 cat > clouds.yaml <<EOF
 clouds:
   maas:
@@ -199,6 +198,16 @@ apt-get install -y python-openstackclient
 openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
 
 openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
+
+
+# bootstrap on openstack
+. ~ubuntu/openrc
+juju bootstrap openstack --debug \
+    --bootstrap-series xenial \
+    --model-default use-floating-ip=true \
+    --model-default update-status-hook-interval=1h
+
+time juju-wait -w
 
 # fix permission
 chown ubuntu:ubuntu -R ~ubuntu/.local/share/juju/
