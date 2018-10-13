@@ -130,7 +130,7 @@ Open sshuttle for web browser.
 ```
 [container] $ juju destroy-model -y default && juju add-model default
 [container] $ juju deploy openstack-base-51 # cloud:xenial-pike
-[container] $ juju config neutron-gateway data-port='br-ex:ens8'
+[container] $ juju config neutron-gateway data-port='br-ex:ens7'
 ```
 
 ## TODO

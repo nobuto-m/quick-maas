@@ -184,8 +184,6 @@ sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
     --bootstrap-series xenial
 
 
-# To remove
+# deploy openstack cloud:xenial-pike
 sudo -u ubuntu -H juju deploy openstack-base-51
-
-#sudo -u ubuntu -H juju config ceph-osd osd-devices='/dev/vdb' ## TODO
-sudo -u ubuntu -H juju config neutron-gateway data-port='br-ex:ens8'
+sudo -u ubuntu -H juju config neutron-gateway data-port='br-ex:ens7'
