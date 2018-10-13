@@ -23,6 +23,7 @@ apt-get update
 
 # KVM setup
 eatmydata apt-get install -y virt-host^
+eatmydata apt-get install -y virtinst --no-install-recommends
 
 virsh net-destroy default
 virsh net-autostart --disable default
@@ -41,16 +42,6 @@ cat <<EOF | virsh net-define /dev/stdin
 EOF
 virsh net-autostart maas
 virsh net-start maas
-
-cat <<EOF | virsh net-define /dev/stdin
-<network>
-  <name>maas-ext</name>
-  <bridge name='maas-ext'/>
-  <ip address='192.168.152.1' netmask='255.255.255.0'/>
-</network>
-EOF
-virsh net-autostart maas-ext
-virsh net-start maas-ext
 
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
@@ -146,8 +137,9 @@ done
 sleep 15
 
 for machine in $(virsh list --all --name); do
+    virt-xml --edit --cpu mode=host-passthrough
+
     # one more NIC
-    ## virsh attach-interface "$machine" network maas-ext --model virtio --live --persistent
     virsh attach-interface "$machine" network maas --model virtio --live --persistent
 
     # one more disk
