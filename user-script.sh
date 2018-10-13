@@ -156,19 +156,8 @@ eatmydata apt-get install -y squashfuse
 #   snap "core": cannot reload udev rules: exit status 2
 snap install --classic juju || snap install --classic juju
 
-# additional subnets
 while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '6' ]; do
     sleep 15
-done
-system_ids=$(maas admin machines read | jq -r '.[] | select(.status_name=="Ready").system_id')
-for system_id in $system_ids; do
-    interface_ids=$(maas admin interfaces read "$system_id" | jq -r '.[].id')
-    for interface_id in $interface_ids; do
-        if [ "$(maas admin interface read "$system_id" "$interface_id" | jq -r '.links | .[].subnet.cidr')" = '192.168.152.0/24' ]; then
-            ## maas admin interface link-subnet "$system_id" "$interface_id" subnet=192.168.152.0/24 mode=auto
-            true
-        fi
-    done
 done
 
 # bootstrap
@@ -179,26 +168,25 @@ clouds:
     auth-types: [oauth1]
     endpoint: http://192.168.151.1/MAAS
 EOF
-juju add-cloud maas -f clouds.yaml
+sudo -u ubuntu -H juju add-cloud maas -f clouds.yaml
 
 cat > credentials.yaml <<EOF
 credentials:
   maas:
     maas-credential:
       auth-type: oauth1
-      maas-oauth: $(sudo maas apikey --username ubuntu)
+      maas-oauth: $(maas apikey --username ubuntu)
 EOF
-juju add-credential maas -f credentials.yaml
+sudo -u ubuntu -H juju add-credential maas -f credentials.yaml
 
-ssh-keygen -f ~/.ssh/id_rsa -N ''
+sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
-juju bootstrap maas maas-controller --debug \
+sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
     --bootstrap-series xenial
-#    --bootstrap-constraints 'mem=2G'
 
 
 # To remove
-juju deploy openstack-base-51
+sudo -u ubuntu -H juju deploy openstack-base-51
 
-juju config ceph-osd osd-devices='/dev/vdb' ## TODO
-juju config neutron-gateway data-port='br-ex:ens8'
+sudo -u ubuntu -H juju config ceph-osd osd-devices='/dev/vdb' ## TODO
+sudo -u ubuntu -H juju config neutron-gateway data-port='br-ex:ens8'
