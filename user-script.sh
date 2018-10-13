@@ -137,6 +137,8 @@ eatmydata apt-get install -y squashfuse
 snap install --classic juju || snap install --classic juju
 snap install --classic juju-wait
 
+snap install --classic openstackclients
+
 while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '6' ]; do
     sleep 15
 done
