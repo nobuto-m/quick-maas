@@ -32,19 +32,19 @@ Host demo-i3-metal-frankfurt
 Then, SSH to the instance and import keys.
 
 ``` bash
-$ ssh demo-i3-metal-frankfurt
+[local] $ ssh demo-i3-metal-frankfurt
 
-[remote]$ ssh-import-id alitvinov calvinh nobuto yoshikadokawa vlgrevtsev
+[baremetal] $ ssh-import-id alitvinov calvinh nobuto yoshikadokawa vlgrevtsev
 ```
 
 ## prepare a LXD container to have a clean MAAS environment
 
-Setup LXD to have a clean MAAS environment to be confined in a container
-so you can reset the MAAS env without respawning the bare metal
-instance. LXD 3.0 is to be used for easier preseeding.
+Setup LXD on the bare metal to have a clean MAAS environment to be
+confined in a container so you can reset the MAAS env without respawning
+the bare metal instance. LXD 3.0 is to be used for easier preseeding.
 
 ```bash
-$ sudo apt autoremove --purge lxd lxd-client
+[baremetal] $ sudo apt autoremove --purge lxd lxd-client
 $ sudo snap install --channel 3.0/stable lxd
 
 
@@ -87,10 +87,10 @@ EOF
 
 ## clone the repository
 
-Make sure you use "baremetal" branch.
+Make sure you use the "baremetal" branch.
 
 ```bash
-$ git clone -b baremetal https://github.com/nobuto-m/quick-maas.git
+[baremetal] $ git clone -b baremetal https://github.com/nobuto-m/quick-maas.git
 $ cd quick-maas
 ```
 
@@ -101,26 +101,36 @@ Run the script to create the "quick-maas" LXD container to run MAAS and
 MAAS Pod inside it. OpenStack will be deployed as the part of it.
 
 ```bash
-$ ./run.sh
+[baremetal] $ ./run.sh
 ```
 
 
-### How to redeploy OpenStack
+### how to access
 
-```
-$ ssh demo-maas
+Copy authorized_keys from the bare metal instance to the container.
 
-[remote] $ juju destroy-model -y default && juju add-model default
-[remote] $ juju deploy openstack-base-51 # cloud:xenial-pike
-[remote] $ juju config neutron-gateway data-port='br-ex:ens8'
+```bash
+[baremetal] $ lxc file push ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
 ```
 
-## How to use Web browser
+Then, ssh.
 
-Open sshuttle.
+```bash
+[local] $ ssh demo-maas
+```
+
+Open sshuttle for web browser.
 
 ```bash
 [local] $ sshuttle -r demo-maas -N
+```
+
+### how to redeploy OpenStack
+
+```
+[container] $ juju destroy-model -y default && juju add-model default
+[container] $ juju deploy openstack-base-51 # cloud:xenial-pike
+[container] $ juju config neutron-gateway data-port='br-ex:ens8'
 ```
 
 ## TODO
