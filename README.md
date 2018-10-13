@@ -155,8 +155,15 @@ Open sshuttle for web browser.
 
 ```
 [container] $ juju destroy-model -y default && juju add-model default
+
 [container] $ juju deploy openstack-base-51 # cloud:xenial-pike
+[container] $ juju config keystone preferred-api-version=3
 [container] $ juju config neutron-gateway data-port='br-ex:ens7'
+
+[container] $ juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
+[container] $ juju add-relation keystone glance-simplestreams-sync
+
+[container] $ juju wait -w
 ```
 
 ## TODO

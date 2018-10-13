@@ -163,10 +163,16 @@ sudo -u ubuntu -H juju add-credential maas -f credentials.yaml
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
-    --bootstrap-series xenial
+    --bootstrap-series xenial \
+    --model-default update-status-hook-interval=1h
 
 
 # deploy openstack cloud:xenial-pike
 sudo -u ubuntu -H -- juju deploy openstack-base-51
+sudo -u ubuntu -H -- juju config keystone preferred-api-version=3
 sudo -u ubuntu -H -- juju config neutron-gateway data-port='br-ex:ens7'
+
+sudo -u ubuntu -H -- juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
+sudo -u ubuntu -H -- juju add-relation keystone glance-simplestreams-sync
+
 sudo -u ubuntu -H -- juju-wait -w
