@@ -27,7 +27,7 @@ virsh pool-start default
 cat <<EOF | virsh net-define /dev/stdin
 <network>
   <name>maas</name>
-  <bridge name='maas'/>
+  <bridge name='maas' stp='off'/>
   <forward mode='nat'/>
   <ip address='192.168.151.1' netmask='255.255.255.0'/>
 </network>
