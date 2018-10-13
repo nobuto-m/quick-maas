@@ -1,7 +1,11 @@
 ## prepare a bare metal instance
 
-Launch an i3.metal EC2 instance in the Frankfurt region by hand. If you
-get "Your account is currently being verified", have a cup of coffee.
+Launch an i3.metal EC2 instance with Ubuntu 16.04 LTS in the Frankfurt
+region by hand. e.g., ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180912
+(ami-086a09d5b9fa35dc7).
+
+If you get "Your account is currently being verified", have a cup of
+coffee.
 
 ```
 Your account is currently being verified. Verification normally
