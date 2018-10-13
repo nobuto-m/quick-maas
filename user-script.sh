@@ -204,8 +204,7 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 . ~ubuntu/openrc
 juju bootstrap openstack --debug \
     --bootstrap-series xenial \
-    --model-default use-floating-ip=true \
-    --model-default update-status-hook-interval=1h
+    --model-default use-floating-ip=true
 
 juju deploy kubernetes-core-346 # 1.10
 
