@@ -175,4 +175,4 @@ sudo -u ubuntu -H -- juju config neutron-gateway data-port='br-ex:ens7'
 sudo -u ubuntu -H -- juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
 sudo -u ubuntu -H -- juju add-relation keystone glance-simplestreams-sync
 
-sudo -u ubuntu -H -- juju-wait -w
+sudo -u ubuntu -H -- time juju-wait -w

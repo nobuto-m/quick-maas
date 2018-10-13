@@ -133,13 +133,7 @@ MAAS Pod inside it. OpenStack will be deployed as the part of it.
 
 ### how to access
 
-Copy authorized_keys from the bare metal instance to the container.
-
-```bash
-[baremetal] $ lxc file push ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
-```
-
-Then, ssh.
+SSH.
 
 ```bash
 [local] $ ssh demo-maas
