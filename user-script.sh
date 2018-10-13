@@ -125,15 +125,21 @@ done
 sleep 15
 
 for machine in $(virsh list --all --name); do
+    virsh destroy "$machine"
+
+    # expose CPU model
     virt-xml --edit --cpu mode=host-passthrough
 
     # one more NIC
-    virsh attach-interface "$machine" network maas --model virtio --live --persistent
+    virsh attach-interface "$machine" network maas --model virtio --config
 
+    # virt-xml --edit --disk target_bus=sata
     # one more disk
-    virsh vol-create-as default "${machine}_vdb" 64G
-    virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_vdb" vdb \
-        --live --persistent
+    virsh vol-create-as default "${machine}_sdb" 64G
+    virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_sdb" sdb \
+        --targetbus sata --config
+
+    virsh start "$machine"
 done
 
 # juju
@@ -176,5 +182,5 @@ sudo -u ubuntu -H juju bootstrap maas maas-controller --debug \
 # To remove
 sudo -u ubuntu -H juju deploy openstack-base-51
 
-sudo -u ubuntu -H juju config ceph-osd osd-devices='/dev/vdb' ## TODO
+#sudo -u ubuntu -H juju config ceph-osd osd-devices='/dev/vdb' ## TODO
 sudo -u ubuntu -H juju config neutron-gateway data-port='br-ex:ens8'
