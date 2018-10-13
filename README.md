@@ -171,3 +171,11 @@ Open sshuttle for web browser.
 image metadata
 
 juju deploy kubernetes-core-346 # 1.10
+
+
+## how to destroy the environment and rebuild
+
+```bash
+[baremetal] $ lxc delete --force quick-maas
+[baremetal] $ ./run.sh
+```
