@@ -211,5 +211,7 @@ juju deploy kubernetes-core-346 # 1.10
 
 time juju-wait -w
 
+juju run-action --wait kubernetes-worker/0 microbot replicas=3
+
 # fix permission
 chown ubuntu:ubuntu -R ~ubuntu/.local/share/juju/
