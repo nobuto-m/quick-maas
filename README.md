@@ -1,3 +1,9 @@
+## rough estimated time
+
+- maas: 15m
+- openstack: 20m
+- kubernetes: 
+
 ## prepare a bare metal instance
 
 Launch an i3.metal EC2 instance with Ubuntu 16.04 LTS in the Frankfurt

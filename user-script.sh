@@ -137,8 +137,6 @@ eatmydata apt-get install -y squashfuse
 snap install --classic juju || snap install --classic juju
 snap install --classic juju-wait
 
-snap install --classic openstackclients
-
 while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '6' ]; do
     sleep 15
 done
@@ -178,3 +176,25 @@ sudo -u ubuntu -H -- juju deploy --to lxd:0 --series bionic glance-simplestreams
 sudo -u ubuntu -H -- juju add-relation keystone glance-simplestreams-sync
 
 sudo -u ubuntu -H -- time -p juju-wait -w
+
+
+# setup openstack
+add-apt-repository -y -u cloud-archive:queens
+apt-get install -y python-openstackclient
+
+
+export JUJU_DATA=~ubuntu/.local/share/juju # use ubuntu user's juju credential
+. ~ubuntu/openrc
+
+~ubuntu/neutron-ext-net-ksv3 --network-type flat \
+    -g 10.0.10.1 -c 10.0.10.0/24 \
+    -f 10.0.10.201:10.0.10.254 \
+    ext_net
+
+~ubuntu/neutron-tenant-net-ksv3 -p admin -r provider-router \
+    -N 8.8.8.8 internal 192.168.200.0/24
+
+openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
+
+openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
+
