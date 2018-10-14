@@ -130,7 +130,7 @@ $ cd quick-maas
 ## run
 
 Run the script to create the "quick-maas" LXD container to run MAAS and
-MAAS Pod inside it. OpenStack will be deployed as a part of it.
+MAAS Pod inside it. OpenStack, Kubernetes on top of OpenStack, and sample workload on top of Kubernetes will be deployed as a part of it.
 
 ```bash
 [baremetal] $ ./run.sh
