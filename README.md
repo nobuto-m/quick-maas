@@ -2,7 +2,7 @@
 
 - maas: 15m
 - openstack: 20m
-- kubernetes: 
+- kubernetes: 18m
 
 ## prepare a bare metal instance
 
