@@ -164,8 +164,7 @@ juju add-credential maas -f credentials.yaml
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
-    --bootstrap-series xenial \
-    --model-default update-status-hook-interval=1h
+    --bootstrap-series xenial
 
 
 # deploy openstack cloud:xenial-pike
