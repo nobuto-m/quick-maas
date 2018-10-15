@@ -171,6 +171,7 @@ juju bootstrap maas maas-controller --debug \
 
 juju deploy openstack-base-51
 juju config keystone preferred-api-version=3
+juju config nova-cloud-controller console-access-protocol=spice
 juju config neutron-gateway data-port='br-ex:ens7'
 
 juju add-unit neutron-gateway
