@@ -84,7 +84,7 @@ maas admin vlan update "$fabric_id" 0 space=space-first
 while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
-sleep 120
+sleep 180
 
 # MAAS Pod
 sudo -u maas ssh-keygen -f ~maas/.ssh/id_rsa -N ''
