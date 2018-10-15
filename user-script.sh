@@ -173,8 +173,19 @@ juju deploy openstack-base-51
 juju config keystone preferred-api-version=3
 juju config neutron-gateway data-port='br-ex:ens7'
 
+juju add-unit neutron-gateway
+juju config neutron-gateway dns-servers='8.8.8.8,8.8.4.4'
+juju config neutron-api \
+    enable-l3ha=true \
+    l2-population=false \
+    dhcp-agents-per-network=2 \
+    enable-ml2-dns=true \
+    dns-domain=openstack.internal
+
+
 juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
 juju add-relation keystone glance-simplestreams-sync
+
 
 time juju-wait -w
 
@@ -192,7 +203,7 @@ apt-get install -y python-openstackclient
     ext_net
 
 ~ubuntu/neutron-tenant-net-ksv3 -p admin -r provider-router \
-    -N 8.8.8.8 internal 10.5.5.0/24 # TODO: check internal DNS
+    internal 10.5.5.0/24
 
 openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
 
