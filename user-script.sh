@@ -8,13 +8,21 @@ export DEBIAN_FRONTEND=noninteractive
 export PATH="$PATH:/snap/bin"
 export JUJU_DATA=~ubuntu/.local/share/juju
 
+# proxy
+if host squid-deb-proxy.lxd >/dev/null; then
+    http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
+    echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
+else
+    http_proxy=
+fi
+
 # ppa
 apt-add-repository -y ppa:maas/stable
 
 apt-get update
 
 # KVM setup
-eatmydata apt-get install -y virt-host^
+eatmydata apt-get install -y libvirt-bin
 eatmydata apt-get install -y virtinst --no-install-recommends
 
 virsh net-destroy default
@@ -50,10 +58,20 @@ eatmydata apt-get install -y maas
 maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
 
-maas login admin http://localhost/MAAS "$(maas apikey --username ubuntu)"
+maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
-# explicitly set xenial, LP: #1767137
-maas admin boot-source-selection update 1 1 release=xenial
+maas admin boot-source-selection update 1 1 release=bionic
+#maas admin boot-source-selections create 1 os=ubuntu release=xenial arches=amd64 subarches=* labels=*
+
+# start importing image
+if [ -n "$http_proxy" ]; then
+    maas admin maas set-config name=http_proxy value="$http_proxy"
+    maas admin boot-resources stop-import
+    while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+        sleep 15
+    done
+fi
+maas admin boot-resources import
 
 maas admin maas set-config name=maas_name value='Demo'
 
@@ -84,7 +102,6 @@ maas admin vlan update "$fabric_id" 0 space=space-first
 while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
-sleep 180
 
 # MAAS Pod
 sudo -u maas ssh-keygen -f ~maas/.ssh/id_rsa -N ''
@@ -92,14 +109,16 @@ install -m 0600 ~maas/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 maas admin pods create \
     type=virsh \
+    cpu_over_commit_ratio=10 \
+    memory_over_commit_ratio=1.0 \
     name=localhost \
-    power_address="qemu+ssh://root@localhost/system"
+    power_address="qemu+ssh://root@127.0.0.1/system"
 
 # compose machines
 for i in {1..6}; do
     maas admin pod compose 1 \
         cores=8 \
-        memory=32768 \
+        memory=8192 \
         storage='default:64'
 done
 
@@ -148,7 +167,7 @@ clouds:
   maas:
     type: maas
     auth-types: [oauth1]
-    endpoint: http://192.168.151.1/MAAS
+    endpoint: http://192.168.151.1:5240/MAAS
 EOF
 juju add-cloud maas -f clouds.yaml
 
@@ -163,15 +182,20 @@ juju add-credential maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
-juju bootstrap maas maas-controller --debug \
-    --bootstrap-series xenial
+if [ -n "$http_proxy" ]; then
+    juju bootstrap maas maas-controller --debug \
+        --model-default apt-http-proxy="$http_proxy"
+else
+    juju bootstrap maas maas-controller --debug
+fi
 
+## host properties, proxy
 
-# deploy openstack cloud:xenial-pike
+# deploy openstack
 
-juju deploy openstack-base-51
+juju deploy openstack-base
 juju config keystone preferred-api-version=3
-juju config nova-cloud-controller console-access-protocol=spice
+juju config nova-cloud-controller console-access-protocol=novnc
 juju config neutron-gateway data-port='br-ex:ens7'
 
 juju add-unit neutron-gateway
@@ -184,7 +208,11 @@ juju config neutron-api \
     dns-domain=openstack.internal
 
 
-juju deploy --to lxd:0 --series bionic glance-simplestreams-sync # bionic for un-SRUed simplestreams package
+juju deploy --to lxd:0 --series disco --force glance-simplestreams-sync # LP: #1790904
+juju config glance-simplestreams-sync mirror_list="
+    [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
+    item_filters: ['release=bionic', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
+    "
 juju add-relation keystone glance-simplestreams-sync
 
 
@@ -192,7 +220,6 @@ time juju-wait -w
 
 
 # setup openstack
-add-apt-repository -y -u cloud-archive:queens
 apt-get install -y python-openstackclient
 
 
@@ -206,19 +233,25 @@ apt-get install -y python-openstackclient
 ~ubuntu/neutron-tenant-net-ksv3 -p admin -r provider-router \
     internal 10.5.5.0/24
 
-openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.large
+openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
 
 openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 
 # bootstrap on openstack
 . ~ubuntu/openrc
-juju bootstrap openstack --debug \
-    --bootstrap-series xenial \
-    --model-default use-floating-ip=true \
-    --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
+if [ -n "$http_proxy" ]; then
+    juju bootstrap openstack --debug \
+        --model-default apt-http-proxy="$http_proxy" \
+        --model-default use-floating-ip=true \
+        --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
+else
+    juju bootstrap openstack --debug \
+        --model-default use-floating-ip=true \
+        --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
+fi
 
-juju deploy kubernetes-core-346 # 1.10
+juju deploy kubernetes-core
 
 time juju-wait -w
 
