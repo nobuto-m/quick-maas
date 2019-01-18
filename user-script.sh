@@ -110,12 +110,12 @@ install -m 0600 ~maas/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 maas admin pods create \
     type=virsh \
     cpu_over_commit_ratio=10 \
-    memory_over_commit_ratio=1.0 \
+    memory_over_commit_ratio=1.5 \
     name=localhost \
     power_address="qemu+ssh://root@127.0.0.1/system"
 
 # compose machines
-for i in {1..6}; do
+for i in {1..8}; do
     maas admin pod compose 1 \
         cores=8 \
         memory=8192 \
