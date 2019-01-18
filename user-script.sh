@@ -60,9 +60,6 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
-maas admin boot-source-selection update 1 1 release=bionic
-#maas admin boot-source-selections create 1 os=ubuntu release=xenial arches=amd64 subarches=* labels=*
-
 # start importing image
 if [ -n "$http_proxy" ]; then
     maas admin maas set-config name=http_proxy value="$http_proxy"
@@ -71,6 +68,10 @@ if [ -n "$http_proxy" ]; then
         sleep 15
     done
 fi
+
+maas admin boot-source-selection update 1 1 release=bionic
+#maas admin boot-source-selections create 1 os=ubuntu release=xenial arches=amd64 subarches=* labels=*
+
 maas admin boot-resources import
 
 maas admin maas set-config name=maas_name value='Demo'
