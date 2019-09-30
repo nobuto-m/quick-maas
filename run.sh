@@ -11,7 +11,7 @@ lxc profile device add quick-maas root disk path=/ pool=default size=300GB 2>/de
 lxc profile device add quick-maas kvm unix-char path=/dev/kvm 2>/dev/null || true
 
 ## somehow bionic released image 84a71299044b doesn't boot
-lxc init ubuntu-daily:bionic quick-maas \
+lxc init ubuntu:bionic quick-maas \
     -p default -p quick-maas \
     -c security.privileged=true \
     -c user.user-data="$(cat user-script.sh)"
