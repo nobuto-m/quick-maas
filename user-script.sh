@@ -124,7 +124,7 @@ for i in {1..8}; do
 done
 
 # wait for a while until Pod machines will be booted
-sleep 15
+sleep 30
 
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
