@@ -219,6 +219,8 @@ juju add-relation keystone glance-simplestreams-sync
 
 time juju-wait -w
 
+# be nice to my SSD
+juju model-config update-status-hook-interval=24h
 
 # setup openstack
 apt-get install -y python-openstackclient
