@@ -158,7 +158,7 @@ clouds:
     auth-types: [oauth1]
     endpoint: http://192.168.151.1:5240/MAAS
 EOF
-juju add-cloud maas -f clouds.yaml
+juju add-cloud --client maas -f clouds.yaml
 
 cat > credentials.yaml <<EOF
 credentials:
@@ -167,7 +167,7 @@ credentials:
       auth-type: oauth1
       maas-oauth: $(maas apikey --username ubuntu)
 EOF
-juju add-credential maas -f credentials.yaml
+juju add-credential --client maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
