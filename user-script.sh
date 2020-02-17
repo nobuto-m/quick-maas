@@ -12,8 +12,6 @@ export JUJU_DATA=~ubuntu/.local/share/juju
 if host squid-deb-proxy.lxd >/dev/null; then
     http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
     echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
-else
-    http_proxy=
 fi
 
 # ppa
@@ -59,20 +57,6 @@ maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
-
-# start importing image
-if [ -n "$http_proxy" ]; then
-    maas admin maas set-config name=http_proxy value="$http_proxy"
-    maas admin boot-resources stop-import
-    while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
-        sleep 15
-    done
-fi
-
-maas admin boot-source-selection update 1 1 release=bionic
-#maas admin boot-source-selections create 1 os=ubuntu release=xenial arches=amd64 subarches=* labels=*
-
-maas admin boot-resources import
 
 maas admin maas set-config name=maas_name value='Demo'
 
@@ -183,12 +167,8 @@ juju add-credential maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
-if [ -n "$http_proxy" ]; then
-    juju bootstrap maas maas-controller --debug \
-        --model-default apt-http-proxy="$http_proxy"
-else
-    juju bootstrap maas maas-controller --debug
-fi
+juju bootstrap maas maas-controller --debug \
+    --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
 ## host properties, proxy
 
@@ -243,16 +223,10 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 # bootstrap on openstack
 . ~ubuntu/openrc
-if [ -n "$http_proxy" ]; then
-    juju bootstrap openstack --debug \
-        --model-default apt-http-proxy="$http_proxy" \
-        --model-default use-floating-ip=true \
-        --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
-else
-    juju bootstrap openstack --debug \
-        --model-default use-floating-ip=true \
-        --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
-fi
+juju bootstrap openstack --debug \
+    --model-default apt-http-proxy="http://192.168.151.1:8000/" \
+    --model-default use-floating-ip=true \
+    --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
 
 juju deploy kubernetes-core
 
