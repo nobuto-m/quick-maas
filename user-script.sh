@@ -88,6 +88,8 @@ while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
 
+sleep 120
+
 # MAAS Pod
 sudo -u maas ssh-keygen -f ~maas/.ssh/id_rsa -N ''
 install -m 0600 ~maas/.ssh/id_rsa.pub /root/.ssh/authorized_keys
@@ -104,7 +106,7 @@ for i in {1..8}; do
     maas admin pod compose 1 \
         cores=8 \
         memory=8192 \
-        storage='default:64'
+        storage='default:32'
 done
 
 # wait for a while until Pod machines will be booted
@@ -125,10 +127,12 @@ for machine in $(virsh list --all --name); do
     virsh attach-disk "$machine" "$disk_source" sda \
         --targetbus sata --config
 
-    # one more disk
-    virsh vol-create-as default "${machine}_sdb" 64000000000
-    virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_sdb" sdb \
-        --targetbus sata --config
+    # two more drives
+    for drive in sdb sdc; do
+        virsh vol-create-as default "${machine}_${drive}" 32000000000
+        virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_${drive}" "$drive" \
+            --targetbus sata --config
+    done
 
     virsh start "$machine"
 done
