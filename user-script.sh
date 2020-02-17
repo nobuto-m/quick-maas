@@ -185,8 +185,6 @@ juju config neutron-openvswitch data-port='br-ex:ens7'
 
 juju config neutron-gateway dns-servers='8.8.8.8,8.8.4.4'
 juju config neutron-api \
-    enable-l3ha=true \
-    enable-dvr=true \
     enable-ml2-dns=true \
     dns-domain=openstack.internal.
 
