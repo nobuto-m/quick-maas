@@ -179,21 +179,18 @@ juju bootstrap maas maas-controller --debug \
 # deploy openstack
 
 juju deploy openstack-base
-juju config keystone preferred-api-version=3
 juju config nova-cloud-controller console-access-protocol=novnc
 juju config neutron-gateway data-port='br-ex:ens7'
+juju config neutron-openvswitch data-port='br-ex:ens7'
 
-juju add-unit neutron-gateway
 juju config neutron-gateway dns-servers='8.8.8.8,8.8.4.4'
 juju config neutron-api \
     enable-l3ha=true \
-    l2-population=false \
-    dhcp-agents-per-network=2 \
+    enable-dvr=true \
     enable-ml2-dns=true \
-    dns-domain=openstack.internal
+    dns-domain=openstack.internal.
 
-
-juju deploy --to lxd:0 --series disco --force glance-simplestreams-sync # LP: #1790904
+juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
     item_filters: ['release=bionic', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
