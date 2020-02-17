@@ -15,7 +15,7 @@ if host squid-deb-proxy.lxd >/dev/null; then
 fi
 
 # ppa
-apt-add-repository -y ppa:maas/stable
+apt-add-repository -y ppa:maas/2.6
 
 apt-get update
 
