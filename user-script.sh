@@ -222,10 +222,36 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 # bootstrap on openstack
 . ~ubuntu/openrc
-juju bootstrap openstack --debug \
-    --model-default apt-http-proxy="http://192.168.151.1:8000/" \
-    --model-default use-floating-ip=true \
-    --model-default network="$(openstack network show internal -f value -c id)" # LP: #1797924
+cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
+clouds:
+  openstack:
+    type: openstack
+    auth-types: [userpass]
+    regions:
+      ${OS_REGION_NAME}:
+        endpoint: $OS_AUTH_URL
+EOF
+
+cat <<EOF | juju add-credential -c maas-controller --client openstack -f /dev/stdin
+credentials:
+  openstack:
+    $OS_USERNAME:
+      auth-type: userpass
+      domain-name: ""
+      password: $OS_PASSWORD
+      project-domain-name: $OS_PROJECT_DOMAIN_NAME
+      tenant-id: ""
+      tenant-name: $OS_PROJECT_NAME
+      user-domain-name: $OS_USER_DOMAIN_NAME
+      username: $OS_USERNAME
+      version: "$OS_IDENTITY_API_VERSION"
+EOF
+
+juju model-defaults "openstack/${OS_REGION_NAME}" \
+    apt-http-proxy='http://192.168.151.1:8000/' \
+    network="$(openstack network show internal -f value -c id)" # LP: #1797924
+
+juju add-model kubernetes "openstack/${OS_REGION_NAME}"
 
 juju deploy kubernetes-core
 
