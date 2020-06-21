@@ -181,7 +181,7 @@ juju bootstrap maas maas-controller --debug \
 juju deploy openstack-base-65
 
 juju status --format json | jq -r '.applications | keys[]' \
-    | xargs -L1 -t juju upgrade-charm
+    | xargs -L1 -t juju upgrade-charm || true
 
 juju config nova-cloud-controller console-access-protocol=novnc
 juju config neutron-gateway data-port='br-ex:ens7'
