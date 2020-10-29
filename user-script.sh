@@ -195,12 +195,15 @@ juju config neutron-api \
 juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
-    item_filters: ['release=bionic', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
+    item_filters: ['release~(bionic|focal)', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
     "
 juju add-relation keystone glance-simplestreams-sync
 
 
 time juju-wait -w
+
+# sync images
+juju run-action --wait glance-simplestreams-sync/leader sync-images
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
