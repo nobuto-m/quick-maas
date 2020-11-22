@@ -197,13 +197,15 @@ juju config neutron-api \
     enable-ml2-dns=true \
     dns-domain=openstack.internal.
 
+# TODO: discuss the necessity of vault itself
+juju config vault totally-unsecure-auto-unlock=true
+
 juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
     item_filters: ['release=focal)', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
     "
 juju add-relation keystone glance-simplestreams-sync
-
 
 time juju-wait -w
 
