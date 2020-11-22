@@ -15,7 +15,7 @@ if host squid-deb-proxy.lxd >/dev/null; then
 fi
 
 # ppa
-apt-add-repository -y ppa:maas/2.6
+apt-add-repository -y ppa:maas/2.8
 
 apt-get update
 
@@ -84,6 +84,15 @@ fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.151.0/
 maas admin vlan update "$fabric_id" 0 space=space-first
 
 # wait image
+while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+    sleep 15
+done
+
+# add focal image
+maas admin boot-source-selections create 1 os=ubuntu release=focal arches=amd64 subarches='*' labels='*'
+maas admin boot-resources import
+
+# wait image again
 while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
@@ -178,16 +187,12 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-juju deploy openstack-base-65
-
-juju status --format json | jq -r '.applications | keys[]' \
-    | xargs -L1 -t juju upgrade-charm || true
+juju deploy openstack-base
 
 juju config nova-cloud-controller console-access-protocol=novnc
-juju config neutron-gateway data-port='br-ex:ens7'
-juju config neutron-openvswitch data-port='br-ex:ens7'
+juju config ovn-chassis bridge-interface-mappings='br-ex:ens7'
 
-juju config neutron-gateway dns-servers='8.8.8.8,8.8.4.4'
+juju config neutron-api-plugin-ovn dns-servers='8.8.8.8,8.8.4.4'
 juju config neutron-api \
     enable-ml2-dns=true \
     dns-domain=openstack.internal.
@@ -195,7 +200,7 @@ juju config neutron-api \
 juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
-    item_filters: ['release~(bionic|focal)', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
+    item_filters: ['release=focal)', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
     "
 juju add-relation keystone glance-simplestreams-sync
 
