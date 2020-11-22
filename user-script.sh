@@ -187,11 +187,7 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-# TODO: discuss the necessity of vault itself
-cat <<EOF | juju deploy openstack-base --overlay /dev/stdin
-applications:
-  vault: null
-EOF
+juju deploy openstack-base
 
 juju config nova-cloud-controller console-access-protocol=novnc
 juju config ovn-chassis bridge-interface-mappings='br-ex:ens7'
@@ -200,6 +196,9 @@ juju config neutron-api-plugin-ovn dns-servers='8.8.8.8,8.8.4.4'
 juju config neutron-api \
     enable-ml2-dns=true \
     dns-domain=openstack.internal.
+
+# TODO: discuss the necessity of vault itself
+juju config vault totally-unsecure-auto-unlock=true
 
 juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
