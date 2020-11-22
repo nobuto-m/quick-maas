@@ -199,6 +199,7 @@ juju config neutron-api \
 
 # TODO: discuss the necessity of vault itself
 juju config vault totally-unsecure-auto-unlock=true
+juju config vault auto-generate-root-ca-cert=true
 
 juju deploy --to lxd:0 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
