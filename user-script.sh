@@ -44,12 +44,6 @@ virsh net-start maas
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
     | debconf-set-selections
-eatmydata apt-get install -y maas || true
-
-# bump limit for avahi-daemon
-sed -i -e 's/^rlimit-nproc/#\0/' /etc/avahi/avahi-daemon.conf
-
-# try maas package install again
 eatmydata apt-get install -y maas
 
 # maas login as ubuntu/ubuntu
