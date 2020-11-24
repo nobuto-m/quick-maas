@@ -220,7 +220,9 @@ juju model-config update-status-hook-interval=24h
 apt-get install -y python-openstackclient
 
 
+set +u
 . ~ubuntu/openrc
+set -u
 
 ~ubuntu/neutron-ext-net-ksv3 --network-type flat \
     -g 192.168.151.1 -c 192.168.151.0/24 \
@@ -236,7 +238,9 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 
 # bootstrap on openstack
+set +u
 . ~ubuntu/openrc
+set -u
 cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
 clouds:
   openstack:
