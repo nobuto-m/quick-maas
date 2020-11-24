@@ -206,7 +206,8 @@ juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
     item_filters: ['release=focal)', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
     "
-juju add-relation keystone glance-simplestreams-sync
+juju add-relation glance-simplestreams-sync:identity-service keystone:identity-service
+juju add-relation glance-simplestreams-sync:certificates vault:certificates
 
 time juju-wait -w
 
@@ -217,7 +218,7 @@ juju run-action --wait glance-simplestreams-sync/leader sync-images
 juju model-config update-status-hook-interval=24h
 
 # setup openstack
-snap install openstackclients
+snap install openstackclients --channel latest/edge
 
 
 set +u
