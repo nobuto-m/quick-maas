@@ -217,20 +217,37 @@ juju run-action --wait glance-simplestreams-sync/leader sync-images
 juju model-config update-status-hook-interval=24h
 
 # setup openstack
-apt-get install -y python-openstackclient
+snap install openstackclients
 
 
 set +u
 . ~ubuntu/openrc
 set -u
 
-~ubuntu/neutron-ext-net-ksv3 --network-type flat \
-    -g 192.168.151.1 -c 192.168.151.0/24 \
-    -f 192.168.151.51:192.168.151.100 \
+openstack network create --external \
+    --provider-network-type flat \
+    --provider-physical-network physnet1 \
     ext_net
 
-~ubuntu/neutron-tenant-net-ksv3 -p admin -r provider-router \
-    internal 10.5.5.0/24
+openstack subnet create \
+    --network ext_net \
+    --subnet-range 192.168.151.0/24 \
+    --gateway 192.168.151.1 \
+    --allocation-pool start=192.168.151.51,end=192.168.151.100 \
+    ext_net_subnet
+
+openstack network create internal
+
+openstack subnet create \
+    --network internal \
+    --subnet-range 10.5.5.0/24 \
+    internal_subnet
+
+openstack router create provider-router
+
+openstack router set --external-gateway ext_net provider-router
+
+openstack router add subnet provider-router internal_subnet
 
 openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
 
