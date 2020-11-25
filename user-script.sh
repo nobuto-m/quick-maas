@@ -223,6 +223,12 @@ set +u
 . ~ubuntu/openrc
 set -u
 
+# TODO: fix this appropriately since the redirection ">" doesn't work
+# with Juju CLI and probably with the privileged container
+juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
+export OS_CACERT=/tmp/root-ca.crt
+export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
+
 openstack network create --external \
     --provider-network-type flat \
     --provider-physical-network physnet1 \
@@ -257,6 +263,13 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 set +u
 . ~ubuntu/openrc
 set -u
+
+# TODO: fix this appropriately since the redirection ">" doesn't work
+# with Juju CLI and probably with the privileged container
+juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
+export OS_CACERT=/tmp/root-ca.crt
+export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
+
 cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
 clouds:
   openstack:
