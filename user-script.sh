@@ -278,7 +278,7 @@ clouds:
     regions:
       ${OS_REGION_NAME}:
         endpoint: $OS_AUTH_URL
-    ca-credentials:
+    ca-certificates:
     - |
 $(cat $OS_CACERT | sed -e 's/^/      /')
 EOF
