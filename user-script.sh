@@ -280,7 +280,7 @@ clouds:
         endpoint: $OS_AUTH_URL
     ca-credentials:
     - |
-$(cat $OS_CERT | sed -e 's/^/      /')
+$(cat $OS_CACERT | sed -e 's/^/      /')
 EOF
 
 cat <<EOF | juju add-credential -c maas-controller --client openstack -f /dev/stdin
