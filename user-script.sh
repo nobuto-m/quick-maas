@@ -299,7 +299,10 @@ EOF
 
 juju model-defaults "openstack/${OS_REGION_NAME}" \
     apt-http-proxy='http://192.168.151.1:8000/' \
-    network="$(openstack network show internal -f value -c id)" # LP: #1797924
+    network="$(openstack network show internal -f value -c id)" \
+    external-network="$(openstack network show ext_net -f value -c id)"
+    # LP: #1797924
+    # LP: #1891227 # remove when 2.8.7 is released
 
 juju add-model kubernetes "openstack/${OS_REGION_NAME}"
 
