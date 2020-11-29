@@ -24,7 +24,6 @@ lxc start quick-maas
 sleep 15
 
 lxc file push -p --uid 1000 --gid 1000 --mode 0600 ~/.ssh/authorized_keys quick-maas/home/ubuntu/.ssh/
-lxc file push openstack-bundles/development/shared/* quick-maas/home/ubuntu/
-lxc file push openstack-charms-tools/os-upgrade.py quick-maas/home/ubuntu/
+lxc file push openstack-bundles/development/shared/openrc* quick-maas/home/ubuntu/
 
 lxc exec quick-maas -- tail -f -n+1 /var/log/cloud-init-output.log
