@@ -109,7 +109,7 @@ for i in {1..8}; do
     maas admin pod compose 1 \
         cores=8 \
         memory=8192 \
-        storage='default:48'
+        storage='root:48,data1:32,data2:32'
 done
 
 # wait for a while until Pod machines will be booted
@@ -123,19 +123,6 @@ for machine in $(virsh list --all --name); do
 
     # one more NIC
     virsh attach-interface "$machine" network maas --model virtio --config
-
-    # use SATA bus
-    disk_source=$(virsh dumpxml "$machine" | grep '<source file' | cut -d "'" -f2)
-    virsh detach-disk "$machine" vda --config
-    virsh attach-disk "$machine" "$disk_source" sda \
-        --targetbus sata --config
-
-    # two more drives
-    for drive in sdb sdc; do
-        virsh vol-create-as default "${machine}_${drive}" 32000000000
-        virsh attach-disk "$machine" "/var/lib/libvirt/images/${machine}_${drive}" "$drive" \
-            --targetbus sata --config
-    done
 
     virsh start "$machine"
 done
