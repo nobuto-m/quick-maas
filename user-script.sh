@@ -128,12 +128,7 @@ for machine in $(virsh list --all --name); do
 done
 
 # juju
-eatmydata apt-get install -y squashfuse
-
-# try snap install twice due to an error:
-# - Setup snap "core" (3017) security profiles (cannot setup udev for
-#   snap "core": cannot reload udev rules: exit status 2
-snap install --classic juju || snap install --classic juju
+snap install --classic juju
 snap install --classic juju-wait
 
 while [ "$(maas admin machines read | jq -r '.[].status_name' | grep -c -w Ready)" != '8' ]; do
@@ -209,12 +204,6 @@ set +u
 . ~ubuntu/openrc
 set -u
 
-# TODO: fix this appropriately since the redirection ">" doesn't work
-# with Juju CLI and probably with the privileged container
-juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
-export OS_CACERT=/tmp/root-ca.crt
-export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
-
 openstack network create --external \
     --provider-network-type flat \
     --provider-physical-network physnet1 \
@@ -249,12 +238,6 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 set +u
 . ~ubuntu/openrc
 set -u
-
-# TODO: fix this appropriately since the redirection ">" doesn't work
-# with Juju CLI and probably with the privileged container
-juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
-export OS_CACERT=/tmp/root-ca.crt
-export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
 
 cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
 clouds:
