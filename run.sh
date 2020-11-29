@@ -13,7 +13,6 @@ lxc profile device add quick-maas vhost-net unix-char path=/dev/vhost-net mode=0
 
 lxc init ubuntu:bionic quick-maas \
     -p default -p quick-maas \
-    -c security.privileged=true \
     -c security.nesting=true \
     -c user.user-data="$(cat user-script.sh)"
 
