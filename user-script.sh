@@ -215,10 +215,7 @@ juju model-config update-status-hook-interval=24h
 
 # setup openstack
 
-# TODO: fix "cannot perform operation: mount --rbind /snap /snap:
-# Permission denied"
 snap install openstackclients --channel latest/edge
-sudo apt-get install -y python3-openstackclient
 
 
 set +u
