@@ -20,7 +20,7 @@ apt-add-repository -y ppa:maas/2.9
 apt-get update
 
 # KVM setup
-eatmydata apt-get install -y libvirt-bin
+eatmydata apt-get install -y libvirt-daemon-system
 eatmydata apt-get install -y virtinst --no-install-recommends
 
 virsh net-destroy default
