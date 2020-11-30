@@ -159,7 +159,7 @@ juju status --format json | jq -r '.applications | keys[]' \
     | xargs -L1 -t juju upgrade-charm || true
 
 juju config nova-cloud-controller console-access-protocol=novnc
-juju config ovn-chassis bridge-interface-mappings='br-ex:ens7'
+juju config ovn-chassis bridge-interface-mappings='br-ex:ens9'
 
 juju config neutron-api-plugin-ovn dns-servers='8.8.8.8,8.8.4.4'
 juju config neutron-api \
