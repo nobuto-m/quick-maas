@@ -100,7 +100,7 @@ for i in {1..8}; do
     maas admin pod compose 1 \
         cores=8 \
         memory=8192 \
-        storage='root:64,data1:32,data2:32,data3:32'
+        storage='root:48,data1:32,data2:32,data3:32'
 done
 
 # wait for a while until Pod machines will be booted
