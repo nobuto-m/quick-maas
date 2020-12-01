@@ -5,7 +5,6 @@ set -u
 set -x
 
 export DEBIAN_FRONTEND=noninteractive
-export PATH="$PATH:/snap/bin"
 export JUJU_DATA=~ubuntu/.local/share/juju
 
 # proxy
