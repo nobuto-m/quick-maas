@@ -123,7 +123,7 @@ snap install --classic juju-wait
 
 while true; do
     maas_machines="$(maas admin machines read)"
-    if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed Commissioning'; then
+    if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed commissioning'; then
         exit 1
     fi
     if [ "$(echo "$maas_machines" | jq -r '.[].status_name' | grep -c -w 'Ready')" = '8' ]; then
