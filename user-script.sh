@@ -109,6 +109,7 @@ maas admin pods create \
 # compose machines
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
+# shellcheck disable=SC2034
 for i in $(seq 1 "$num_machines"); do
     maas admin pod compose 1 \
         cores=8 \
@@ -214,6 +215,7 @@ snap install openstackclients --channel latest/edge
 
 
 set +u
+# shellcheck disable=SC1091
 . ~ubuntu/openrc
 set -u
 
@@ -249,6 +251,7 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 # bootstrap on openstack
 set +u
+# shellcheck disable=SC1091
 . ~ubuntu/openrc
 set -u
 
