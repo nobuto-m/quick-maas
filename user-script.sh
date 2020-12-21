@@ -22,6 +22,16 @@ apt-get update
 eatmydata apt-get install -y libvirt-daemon-system
 eatmydata apt-get install -y virtinst --no-install-recommends
 
+cat >> /etc/libvirt/qemu.conf <<EOF
+
+# Avoid the error in LXD containers:
+# Unable to set XATTR trusted.libvirt.security.dac on
+# /var/lib/libvirt/qemu/domain-*: Operation not permitted
+remember_owner = 0
+EOF
+
+systemctl restart libvirtd.service
+
 virsh net-destroy default
 virsh net-autostart --disable default
 
