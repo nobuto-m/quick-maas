@@ -165,7 +165,9 @@ juju add-credential --client maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
+# FIXME: remove "focal" when it becomes the default
 juju bootstrap maas maas-controller --debug \
+    --bootstrap-series focal \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
 ## host properties, proxy
