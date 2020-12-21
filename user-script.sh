@@ -4,6 +4,8 @@ set -e
 set -u
 set -x
 
+trap "chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*" SIGHUP SIGINT SIGTERM EXIT
+
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
@@ -292,7 +294,3 @@ juju deploy kubernetes-core
 time juju-wait -w
 
 juju run-action --wait kubernetes-worker/0 microbot replicas=3
-
-# fix permission
-chown ubuntu:ubuntu -R ~ubuntu/.local/
-chown ubuntu:ubuntu /tmp/juju-store-lock-*
