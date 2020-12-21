@@ -105,7 +105,9 @@ maas admin pods create \
     power_address="qemu+ssh://root@127.0.0.1/system"
 
 # compose machines
-for i in {1..8}; do
+## TODO: somehow lldpd in commissioning fails with num=8
+num_machines=7
+for i in $(seq 1 "$num_machines"); do
     maas admin pod compose 1 \
         cores=8 \
         memory=8192 \
@@ -136,7 +138,7 @@ while true; do
     if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed commissioning'; then
         exit 1
     fi
-    if [ "$(echo "$maas_machines" | jq -r '.[].status_name' | grep -c -w 'Ready')" = '8' ]; then
+    if [ "$(echo "$maas_machines" | jq -r '.[].status_name' | grep -c -w 'Ready')" = "$num_machines" ]; then
         break
     fi
     sleep 15
