@@ -180,6 +180,10 @@ juju deploy openstack-base
 juju status --format json | jq -r '.applications | keys[]' \
     | xargs -L1 -t juju upgrade-charm || true
 
+## FIXME: confirming if race condition is reproducible with the latest one
+juju upgrade-charm ovn-central --switch cs:~openstack-charmers-next/ovn-central
+juju upgrade-charm ovn-chassis --switch cs:~openstack-charmers-next/ovn-chassis
+
 juju config nova-cloud-controller console-access-protocol=novnc
 juju config ovn-chassis bridge-interface-mappings='br-ex:ens10'
 
