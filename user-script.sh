@@ -216,17 +216,19 @@ juju model-config update-status-hook-interval=24h
 
 snap install openstackclients --channel latest/edge
 
+git clone https://github.com/openstack-charmers/openstack-bundles.git
+
+cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
+
+# TODO: remove this workaround
+# redirection ">" doesn't work with Juju CLI, LP: #1849753
+# https://github.com/openstack-charmers/openstack-charm-testing/pull/70
+sed -i -e "s@.*leader-get root-ca.*@juju run \$_juju_model_arg --unit vault/leader 'leader-get root-ca' | tee \$_root_ca >/dev/null 2>\&1@" ~ubuntu/openrc
 
 set +u
 # shellcheck disable=SC1091
 . ~ubuntu/openrc
 set -u
-
-# TODO: remove this workaround
-# redirection ">" doesn't work with Juju CLI, LP: #1849753
-juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
-export OS_CACERT=/tmp/root-ca.crt
-export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
 
 openstack network create --external \
     --provider-network-type flat \
