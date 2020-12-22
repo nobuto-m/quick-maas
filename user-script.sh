@@ -222,6 +222,12 @@ set +u
 . ~ubuntu/openrc
 set -u
 
+# TODO: remove this workaround
+# redirection ">" doesn't work with Juju CLI, LP: #1849753
+juju run --unit vault/leader 'leader-get root-ca' | tee /tmp/root-ca.crt
+export OS_CACERT=/tmp/root-ca.crt
+export OS_AUTH_URL="${OS_AUTH_URL/http:/https:}"
+
 openstack network create --external \
     --provider-network-type flat \
     --provider-physical-network physnet1 \
@@ -253,10 +259,6 @@ openstack keypair create --public-key ~ubuntu/.ssh/id_rsa.pub mykey
 
 
 # bootstrap on openstack
-set +u
-# shellcheck disable=SC1091
-. ~ubuntu/openrc
-set -u
 
 cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
 clouds:
