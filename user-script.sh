@@ -20,6 +20,11 @@ apt-add-repository -y ppa:maas/2.9
 
 apt-get update
 
+# metrics
+eatmydata apt-get install -y prometheus-node-exporter
+snap install prometheus-libvirt-exporter
+snap connect prometheus-libvirt-exporter:libvirt
+
 # KVM setup
 eatmydata apt-get install -y libvirt-daemon-system
 eatmydata apt-get install -y virtinst --no-install-recommends
@@ -33,10 +38,6 @@ remember_owner = 0
 EOF
 
 systemctl restart libvirtd.service
-
-eatmydata apt-get install -y prometheus-node-exporter
-snap install prometheus-libvirt-exporter
-snap connect prometheus-libvirt-exporter:libvirt
 
 virsh net-destroy default
 virsh net-autostart --disable default
