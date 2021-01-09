@@ -34,6 +34,9 @@ EOF
 
 systemctl restart libvirtd.service
 
+snap install prometheus-libvirt-exporter
+snap connect prometheus-libvirt-exporter:libvirt
+
 virsh net-destroy default
 virsh net-autostart --disable default
 
