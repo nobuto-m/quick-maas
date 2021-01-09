@@ -34,7 +34,6 @@ EOF
 
 systemctl restart libvirtd.service
 
-eatmydata apt-get install -y prometheus-node-exporter
 snap install prometheus-libvirt-exporter
 snap connect prometheus-libvirt-exporter:libvirt
 
