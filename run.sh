@@ -18,6 +18,7 @@ lxc init ubuntu:focal quick-maas \
 
 lxc network attach lxdbr0 quick-maas eth0 eth0
 lxc config device set quick-maas eth0 ipv4.address 10.0.9.10
+lxc config device add quick-maas libvirt-exporter proxy listen=tcp:0.0.0.0:9177 connect=tcp:127.0.0.1:9177 bind=host
 
 lxc start quick-maas
 
