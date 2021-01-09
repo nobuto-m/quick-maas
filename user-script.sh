@@ -21,6 +21,7 @@ apt-add-repository -y ppa:maas/2.9
 apt-get update
 
 # metrics
+eatmydata apt-get install -y python3-prometheus-client
 eatmydata apt-get install -y prometheus-node-exporter
 snap install prometheus-libvirt-exporter
 snap connect prometheus-libvirt-exporter:libvirt
@@ -71,6 +72,8 @@ maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 maas admin maas set-config name=maas_name value='Demo'
 
 maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,115200n8'
+
+maas admin maas set-config name=prometheus_enabled value=true
 
 maas admin maas set-config name=completed_intro value=true
 

@@ -20,7 +20,10 @@ lxc network attach lxdbr0 quick-maas eth0 eth0
 lxc config device set quick-maas eth0 ipv4.address 10.0.9.10
 
 lxc config device add quick-maas node-exporter proxy listen=tcp:0.0.0.0:9101 connect=tcp:127.0.0.1:9100 bind=host
-lxc config device add quick-maas libvirt-exporter proxy listen=tcp:0.0.0.0:9178 connect=tcp:127.0.0.1:9177 bind=host
+lxc config device add quick-maas libvirt-exporter proxy listen=tcp:0.0.0.0:9179 connect=tcp:127.0.0.1:9177 bind=host
+lxc config device add quick-maas maas-regiond-exporter proxy listen=tcp:0.0.0.0:5238 connect=tcp:127.0.0.1:5239 bind=host
+lxc config device add quick-maas maas-rackd-exporter proxy listen=tcp:0.0.0.0:5248 connect=tcp:127.0.0.1:5249 bind=host
+lxc config device add quick-maas maas-exporter proxy listen=tcp:0.0.0.0:5241 connect=tcp:127.0.0.1:5240 bind=host
 
 lxc start quick-maas
 
