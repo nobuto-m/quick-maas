@@ -181,6 +181,7 @@ juju status --format json | jq -r '.applications | keys[]' \
     | xargs -L1 -t juju upgrade-charm || true
 
 ## FIXME: confirming if race condition is reproducible with the latest one
+juju upgrade-charm vault --switch cs:~openstack-charmers-next/vault
 juju upgrade-charm ovn-central --switch cs:~openstack-charmers-next/ovn-central
 juju upgrade-charm ovn-chassis --switch cs:~openstack-charmers-next/ovn-chassis
 
