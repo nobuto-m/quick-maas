@@ -193,9 +193,8 @@ juju config neutron-api \
     enable-ml2-dns=true \
     dns-domain=openstack.internal.
 
-# TODO: discuss the necessity of vault itself
 juju config vault totally-unsecure-auto-unlock=true
-juju config vault auto-generate-root-ca-cert=true
+# juju config vault auto-generate-root-ca-cert=true
 
 juju deploy --to lxd:2 --series focal glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
