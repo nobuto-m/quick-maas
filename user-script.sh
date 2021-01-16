@@ -4,7 +4,12 @@ set -e
 set -u
 set -x
 
-trap "chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*" SIGHUP SIGINT SIGTERM EXIT
+trap cleanup SIGHUP SIGINT SIGTERM EXIT
+
+function cleanup () {
+    mv -v /root/.maascli.db ~ubuntu/ || true
+    chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
+}
 
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
