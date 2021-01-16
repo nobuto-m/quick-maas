@@ -204,6 +204,12 @@ juju config glance-simplestreams-sync mirror_list="
 juju add-relation glance-simplestreams-sync:identity-service keystone:identity-service
 juju add-relation glance-simplestreams-sync:certificates vault:certificates
 
+time juju-wait -w \
+    --exclude neutron-api-plugin-ovn \
+    --exclude ovn-central \
+    --exclude ovn-chassis
+
+juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w
 
 # sync images
