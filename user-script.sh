@@ -137,7 +137,7 @@ for machine in $(virsh list --all --name); do
 done
 
 # juju
-snap install --classic juju
+snap install --classic juju --channel 2.7/stable # FIXME: LP: #1921876
 snap install --classic juju-wait
 
 while true; do
