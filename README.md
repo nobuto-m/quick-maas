@@ -28,7 +28,7 @@ Write `~/.ssh/config`.
 
 ```
 Host demo-maas
-    Hostname 10.0.10.10
+    Hostname 10.0.9.10
     User ubuntu
     ProxyJump demo-i3-metal-frankfurt
     # IdentityFile /PATH/TO/YOUR/KEY
@@ -84,9 +84,9 @@ $ cat <<EOF | sudo lxd init --preseed
 config: {}
 networks:
 - config:
-    ipv4.address: 10.0.10.1/24
+    ipv4.address: 10.0.9.1/24
     ipv4.nat: "true"
-    ipv4.dhcp.ranges: 10.0.10.51-10.0.10.200
+    ipv4.dhcp.ranges: 10.0.9.51-10.0.9.200
     ipv6.address: none
   description: ""
   managed: false
