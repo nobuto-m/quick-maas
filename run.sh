@@ -11,6 +11,7 @@ lxc profile device add quick-maas root disk path=/ pool=default size=300GB 2>/de
 lxc profile device add quick-maas kvm unix-char path=/dev/kvm 2>/dev/null || true
 lxc profile device add quick-maas vhost-net unix-char path=/dev/vhost-net mode=0600 2>/dev/null || true
 lxc profile set quick-maas security.nesting true
+lxc profile set quick-maas boot.autostart false
 
 lxc init ubuntu:focal quick-maas \
     -p default -p quick-maas \
