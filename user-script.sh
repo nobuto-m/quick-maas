@@ -200,6 +200,13 @@ juju config neutron-api \
 juju config vault totally-unsecure-auto-unlock=true
 # juju config vault auto-generate-root-ca-cert=true
 
+time juju-wait -w \
+    --exclude neutron-api-plugin-ovn \
+    --exclude ovn-central \
+    --exclude ovn-chassis
+
+juju run-action vault/leader --wait generate-root-ca
+
 juju deploy --to lxd:2 --series focal glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
@@ -208,12 +215,6 @@ juju config glance-simplestreams-sync mirror_list="
 juju add-relation glance-simplestreams-sync:identity-service keystone:identity-service
 juju add-relation glance-simplestreams-sync:certificates vault:certificates
 
-time juju-wait -w \
-    --exclude neutron-api-plugin-ovn \
-    --exclude ovn-central \
-    --exclude ovn-chassis
-
-juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w
 
 # sync images
