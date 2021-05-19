@@ -151,10 +151,6 @@ while true; do
     sleep 15
 done
 
-# wait until overcommited memory allocated during commissioning for the
-# multiple VMs is freed
-sleep 30
-
 # bootstrap
 cat > clouds.yaml <<EOF
 clouds:
