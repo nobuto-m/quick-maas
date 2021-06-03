@@ -140,6 +140,17 @@ done
 snap install --classic juju
 snap install --classic juju-wait
 
+snap install openstackclients --channel latest/edge
+
+git clone https://github.com/openstack-charmers/openstack-bundles.git
+
+cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
+
+# TODO: remove this workaround
+# redirection ">" doesn't work with Juju CLI, LP: #1849753
+# https://github.com/openstack-charmers/openstack-charm-testing/pull/70
+sed -i -e "s@.*leader-get root-ca.*@juju run \$_juju_model_arg --unit vault/leader 'leader-get root-ca' | tee \$_root_ca >/dev/null 2>\&1@" ~ubuntu/openrc
+
 while true; do
     maas_machines="$(maas admin machines read)"
     if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed commissioning'; then
@@ -219,17 +230,6 @@ juju run-action --wait glance-simplestreams-sync/leader sync-images
 juju model-config update-status-hook-interval=24h
 
 # setup openstack
-
-snap install openstackclients --channel latest/edge
-
-git clone https://github.com/openstack-charmers/openstack-bundles.git
-
-cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-
-# TODO: remove this workaround
-# redirection ">" doesn't work with Juju CLI, LP: #1849753
-# https://github.com/openstack-charmers/openstack-charm-testing/pull/70
-sed -i -e "s@.*leader-get root-ca.*@juju run \$_juju_model_arg --unit vault/leader 'leader-get root-ca' | tee \$_root_ca >/dev/null 2>\&1@" ~ubuntu/openrc
 
 set +u
 # shellcheck disable=SC1091
