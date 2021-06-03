@@ -141,15 +141,8 @@ snap install --classic juju
 snap install --classic juju-wait
 
 snap install openstackclients --channel latest/edge
-
 git clone https://github.com/openstack-charmers/openstack-bundles.git
-
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-
-# TODO: remove this workaround
-# redirection ">" doesn't work with Juju CLI, LP: #1849753
-# https://github.com/openstack-charmers/openstack-charm-testing/pull/70
-sed -i -e "s@.*leader-get root-ca.*@juju run \$_juju_model_arg --unit vault/leader 'leader-get root-ca' | tee \$_root_ca >/dev/null 2>\&1@" ~ubuntu/openrc
 
 while true; do
     maas_machines="$(maas admin machines read)"
@@ -298,10 +291,8 @@ EOF
 
 juju model-defaults "openstack/${OS_REGION_NAME}" \
     apt-http-proxy='http://192.168.151.1:8000/' \
-    network="$(openstack network show internal -f value -c id)" \
-    external-network="$(openstack network show ext_net -f value -c id)"
+    network="$(openstack network show internal -f value -c id)"
     # LP: #1797924
-    # LP: #1891227 # remove when 2.8.7 is released
 
 juju add-model kubernetes "openstack/${OS_REGION_NAME}"
 
