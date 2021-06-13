@@ -13,9 +13,6 @@ lxc profile device add quick-maas vhost-net unix-char path=/dev/vhost-net mode=0
 lxc profile set quick-maas security.nesting true
 lxc profile set quick-maas boot.autostart false
 
-# FIXME: might be effective Juju CLI terminated scenario?
-echo never | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
-
 lxc init ubuntu:focal quick-maas \
     -p default -p quick-maas \
     -c user.user-data="$(cat user-script.sh)"
