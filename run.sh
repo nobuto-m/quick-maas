@@ -13,8 +13,8 @@ lxc profile device add quick-maas vhost-net unix-char path=/dev/vhost-net mode=0
 lxc profile set quick-maas security.nesting true
 lxc profile set quick-maas boot.autostart false
 
-# just allow memory overcommitting
-sudo sysctl -w vm.overcommit_memory=1
+# https://linuxcontainers.org/lxd/docs/master/production-setup
+sudo sysctl -w vm.max_map_count=262144
 
 lxc init ubuntu:focal quick-maas \
     -p default -p quick-maas \
