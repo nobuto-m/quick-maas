@@ -11,6 +11,9 @@ function cleanup () {
     chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
 }
 
+# try not to kill some commands by session management
+loginctl enable-linger root
+
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
