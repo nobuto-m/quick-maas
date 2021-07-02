@@ -212,6 +212,7 @@ juju add-relation glance-simplestreams-sync:identity-service keystone:identity-s
 juju add-relation glance-simplestreams-sync:certificates vault:certificates
 
 time juju-wait -w \
+    --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
     --exclude ovn-chassis
