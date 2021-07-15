@@ -294,9 +294,7 @@ credentials:
 EOF
 
 juju model-defaults "openstack/${OS_REGION_NAME}" \
-    apt-http-proxy='http://192.168.151.1:8000/' \
-    network="$(openstack network show internal -f value -c id)"
-    # LP: #1797924
+    apt-http-proxy='http://192.168.151.1:8000/'
 
 juju add-model kubernetes "openstack/${OS_REGION_NAME}"
 
