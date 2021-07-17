@@ -12,6 +12,8 @@ function cleanup () {
 }
 
 # try not to kill some commands by session management
+# it seems like a race condition with MAAS jobs in root user and snapped
+# juju command's systemd scope
 loginctl enable-linger root
 
 export DEBIAN_FRONTEND=noninteractive
