@@ -6,9 +6,7 @@
 
 ## prepare a bare metal instance
 
-Launch an i3.metal EC2 instance with Ubuntu 16.04 LTS in the Frankfurt
-region by hand. e.g., ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180912
-(ami-086a09d5b9fa35dc7).
+Launch a baremetal instance with Ubuntu 20.04 LTS.
 
 If you get "Your account is currently being verified", have a cup of
 coffee.
@@ -30,10 +28,10 @@ Write `~/.ssh/config`.
 Host demo-maas
     Hostname 10.0.9.10
     User ubuntu
-    ProxyJump demo-i3-metal-frankfurt
+    ProxyJump demo-baremetal
     # IdentityFile /PATH/TO/YOUR/KEY
 
-Host demo-i3-metal-frankfurt
+Host demo-baremetal
     Hostname <GLOBAL_IP_ADDRESS_OF_THE_INSTANCE>
     User ubuntu
     # IdentityFile /PATH/TO/YOUR/KEY
@@ -42,9 +40,9 @@ Host demo-i3-metal-frankfurt
 Then, SSH to the instance and import keys.
 
 ``` bash
-[local] $ ssh demo-i3-metal-frankfurt
+[local] $ ssh demo-baremetal
 
-[baremetal] $ ssh-import-id alitvinov calvinh nobuto yoshikadokawa vlgrevtsev
+[baremetal] $ ssh-import-id <Launchpad accounts>
 ```
 
 ## enable nested KVM
