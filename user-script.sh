@@ -143,7 +143,7 @@ done
 snap install --classic juju
 snap install --classic juju-wait
 
-snap install openstackclients --channel latest/edge
+snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
 
