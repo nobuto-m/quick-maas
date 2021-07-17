@@ -181,9 +181,7 @@ juju add-credential --client maas -f credentials.yaml
 
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
-# FIXME: remove "focal" when it becomes the default
 juju bootstrap maas maas-controller --debug \
-    --bootstrap-series focal \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
@@ -206,7 +204,7 @@ juju config neutron-api \
 juju config vault totally-unsecure-auto-unlock=true
 # juju config vault auto-generate-root-ca-cert=true
 
-juju deploy --to lxd:2 --series focal glance-simplestreams-sync
+juju deploy --to lxd:2 glance-simplestreams-sync
 juju config glance-simplestreams-sync mirror_list="
     [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
     item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
