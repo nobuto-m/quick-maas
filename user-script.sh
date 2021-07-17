@@ -212,14 +212,14 @@ juju config glance-simplestreams-sync mirror_list="
 juju add-relation glance-simplestreams-sync:identity-service keystone:identity-service
 juju add-relation glance-simplestreams-sync:certificates vault:certificates
 
-time juju-wait -w \
+time juju-wait -w --max_wait 3600 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
     --exclude ovn-chassis
 
 juju run-action vault/leader --wait generate-root-ca
-time juju-wait -w
+time juju-wait -w --max_wait 1800
 
 # sync images
 juju run-action --wait glance-simplestreams-sync/leader sync-images
@@ -301,6 +301,6 @@ juju add-model kubernetes "openstack/${OS_REGION_NAME}"
 
 juju deploy kubernetes-core
 
-time juju-wait -w
+time juju-wait -w --max_wait 1800
 
 juju run-action --wait kubernetes-worker/0 microbot replicas=3
