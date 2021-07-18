@@ -19,6 +19,8 @@ loginctl enable-linger root
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
+MAAS_PPA='ppa:maas/2.9'
+
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
     http_proxy="http://$(dig +short squid-deb-proxy.lxd):8000/"
@@ -26,7 +28,7 @@ if host squid-deb-proxy.lxd >/dev/null; then
 fi
 
 # ppa
-apt-add-repository -y ppa:maas/2.9
+apt-add-repository -y "$MAAS_PPA"
 
 apt-get update
 
