@@ -220,6 +220,9 @@ EOF
 cat > overlay-gss.yaml <<EOF
 applications:
   glance-simplestreams-sync:
+    annotations:
+      gui-x: '-160'
+      gui-y: '1550'
     charm: cs:glance-simplestreams-sync
     num_units: 1
     to:
