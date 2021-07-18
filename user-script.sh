@@ -264,7 +264,7 @@ openstack router add subnet provider-router internal_subnet
 openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
 
 # use stdout and stdin to bypass the confinement to read other users' home directory
-cat ~ubuntu/.ssh/id_rsa.pub | openstack keypair create --public-key /dev/stdin mykey
+openstack keypair create --public-key /dev/stdin mykey < ~ubuntu/.ssh/id_rsa.pub
 
 # bootstrap on openstack
 
