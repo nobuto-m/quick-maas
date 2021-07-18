@@ -117,7 +117,8 @@ maas admin pods create \
     power_address="qemu+ssh://root@127.0.0.1/system"
 
 # compose machines
-num_machines=8
+## TODO: somehow lldpd in commissioning fails with num=8
+num_machines=7
 for _ in $(seq 1 "$num_machines"); do
     maas admin pod compose 1 \
         cores=8 \
