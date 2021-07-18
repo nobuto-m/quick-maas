@@ -184,6 +184,7 @@ juju add-credential --client maas -f credentials.yaml
 sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
+    --no-default-model \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
@@ -238,6 +239,7 @@ relations:
   - vault:certificates
 EOF
 
+juju add-model openstack
 juju deploy ./bundle.yaml --overlay ./overlay-options.yaml --overlay ./overlay-gss.yaml
 
 time juju-wait -w --max_wait 3600 \
@@ -325,7 +327,7 @@ EOF
 juju model-defaults "openstack/${OS_REGION_NAME}" \
     apt-http-proxy='http://192.168.151.1:8000/'
 
-juju add-model kubernetes "openstack/${OS_REGION_NAME}"
+juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
 
 juju deploy kubernetes-core
 
