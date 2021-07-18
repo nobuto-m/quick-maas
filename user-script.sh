@@ -204,7 +204,7 @@ applications:
   ovn-chassis:
     options:
       bridge-interface-mappings: 'br-ex:ens10'
-  neutron-api-plugin-ovn
+  neutron-api-plugin-ovn:
     options:
       dns-servers: '8.8.8.8,8.8.4.4'
   neutron-api:
