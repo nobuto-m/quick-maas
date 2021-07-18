@@ -191,28 +191,51 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-juju deploy openstack-base
-juju status --format json | jq -r '.applications | keys[]' \
-    | xargs -L1 -t juju upgrade-charm || true
+wget https://api.jujucharms.com/charmstore/v5/bundle/openstack-base/archive/bundle.yaml
 
-juju config nova-cloud-controller console-access-protocol=novnc
-juju config ovn-chassis bridge-interface-mappings='br-ex:ens10'
+# strip pinned charm revisions
+sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' bundle.yaml
 
-juju config neutron-api-plugin-ovn dns-servers='8.8.8.8,8.8.4.4'
-juju config neutron-api \
-    enable-ml2-dns=true \
-    dns-domain=openstack.internal.
+cat > overlay-options.yaml <<EOF
+applications:
+  nova-cloud-controller:
+    options:
+      console-access-protocol: 'novnc'
+  ovn-chassis:
+    options:
+      bridge-interface-mappings: 'br-ex:ens10'
+  neutron-api-plugin-ovn
+    options:
+      dns-servers: '8.8.8.8,8.8.4.4'
+  neutron-api:
+    options:
+      enable-ml2-dns: true
+      dns-domain: 'openstack.internal.'
+  vault:
+    options:
+      # only for testing and demo purpose
+      totally-unsecure-auto-unlock: true
+EOF
 
-juju config vault totally-unsecure-auto-unlock=true
-# juju config vault auto-generate-root-ca-cert=true
+cat > overlay-gss.yaml <<EOF
+applications:
+  glance-simplestreams-sync:
+    charm: cs:glance-simplestreams-sync
+    num_units: 1
+    to:
+    - lxd:2
+    options:
+      mirror_list: |
+        [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
+        item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
+relations:
+- - glance-simplestreams-sync:identity-service
+  - keystone:identity-service
+- - glance-simplestreams-sync:certificates
+  - vault:certificates
+EOF
 
-juju deploy --to lxd:2 glance-simplestreams-sync
-juju config glance-simplestreams-sync mirror_list="
-    [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
-    item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
-    "
-juju add-relation glance-simplestreams-sync:identity-service keystone:identity-service
-juju add-relation glance-simplestreams-sync:certificates vault:certificates
+juju deploy ./bundle.yaml --overlay ./overlay-options.yaml --overlay ./overlay-gss.yaml
 
 time juju-wait -w --max_wait 3600 \
     --exclude vault \
