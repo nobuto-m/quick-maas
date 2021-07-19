@@ -149,6 +149,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
+cp -v stable/openstack-base/bundle.yaml ~ubuntu/
 
 time while true; do
     maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
@@ -192,12 +193,10 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-wget https://api.jujucharms.com/charmstore/v5/bundle/openstack-base/archive/bundle.yaml
-
 # strip pinned charm revisions
-sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' bundle.yaml
+sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
 
-cat > overlay-options.yaml <<EOF
+cat > ~/ubuntu/overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
     options:
@@ -218,7 +217,7 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
-cat > overlay-gss.yaml <<EOF
+cat > ~/ubuntu/overlay-gss.yaml <<EOF
 applications:
   glance-simplestreams-sync:
     annotations:
@@ -240,7 +239,7 @@ relations:
 EOF
 
 juju add-model openstack
-juju deploy ./bundle.yaml --overlay ./overlay-options.yaml --overlay ./overlay-gss.yaml
+juju deploy ~ubuntu/bundle.yaml --overlay ~ubuntu/overlay-options.yaml --overlay ~ubuntu/overlay-gss.yaml
 
 time juju-wait -w --max_wait 3600 \
     --exclude vault \
