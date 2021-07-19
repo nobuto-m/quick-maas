@@ -75,10 +75,9 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
+maas admin maas set-config name=enable_analytics value=false
 maas admin maas set-config name=maas_name value='Demo'
-
 maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,115200n8'
-
 maas admin maas set-config name=completed_intro value=true
 
 # configure network / DHCP
@@ -185,6 +184,7 @@ sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
     --no-default-model \
+    --model-default test-mode=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
