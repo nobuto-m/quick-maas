@@ -152,11 +152,11 @@ git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
 
 time while true; do
-    maas_machines="$(maas admin machines read)"
-    if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed commissioning'; then
+    maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
+    if echo "$maas_machines_statuses" | grep -w 'Failed commissioning'; then
         exit 1
     fi
-    if [ "$(echo "$maas_machines" | jq -r '.[].status_name' | grep -c -w 'Ready')" = "$num_machines" ]; then
+    if [ "$(echo "$maas_machines_statuses" | grep -c -w 'Ready')" = "$num_machines" ]; then
         break
     fi
     sleep 15
