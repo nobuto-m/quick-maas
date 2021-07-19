@@ -149,7 +149,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v stable/openstack-base/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
 
 time while true; do
     maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
