@@ -329,7 +329,12 @@ juju model-defaults "openstack/${OS_REGION_NAME}" \
 
 juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
 
-juju deploy kubernetes-core
+wget -O ~ubuntu/k8s_bundle.yaml https://api.jujucharms.com/charmstore/v5/bundle/kubernetes-core/archive/bundle.yaml
+
+# LP: #1936842
+sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
+
+juju deploy ~ubuntu/k8s_bundle.yaml
 
 time juju-wait -w --max_wait 1800
 
