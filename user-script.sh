@@ -101,7 +101,7 @@ fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.151.0/
 maas admin vlan update "$fabric_id" 0 space=space-first
 
 # wait image
-while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
 
@@ -151,7 +151,7 @@ snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
 
-while true; do
+time while true; do
     maas_machines="$(maas admin machines read)"
     if echo "$maas_machines" | jq -r '.[].status_name' | grep -w 'Failed commissioning'; then
         exit 1

@@ -1,7 +1,7 @@
 ## rough estimated time
 
 - maas: 15m
-- openstack: 20m
+- openstack: 40m
 - kubernetes: 18m
 
 ## prepare a bare metal instance
