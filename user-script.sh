@@ -196,7 +196,7 @@ juju bootstrap maas maas-controller --debug \
 # strip pinned charm revisions
 sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
 
-cat > ~/ubuntu/overlay-options.yaml <<EOF
+cat > ~ubuntu/overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
     options:
@@ -217,7 +217,7 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
-cat > ~/ubuntu/overlay-gss.yaml <<EOF
+cat > ~ubuntu/overlay-gss.yaml <<EOF
 applications:
   glance-simplestreams-sync:
     annotations:
