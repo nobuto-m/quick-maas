@@ -199,6 +199,37 @@ sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
 
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
 
+mkdir ~ubuntu/certs
+(cd ~ubuntu/certs;
+    # https://opendev.org/openstack/charm-octavia#amphora-provider-required-configuration
+    mkdir -p demoCA/newcerts
+    touch demoCA/index.txt
+    touch demoCA/index.txt.attr
+    openssl genrsa -passout pass:foobar -des3 -out issuing_ca_key.pem 2048
+    openssl req -x509 -passin pass:foobar -new -nodes -key issuing_ca_key.pem \
+        -config /etc/ssl/openssl.cnf \
+        -subj "/C=US/ST=Somestate/O=Org/CN=www.example.com" \
+        -days 360 \
+        -out issuing_ca.pem
+
+    openssl genrsa -passout pass:foobar -des3 -out controller_ca_key.pem 2048
+    openssl req -x509 -passin pass:foobar -new -nodes \
+            -key controller_ca_key.pem \
+        -config /etc/ssl/openssl.cnf \
+        -subj "/C=US/ST=Somestate/O=Org/CN=www.example.com" \
+        -days 360 \
+        -out controller_ca.pem
+    openssl req \
+        -newkey rsa:2048 -nodes -keyout controller_key.pem \
+        -subj "/C=US/ST=Somestate/O=Org/CN=www.example.com" \
+        -out controller.csr
+    openssl ca -passin pass:foobar -config /etc/ssl/openssl.cnf \
+        -cert controller_ca.pem -keyfile controller_ca_key.pem \
+        -create_serial -batch \
+        -in controller.csr -days 360 -out controller_cert.pem
+    cat controller_cert.pem controller_key.pem > controller_cert_bundle.pem
+)
+
 cat > ~ubuntu/overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
@@ -228,6 +259,11 @@ applications:
   octavia:
     options:
       openstack-origin: "$openstack_origin"
+      lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
+      lb-mgmt-issuing-ca-private-key: include-base64://./certs/issuing_ca_key.pem
+      lb-mgmt-issuing-ca-key-passphrase: foobar
+      lb-mgmt-controller-cacert: include-base64://./certs/controller_ca.pem
+      lb-mgmt-controller-cert: include-base64://./certs/controller_cert_bundle.pem
   glance-simplestreams-sync:
     annotations:
       gui-x: '-160'
