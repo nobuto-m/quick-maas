@@ -382,8 +382,32 @@ wget -O ~ubuntu/k8s_bundle.yaml https://api.jujucharms.com/charmstore/v5/bundle/
 # LP: #1936842
 sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
 
-juju deploy ~ubuntu/k8s_bundle.yaml
+# https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
+cat > ~ubuntu/openstack-lb-overlay.yaml <<EOF
+applications:
+  openstack-integrator:
+    annotations:
+      gui-x: "600"
+      gui-y: "300"
+    charm: cs:~containers/openstack-integrator
+    num_units: 1
+    trust: true
+    to:
+    - '0'
+relations:
+  - ['openstack-integrator:loadbalancer', 'kubernetes-master:loadbalancer']
+  - ['openstack-integrator:clients', 'kubernetes-master:openstack']
+  - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
+EOF
+
+juju deploy --trust ~ubuntu/k8s_bundle.yaml \
+    --overlay ~ubuntu/openstack-lb-overlay.yaml
+
+snap install kubectl --classic
 
 time juju-wait -w --max_wait 1800
 
-juju run-action --wait kubernetes-worker/0 microbot replicas=3
+mkdir ~ubuntu/.kube/
+juju run --unit kubernetes-master/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
+
+juju run-action --wait kubernetes-worker/leader microbot replicas=3
