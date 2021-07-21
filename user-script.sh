@@ -249,17 +249,18 @@ time juju-wait -w --max_wait 3600 \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
     --exclude ovn-chassis \
-    --exclude octavia
+    --exclude octavia \
+    --exclude octavia-ovn-chassis
 
 juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
 
 # sync images
-juju run-action --wait glance-simplestreams-sync/leader sync-images
+time juju run-action --wait glance-simplestreams-sync/leader sync-images
 
 juju run-action --wait octavia/leader configure-resources
-juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
+time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
