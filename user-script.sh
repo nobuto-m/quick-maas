@@ -274,11 +274,62 @@ applications:
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
 EOF
 
+# Octavia with cloud:focal-wallaby may have some race conditions
+# like LP: #1931734
+openstack_origin='distro'
+cat > ~ubuntu/overlay-release.yaml <<EOF
+applications:
+  ceph-mon:
+    options:
+      source: "$openstack_origin"
+  ceph-osd:
+    options:
+      source: "$openstack_origin"
+  ceph-radosgw:
+    options:
+      source: "$openstack_origin"
+  ovn-central:
+    options:
+      source: "$openstack_origin"
+
+  barbican:
+    options:
+      openstack-origin: "$openstack_origin"
+  cinder:
+    options:
+      openstack-origin: "$openstack_origin"
+  glance:
+    options:
+      openstack-origin: "$openstack_origin"
+  keystone:
+    options:
+      openstack-origin: "$openstack_origin"
+  neutron-api:
+    options:
+      openstack-origin: "$openstack_origin"
+  nova-cloud-controller:
+    options:
+      openstack-origin: "$openstack_origin"
+  nova-compute:
+    options:
+      openstack-origin: "$openstack_origin"
+  octavia:
+    options:
+      openstack-origin: "$openstack_origin"
+  openstack-dashboard:
+    options:
+      openstack-origin: "$openstack_origin"
+  placement:
+    options:
+      openstack-origin: "$openstack_origin"
+EOF
+
 juju add-model openstack
 juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml
+    --overlay ~ubuntu/overlay-octavia-options.yaml \
+    --overlay ~ubuntu/overlay-release.yaml
 
 time juju-wait -w --max_wait 3600 \
     --exclude vault \
