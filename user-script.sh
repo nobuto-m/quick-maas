@@ -286,7 +286,8 @@ time juju-wait -w --max_wait 3600 \
     --exclude ovn-central \
     --exclude ovn-chassis \
     --exclude octavia \
-    --exclude octavia-ovn-chassis
+    --exclude octavia-ovn-chassis \
+    --exclude barbican-vault
 
 juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
