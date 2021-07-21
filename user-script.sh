@@ -150,6 +150,7 @@ snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
 cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
 
 time while true; do
     maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
@@ -217,41 +218,46 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
-cat > ~ubuntu/overlay-gss.yaml <<EOF
+cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
+  barbican:
+    options:
+      openstack-origin: $(juju config keystone openstack-origin)
+  octavia:
+    options:
+      openstack-origin: $(juju config keystone openstack-origin)
   glance-simplestreams-sync:
     annotations:
       gui-x: '-160'
       gui-y: '1550'
-    charm: cs:glance-simplestreams-sync
-    num_units: 1
-    to:
-    - lxd:2
     options:
       mirror_list: |
         [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
-relations:
-- - glance-simplestreams-sync:identity-service
-  - keystone:identity-service
-- - glance-simplestreams-sync:certificates
-  - vault:certificates
 EOF
 
 juju add-model openstack
-juju deploy ~ubuntu/bundle.yaml --overlay ~ubuntu/overlay-options.yaml --overlay ~ubuntu/overlay-gss.yaml
+juju deploy ~ubuntu/bundle.yaml \
+    --overlay ~ubuntu/overlay-options.yaml \
+    --overlay ~ubuntu/loadbalancer-octavia.yaml \
+    --overlay ~ubuntu/overlay-octavia-options.yaml
 
 time juju-wait -w --max_wait 3600 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
-    --exclude ovn-chassis
+    --exclude ovn-chassis \
+    --exclude octavia
 
 juju run-action vault/leader --wait generate-root-ca
-time juju-wait -w --max_wait 1800
+time juju-wait -w --max_wait 1800 \
+    --exclude octavia
 
 # sync images
 juju run-action --wait glance-simplestreams-sync/leader sync-images
+
+juju run-action --wait octavia/leader configure-resources
+juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
