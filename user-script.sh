@@ -197,6 +197,8 @@ juju bootstrap maas maas-controller --debug \
 # strip pinned charm revisions
 sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
 
+openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
+
 cat > ~ubuntu/overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
@@ -222,10 +224,10 @@ cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
   barbican:
     options:
-      openstack-origin: $(juju config keystone openstack-origin)
+      openstack-origin: "$openstack_origin"
   octavia:
     options:
-      openstack-origin: $(juju config keystone openstack-origin)
+      openstack-origin: "$openstack_origin"
   glance-simplestreams-sync:
     annotations:
       gui-x: '-160'
