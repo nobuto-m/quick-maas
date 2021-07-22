@@ -257,6 +257,8 @@ applications:
     options:
       openstack-origin: "$openstack_origin"
   octavia:
+    # LP: #1927960
+    charm: cs:~openstack-charmers-next/octavia
     options:
       openstack-origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
