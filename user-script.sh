@@ -268,6 +268,9 @@ applications:
       lb-mgmt-issuing-ca-key-passphrase: foobar
       lb-mgmt-controller-cacert: include-base64://./certs/controller_ca.pem
       lb-mgmt-controller-cert: include-base64://./certs/controller_cert_bundle.pem
+      # debugging purpose
+      amp-ssh-key-name: amp_ssh_pub_key
+      amp-ssh-pub-key: include-base64://./.ssh/id_rsa.pub
   glance-simplestreams-sync:
     annotations:
       gui-x: '-160'
