@@ -243,6 +243,8 @@ applications:
       dns-servers: '8.8.8.8,8.8.4.4'
   neutron-api:
     options:
+      # https://github.com/openstack-charmers/openstack-bundles/pull/218/files
+      enable-ml2-port-security: true
       enable-ml2-dns: true
       dns-domain: 'openstack.internal.'
   vault:
