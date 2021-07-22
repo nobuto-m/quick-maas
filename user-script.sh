@@ -331,7 +331,7 @@ juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-octavia-options.yaml \
     --overlay ~ubuntu/overlay-release.yaml
 
-time juju-wait -w --max_wait 5400 \
+time juju-wait -w --max_wait 4500 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
