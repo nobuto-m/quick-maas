@@ -451,6 +451,8 @@ applications:
     trust: true
     to:
     - '0'
+    options:
+      lb-floating-network: ext_net
 relations:
   - ['openstack-integrator:loadbalancer', 'kubernetes-master:loadbalancer']
   - ['openstack-integrator:clients', 'kubernetes-master:openstack']
