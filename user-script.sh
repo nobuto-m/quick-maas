@@ -235,6 +235,10 @@ applications:
   nova-cloud-controller:
     options:
       console-access-protocol: 'novnc'
+  openstack-dashboard:
+    options:
+      webroot: /
+      allow-password-autocompletion: true
   ovn-chassis:
     options:
       bridge-interface-mappings: 'br-ex:ens10'
