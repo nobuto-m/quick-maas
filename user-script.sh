@@ -429,6 +429,8 @@ credentials:
 EOF
 
 juju model-defaults "openstack/${OS_REGION_NAME}" \
+    test-mode=true \
+    logging-config='<root>=INFO;unit=DEBUG' \
     apt-http-proxy='http://192.168.151.1:8000/' \
     use-floating-ip=true \
     network="$(openstack network show internal -f value -c id)"
