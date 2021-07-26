@@ -123,7 +123,7 @@ num_machines=7
 for _ in $(seq 1 "$num_machines"); do
     maas admin pod compose 1 \
         cores=8 \
-        memory=12288 \
+        memory=11264 \
         storage='root:48,data1:16,data2:16,data3:16'
 done
 
