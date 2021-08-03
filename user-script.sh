@@ -479,3 +479,5 @@ mkdir ~ubuntu/.kube/
 juju run --unit kubernetes-master/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
+
+kubectl --kubeconfig ~ubuntu/.kube/config get -o wide pods,services,ingress
