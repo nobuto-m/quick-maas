@@ -481,3 +481,6 @@ juju run --unit kubernetes-master/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kub
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
 
 kubectl --kubeconfig ~ubuntu/.kube/config get -o wide pods,services,ingress
+
+juju switch openstack
+juju models
