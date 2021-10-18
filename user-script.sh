@@ -436,12 +436,11 @@ juju model-defaults "openstack/${OS_REGION_NAME}" \
     test-mode=true \
     logging-config='<root>=INFO;unit=DEBUG' \
     apt-http-proxy='http://192.168.151.1:8000/' \
-    use-floating-ip=true \
     network="$(openstack network show internal -f value -c id)"
     # network: to exclude lb-mgmt-net which is visible from the admin tenant
-    # use-floating-ip: deprecated but still works
 
 juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
+juju set-model-constraints allocate-public-ip=true # LP: #1947555
 
 wget -O ~ubuntu/k8s_bundle.yaml https://api.jujucharms.com/charmstore/v5/bundle/kubernetes-core/archive/bundle.yaml
 
