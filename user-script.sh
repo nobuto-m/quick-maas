@@ -266,6 +266,8 @@ juju bootstrap maas maas-controller --debug \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
+exit
+
 ## host properties, proxy
 
 # deploy openstack
