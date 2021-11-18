@@ -214,6 +214,8 @@ for machine in $(virsh list --all --name); do
             virsh attach-interface "$machine" network maas3 --model virtio --config
         ;;
     esac
+
+    virsh start "$machine"
 done
 
 # juju
