@@ -197,23 +197,20 @@ for machine in $(virsh list --all --name); do
 
     i=$((i + 1))
 
-    virsh detach-interface "$machine" network --config
-
     case "$i" in
         1|2|3)
-            virsh attach-interface "$machine" network maas --model virtio --config
             virsh attach-interface "$machine" network maas --model virtio --config
         ;;
         4|5)
             system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
             maas admin machine update "$system_id" zone=zone2
-            virsh attach-interface "$machine" network maas2 --model virtio --config
+            virt-xml --edit --network network=maas2 "$machine"
             virsh attach-interface "$machine" network maas2 --model virtio --config
         ;;
         6|7)
             system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
             maas admin machine update "$system_id" zone=zone3
-            virsh attach-interface "$machine" network maas3 --model virtio --config
+            virt-xml --edit --network network=maas3 "$machine"
             virsh attach-interface "$machine" network maas3 --model virtio --config
         ;;
     esac
