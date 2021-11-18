@@ -87,9 +87,7 @@ virsh net-autostart maas3
 virsh net-start maas3
 
 # enable SNAT for outgoing traffic
-iptables -t nat -A POSTROUTING -s 192.168.151.0/24 ! -d 192.168.151.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.152.0/24 ! -d 192.168.152.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.153.0/24 ! -d 192.168.153.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
