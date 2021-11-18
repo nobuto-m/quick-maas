@@ -178,7 +178,7 @@ maas admin pods create \
 # compose machines
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
-for _ in $(seq 1 "$num_machines"); do
+for _ in $(seq 1 3); do
     maas admin pod compose 1 \
         cores=8 \
         memory=11264 \
@@ -196,6 +196,60 @@ for machine in $(virsh list --all --name); do
 
     # one more NIC
     virsh attach-interface "$machine" network maas --model virtio --config
+
+    virsh start "$machine"
+done
+
+for _ in $(seq 1 2); do
+    maas admin pod compose 1 \
+        zone=zone2 \
+        cores=8 \
+        memory=11264 \
+        storage='root:48,data1:16,data2:16,data3:16'
+done
+
+# wait for a while until Pod machines will be booted
+sleep 30
+
+for machine in $(virsh list --all --name); do
+    virsh destroy "$machine"
+
+    # expose CPU model
+    virt-xml --edit --cpu mode=host-passthrough "$machine"
+
+    # replace NIC
+    virsh detach-interface "$machine" network --config
+    virsh attach-interface "$machine" network maas2 --model virtio --config
+
+    # one more NIC
+    virsh attach-interface "$machine" network maas2 --model virtio --config
+
+    virsh start "$machine"
+done
+
+for _ in $(seq 1 2); do
+    maas admin pod compose 1 \
+        zone=zone3 \
+        cores=8 \
+        memory=11264 \
+        storage='root:48,data1:16,data2:16,data3:16'
+done
+
+# wait for a while until Pod machines will be booted
+sleep 30
+
+for machine in $(virsh list --all --name); do
+    virsh destroy "$machine"
+
+    # expose CPU model
+    virt-xml --edit --cpu mode=host-passthrough "$machine"
+
+    # replace NIC
+    virsh detach-interface "$machine" network --config
+    virsh attach-interface "$machine" network maas3 --model virtio --config
+
+    # one more NIC
+    virsh attach-interface "$machine" network maas3 --model virtio --config
 
     virsh start "$machine"
 done
