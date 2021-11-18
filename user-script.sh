@@ -108,9 +108,20 @@ maas admin maas set-config name=completed_intro value=true
 # configure network / DHCP
 eatmydata apt-get install -y jq
 
+maas admin zones create name=zone2
+maas admin zones create name=zone3
+
 maas admin subnet update 192.168.151.0/24 \
     gateway_ip=192.168.151.1 \
     dns_servers=192.168.151.1
+
+maas admin subnet update 192.168.152.0/24 \
+    gateway_ip=192.168.152.1 \
+    dns_servers=192.168.152.1
+
+maas admin subnet update 192.168.153.0/24 \
+    gateway_ip=192.168.153.1 \
+    dns_servers=192.168.153.1
 
 fabric=$(maas admin subnets read | jq -r \
     '.[] | select(.cidr=="192.168.151.0/24").vlan.fabric')
@@ -120,8 +131,30 @@ maas admin ipranges create type=dynamic \
     start_ip=192.168.151.201 end_ip=192.168.151.254
 maas admin vlan update "$fabric" 0 dhcp_on=true primary_rack="$HOSTNAME"
 
+fabric=$(maas admin subnets read | jq -r \
+    '.[] | select(.cidr=="192.168.152.0/24").vlan.fabric')
+maas admin ipranges create type=reserved \
+    start_ip=192.168.152.1 end_ip=192.168.152.100
+maas admin ipranges create type=dynamic \
+    start_ip=192.168.152.201 end_ip=192.168.152.254
+maas admin vlan update "$fabric" 0 dhcp_on=true primary_rack="$HOSTNAME"
+
+fabric=$(maas admin subnets read | jq -r \
+    '.[] | select(.cidr=="192.168.153.0/24").vlan.fabric')
+maas admin ipranges create type=reserved \
+    start_ip=192.168.153.1 end_ip=192.168.153.100
+maas admin ipranges create type=dynamic \
+    start_ip=192.168.153.201 end_ip=192.168.153.254
+maas admin vlan update "$fabric" 0 dhcp_on=true primary_rack="$HOSTNAME"
+
 maas admin spaces create name=space-first
 fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.151.0/24").vlan.fabric_id')
+maas admin vlan update "$fabric_id" 0 space=space-first
+
+fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.152.0/24").vlan.fabric_id')
+maas admin vlan update "$fabric_id" 0 space=space-first
+
+fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.153.0/24").vlan.fabric_id')
 maas admin vlan update "$fabric_id" 0 space=space-first
 
 # wait image
