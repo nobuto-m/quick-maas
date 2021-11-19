@@ -189,26 +189,25 @@ done
 sleep 30
 
 i=0
-for machine in $(virsh list --all --name); do
+for machine in $(virsh list --all --name | sort); do
     virsh destroy "$machine"
 
     # expose CPU model
     virt-xml --edit --cpu mode=host-passthrough "$machine"
 
     i=$((i + 1))
+    system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
 
     case "$i" in
         1|2|3)
             virsh attach-interface "$machine" network maas --model virtio --config
         ;;
         4|5)
-            system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
             maas admin machine update "$system_id" zone=zone2
             virt-xml --edit --network network=maas2 "$machine"
             virsh attach-interface "$machine" network maas2 --model virtio --config
         ;;
         6|7)
-            system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
             maas admin machine update "$system_id" zone=zone3
             virt-xml --edit --network network=maas3 "$machine"
             virsh attach-interface "$machine" network maas3 --model virtio --config
@@ -239,6 +238,45 @@ time while true; do
     sleep 15
 done
 
+maas admin tags create name=juju
+maas admin tags create name=calico-rr
+
+i=0
+for machine in $(virsh list --all --name | sort); do
+    i=$((i + 1))
+    system_id=$(maas admin machines read hostname="$machine" | jq -r '.[].system_id')
+
+    case "$i" in
+        1)
+            maas admin tag update-nodes juju add="$system_id"
+        ;;
+        2)
+            maas admin tag update-nodes calico-rr add="$system_id"
+
+            link_id=$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="ens4").links[].id')
+            maas admin interface unlink-subnet "$system_id" ens4 id="$link_id"
+            maas admin interface link-subnet "$system_id" ens4 \
+                mode=STATIC subnet=192.168.151.0/24 ip_address=192.168.151.91
+        ;;
+        4)
+            maas admin tag update-nodes calico-rr add="$system_id"
+
+            link_id=$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="ens4").links[].id')
+            maas admin interface unlink-subnet "$system_id" ens4 id="$link_id"
+            maas admin interface link-subnet "$system_id" ens4 \
+                mode=STATIC subnet=192.168.152.0/24 ip_address=192.168.152.91
+        ;;
+        6)
+            maas admin tag update-nodes calico-rr add="$system_id"
+
+            link_id=$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="ens4").links[].id')
+            maas admin interface unlink-subnet "$system_id" ens4 id="$link_id"
+            maas admin interface link-subnet "$system_id" ens4 \
+                mode=STATIC subnet=192.168.153.0/24 ip_address=192.168.153.91
+        ;;
+    esac
+done
+
 # bootstrap
 cat > clouds.yaml <<EOF
 clouds:
@@ -262,6 +300,7 @@ sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
     --no-default-model \
+    --bootstrap-constraints tags=juju \
     --model-default test-mode=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
