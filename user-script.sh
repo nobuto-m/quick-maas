@@ -215,7 +215,7 @@ for machine in $(virsh list --all --name | sort); do
     esac
 
     virsh start "$machine"
-    sleep 15
+    sleep 5
 done
 
 # juju
