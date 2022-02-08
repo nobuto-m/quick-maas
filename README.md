@@ -118,10 +118,8 @@ EOF
 
 ## clone the repository
 
-Make sure you use the "baremetal" branch.
-
 ```bash
-[baremetal] $ git clone -b baremetal https://github.com/nobuto-m/quick-maas.git
+[baremetal] $ git clone https://github.com/nobuto-m/quick-maas.git
 $ cd quick-maas
 ```
 
