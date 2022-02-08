@@ -350,6 +350,7 @@ time juju-wait -w --max_wait 4500 \
     --exclude barbican-vault
 
 juju run-action vault/leader --wait generate-root-ca
+# LP: #1948621, barbican-vault gets stuck sometimes
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
 
