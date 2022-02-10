@@ -349,10 +349,13 @@ time juju-wait -w --max_wait 4500 \
     --exclude octavia-ovn-chassis \
     --exclude barbican-vault
 
+# LP: #1948621, LP: #1874059, barbican-vault gets stuck sometimes
+juju remove-relation vault:secrets barbican-vault:secrets-storage
 juju run-action vault/leader --wait generate-root-ca
-# LP: #1948621, barbican-vault gets stuck sometimes
 time juju-wait -w --max_wait 1800 \
-    --exclude octavia
+    --exclude octavia \
+    --exclude barbican-vault
+juju add-relation vault:secrets barbican-vault:secrets-storage
 
 # sync images
 time juju run-action --wait glance-simplestreams-sync/leader sync-images
