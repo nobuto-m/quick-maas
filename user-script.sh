@@ -361,6 +361,7 @@ juju add-relation vault:secrets barbican-vault:secrets-storage
 time juju run-action --wait glance-simplestreams-sync/leader sync-images
 
 juju run-action --wait octavia/leader configure-resources
+juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
