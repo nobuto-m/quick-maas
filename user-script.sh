@@ -374,6 +374,11 @@ set +u
 . ~ubuntu/openrc
 set -u
 
+openstack role add \
+    --user admin --user-domain admin_domain \
+    --project admin --project-domain admin_domain \
+    load-balancer_admin
+
 openstack network create --external \
     --provider-network-type flat \
     --provider-physical-network physnet1 \
