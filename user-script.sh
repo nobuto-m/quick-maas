@@ -285,7 +285,7 @@ EOF
 
 # Octavia with cloud:focal-wallaby may have some race conditions
 # like LP: #1931734
-openstack_origin='cloud:focal-wallaby'
+openstack_origin='cloud:focal-xena'
 cat > ~ubuntu/overlay-release.yaml <<EOF
 applications:
   ceph-mon:
