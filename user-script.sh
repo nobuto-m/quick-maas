@@ -398,11 +398,20 @@ openstack subnet create \
     --subnet-range 10.5.5.0/24 \
     internal_subnet
 
+openstack subnet create \
+    --network internal \
+    --ip-version 6 \
+    --ipv6-ra-mode slaac \
+    --ipv6-address-mode slaac \
+    --subnet-range fc00:aa:aa:aa::/64 \
+    internal_subnet_v6
+
 openstack router create provider-router
 
 openstack router set --external-gateway ext_net provider-router
 
 openstack router add subnet provider-router internal_subnet
+openstack router add subnet provider-router internal_subnet_v6
 
 openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
 
@@ -449,6 +458,9 @@ juju model-defaults "openstack/${OS_REGION_NAME}" \
 
 juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
 juju set-model-constraints allocate-public-ip=true # LP: #1947555
+
+juju switch openstack
+exit
 
 juju download kubernetes-core
 eatmydata apt-get install -y unzip
