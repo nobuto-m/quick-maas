@@ -480,8 +480,8 @@ applications:
     options:
       lb-floating-network: ext_net
 relations:
-  - ['openstack-integrator:loadbalancer', 'kubernetes-master:loadbalancer']
-  - ['openstack-integrator:clients', 'kubernetes-master:openstack']
+  - ['openstack-integrator:loadbalancer', 'kubernetes-control-plane:loadbalancer']
+  - ['openstack-integrator:clients', 'kubernetes-control-plane:openstack']
   - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
 EOF
 
@@ -493,7 +493,7 @@ snap install kubectl --classic
 time juju-wait -w --max_wait 2700
 
 mkdir ~ubuntu/.kube/
-juju run --unit kubernetes-master/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
+juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
 
