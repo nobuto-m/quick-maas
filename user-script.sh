@@ -196,7 +196,8 @@ juju bootstrap maas maas-controller --debug \
 
 # strip pinned charm revisions and the cs: prefix
 sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
-    ~ubuntu/bundle.yaml \
+    ~ubuntu/bundle.yaml
+sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
     ~ubuntu/loadbalancer-octavia.yaml
 
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
