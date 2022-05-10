@@ -467,7 +467,16 @@ sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
 
 # https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
 cat > ~ubuntu/openstack-lb-overlay.yaml <<EOF
+machines:
+  '0':
+    constraints: cores=2 mem=4G root-disk=16G  # mem=8G originally
+  '1':
+    constraints: cores=2 mem=4G root-disk=16G
 applications:
+  kubernetes-control-plane:
+    constraints: cores=2 mem=4G root-disk=16G
+  kubernetes-worker:
+    constraints: cores=2 mem=4G root-disk=16G
   openstack-integrator:
     annotations:
       gui-x: "600"
