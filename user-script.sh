@@ -194,8 +194,10 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-# strip pinned charm revisions
-sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
+# strip pinned charm revisions and the cs: prefix
+sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
+    ~ubuntu/bundle.yaml \
+    ~ubuntu/loadbalancer-octavia.yaml
 
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
 
@@ -464,7 +466,7 @@ applications:
     annotations:
       gui-x: "600"
       gui-y: "300"
-    charm: cs:~containers/openstack-integrator
+    charm: openstack-integrator
     num_units: 1
     trust: true
     to:
