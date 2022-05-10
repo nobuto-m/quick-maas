@@ -372,6 +372,9 @@ juju run-action --wait octavia/leader configure-resources
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
+# LP: #1961088
+juju run --application octavia -- hooks/config-changed
+
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
