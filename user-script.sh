@@ -506,7 +506,8 @@ juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubun
 
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
 
-kubectl --kubeconfig ~ubuntu/.kube/config get -o wide pods,services,ingress
+sleep 120
+kubectl --kubeconfig ~ubuntu/.kube/config get -o wide all
 
 juju switch openstack
 juju models
