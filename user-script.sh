@@ -202,7 +202,7 @@ sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
 
 # LP: #1973177
 sed -i -e 's/charm: mysql-innodb-cluster/\0\n    channel: edge/' \
-    ~ubuntu/bundle.yaml \
+    ~ubuntu/bundle.yaml
 sed -i -e 's/charm: mysql-router/\0\n    channel: edge/' \
     ~ubuntu/bundle.yaml \
     ~ubuntu/loadbalancer-octavia.yaml
