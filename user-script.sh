@@ -419,6 +419,39 @@ openstack router add subnet provider-router internal_subnet
 
 openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
 
+openstack project create \
+    --domain default \
+    demo-project
+
+openstack user create \
+    --project demo-project \
+    --password "$OS_PASSWORD" \
+    demo-user
+
+openstack role add \
+    --user demo-user \
+    --user-domain default \
+    --project demo-project \
+    member
+
+openstack network create \
+    --project demo-project \
+    demo-net
+
+openstack subnet create \
+    --project demo-project \
+    --network demo-net \
+    --subnet-range 10.5.6.0/24 \
+    demo-net_subnet
+
+openstack router create \
+    --project demo-project \
+    demo-router
+
+openstack router set --external-gateway ext_net demo-router
+
+openstack router add subnet demo-router demo-net_subnet
+
 # use stdout and stdin to bypass the confinement to read other users' home directory
 # shellcheck disable=SC2002
 cat ~ubuntu/.ssh/id_rsa.pub | openstack keypair create --public-key /dev/stdin mykey
