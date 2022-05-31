@@ -200,6 +200,13 @@ sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
 sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
     ~ubuntu/loadbalancer-octavia.yaml
 
+# LP: #1973177
+sed -i -e 's/charm: mysql-innodb-cluster/\0\n    channel: edge/' \
+    ~ubuntu/bundle.yaml
+sed -i -e 's/charm: mysql-router/\0\n    channel: edge/' \
+    ~ubuntu/bundle.yaml \
+    ~ubuntu/loadbalancer-octavia.yaml
+
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
 
 mkdir ~ubuntu/certs
