@@ -288,8 +288,7 @@ juju add-model openstack
 juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml \
-    --overlay ~ubuntu/overlay-release.yaml
+    --overlay ~ubuntu/overlay-octavia-options.yaml
 
 time juju-wait -w --max_wait 4500 \
     --exclude vault \
