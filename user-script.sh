@@ -149,7 +149,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/development/openstack-base-focal-yoga/bundle.yaml ~ubuntu/
 cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
 
 time while true; do
@@ -195,16 +195,7 @@ juju bootstrap maas maas-controller --debug \
 # deploy openstack
 
 # strip pinned charm revisions and the cs: prefix
-sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
-    ~ubuntu/bundle.yaml
-sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
-    ~ubuntu/loadbalancer-octavia.yaml
-
-# LP: #1973177
-sed -i -e 's/charm: mysql-innodb-cluster/\0\n    channel: edge/' \
-    ~ubuntu/bundle.yaml
-sed -i -e 's/charm: mysql-router/\0\n    channel: edge/' \
-    ~ubuntu/bundle.yaml \
+sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1\n    channel: edge/' \
     ~ubuntu/loadbalancer-octavia.yaml
 
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
@@ -291,56 +282,6 @@ applications:
       mirror_list: |
         [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
-EOF
-
-# Octavia with cloud:focal-wallaby may have some race conditions
-# like LP: #1931734
-openstack_origin='cloud:focal-xena'
-cat > ~ubuntu/overlay-release.yaml <<EOF
-applications:
-  ceph-mon:
-    options:
-      source: "$openstack_origin"
-  ceph-osd:
-    options:
-      source: "$openstack_origin"
-  ceph-radosgw:
-    options:
-      source: "$openstack_origin"
-  ovn-central:
-    options:
-      source: "$openstack_origin"
-
-  barbican:
-    options:
-      openstack-origin: "$openstack_origin"
-  cinder:
-    options:
-      openstack-origin: "$openstack_origin"
-  glance:
-    options:
-      openstack-origin: "$openstack_origin"
-  keystone:
-    options:
-      openstack-origin: "$openstack_origin"
-  neutron-api:
-    options:
-      openstack-origin: "$openstack_origin"
-  nova-cloud-controller:
-    options:
-      openstack-origin: "$openstack_origin"
-  nova-compute:
-    options:
-      openstack-origin: "$openstack_origin"
-  octavia:
-    options:
-      openstack-origin: "$openstack_origin"
-  openstack-dashboard:
-    options:
-      openstack-origin: "$openstack_origin"
-  placement:
-    options:
-      openstack-origin: "$openstack_origin"
 EOF
 
 juju add-model openstack
