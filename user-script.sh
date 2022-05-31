@@ -194,8 +194,18 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-# strip pinned charm revisions
-sed -i.bak -e 's/\(charm: cs:.*\)-[0-9]\+/\1/' ~ubuntu/bundle.yaml
+# strip pinned charm revisions and the cs: prefix
+sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
+    ~ubuntu/bundle.yaml
+sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
+    ~ubuntu/loadbalancer-octavia.yaml
+
+# LP: #1973177
+sed -i -e 's/charm: mysql-innodb-cluster/\0\n    channel: edge/' \
+    ~ubuntu/bundle.yaml
+sed -i -e 's/charm: mysql-router/\0\n    channel: edge/' \
+    ~ubuntu/bundle.yaml \
+    ~ubuntu/loadbalancer-octavia.yaml
 
 openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
 
@@ -364,6 +374,9 @@ juju run-action --wait octavia/leader configure-resources
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
+# LP: #1961088
+juju run --application octavia -- hooks/config-changed
+
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
@@ -405,6 +418,39 @@ openstack router set --external-gateway ext_net provider-router
 openstack router add subnet provider-router internal_subnet
 
 openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
+
+openstack project create \
+    --domain default \
+    demo-project
+
+openstack user create \
+    --project demo-project \
+    --password "$OS_PASSWORD" \
+    demo-user
+
+openstack role add \
+    --user demo-user \
+    --user-domain default \
+    --project demo-project \
+    member
+
+openstack network create \
+    --project demo-project \
+    demo-net
+
+openstack subnet create \
+    --project demo-project \
+    --network demo-net \
+    --subnet-range 10.5.6.0/24 \
+    demo-net_subnet
+
+openstack router create \
+    --project demo-project \
+    demo-router
+
+openstack router set --external-gateway ext_net demo-router
+
+openstack router add subnet demo-router demo-net_subnet
 
 # use stdout and stdin to bypass the confinement to read other users' home directory
 # shellcheck disable=SC2002
@@ -459,12 +505,21 @@ sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
 
 # https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
 cat > ~ubuntu/openstack-lb-overlay.yaml <<EOF
+machines:
+  '0':
+    constraints: cores=2 mem=4G root-disk=16G  # mem=8G originally
+  '1':
+    constraints: cores=2 mem=4G root-disk=16G
 applications:
+  kubernetes-control-plane:
+    constraints: cores=2 mem=4G root-disk=16G
+  kubernetes-worker:
+    constraints: cores=2 mem=4G root-disk=16G
   openstack-integrator:
     annotations:
       gui-x: "600"
       gui-y: "300"
-    charm: cs:~containers/openstack-integrator
+    charm: openstack-integrator
     num_units: 1
     trust: true
     to:
@@ -472,8 +527,8 @@ applications:
     options:
       lb-floating-network: ext_net
 relations:
-  - ['openstack-integrator:loadbalancer', 'kubernetes-master:loadbalancer']
-  - ['openstack-integrator:clients', 'kubernetes-master:openstack']
+  - ['openstack-integrator:loadbalancer', 'kubernetes-control-plane:loadbalancer']
+  - ['openstack-integrator:clients', 'kubernetes-control-plane:openstack']
   - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
 EOF
 
@@ -485,11 +540,12 @@ snap install kubectl --classic
 time juju-wait -w --max_wait 2700
 
 mkdir ~ubuntu/.kube/
-juju run --unit kubernetes-master/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
+juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
 
-kubectl --kubeconfig ~ubuntu/.kube/config get -o wide pods,services,ingress
+sleep 120
+kubectl --kubeconfig ~ubuntu/.kube/config get -o wide all
 
 juju switch openstack
 juju models
