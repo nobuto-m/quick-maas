@@ -537,6 +537,19 @@ juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubun
 
 juju run-action --wait kubernetes-worker/leader microbot replicas=3
 
+#juju_model=k8s-on-openstack
+#controller_uuid=$(juju show-model "$juju_model" --format json \
+#    | jq -r ".\"$juju_model\" | .\"controller-uuid\"")
+#model_uuid=$(juju show-model "$juju_model" --format json \
+#    | jq -r ".\"$juju_model\" | .\"model-uuid\"")
+#
+#openstack security group rule create "juju-${controller_uuid}-${model_uuid}" \
+#    --remote-ip "$(openstack subnet show internal_subnet -f value -c cidr)" \
+#    --protocol tcp \
+#    --dst-port 30000:32767
+#
+#kubectl expose deployment microbot --type=LoadBalancer --name=microbot-lb
+
 sleep 120
 kubectl --kubeconfig ~ubuntu/.kube/config get -o wide all
 
