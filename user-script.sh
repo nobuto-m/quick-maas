@@ -368,7 +368,9 @@ juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # LP: #1961088
+juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 juju run --application octavia -- hooks/config-changed
+juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
@@ -489,9 +491,9 @@ juju model-defaults "openstack/${OS_REGION_NAME}" \
 juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
 juju set-model-constraints allocate-public-ip=true # LP: #1947555
 
-juju download kubernetes-core
+juju download --no-progress kubernetes-core - | tee kubernetes-core.bundle >/dev/null
 eatmydata apt-get install -y unzip
-unzip -p kubernetes-core_*.bundle bundle.yaml > ~ubuntu/k8s_bundle.yaml
+unzip -p kubernetes-core.bundle bundle.yaml > ~ubuntu/k8s_bundle.yaml
 
 # LP: #1936842
 sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
