@@ -488,7 +488,7 @@ juju model-defaults "openstack/${OS_REGION_NAME}" \
 juju add-model k8s-on-openstack "openstack/${OS_REGION_NAME}"
 juju set-model-constraints allocate-public-ip=true # LP: #1947555
 
-juju download --no-progress kubernetes-core - > kubernetes-core.bundle
+juju download --no-progress kubernetes-core - | tee kubernetes-core.bundle >/dev/null
 eatmydata apt-get install -y unzip
 unzip -p kubernetes-core.bundle bundle.yaml > ~ubuntu/k8s_bundle.yaml
 
