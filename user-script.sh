@@ -451,6 +451,26 @@ openstack router add subnet demo-router demo-net_subnet
 # shellcheck disable=SC2002
 cat ~ubuntu/.ssh/id_rsa.pub | openstack keypair create --public-key /dev/stdin mykey
 
+#openstack security group rule create \
+#    --protocol icmp \
+#    "$(openstack security group list --project admin --project-domain admin_domain -f value -c ID)"
+#
+#openstack security group rule create \
+#    --protocol tcp --dst-port 22 \
+#    "$(openstack security group list --project admin --project-domain admin_domain -f value -c ID)"
+#
+#openstack server create \
+#    --flavor m1.custom \
+#    --image-property os_version=20.04 \
+#    --network internal \
+#    --key-name mykey \
+#    --wait \
+#    my-instance1
+#
+#openstack floating ip create \
+#    --port "$(openstack port list --server my-instance1 -f value -c ID)" \
+#    ext_net
+
 # bootstrap on openstack
 
 cat <<EOF | juju add-cloud -c maas-controller --client openstack /dev/stdin
