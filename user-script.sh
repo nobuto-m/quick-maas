@@ -365,10 +365,12 @@ juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # LP: #1961088
-juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf \
-    || echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
-juju run --application octavia -- hooks/config-changed
-juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
+if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
+    echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
+    sleep 600
+    juju run --application octavia -- hooks/config-changed
+    juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
+fi
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
