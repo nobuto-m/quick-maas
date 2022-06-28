@@ -551,7 +551,7 @@ juju deploy --trust ~ubuntu/k8s_bundle.yaml \
 
 snap install kubectl --classic
 
-time juju-wait -w --max_wait 2700
+time juju-wait -w --max_wait 3600
 
 mkdir ~ubuntu/.kube/
 juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
