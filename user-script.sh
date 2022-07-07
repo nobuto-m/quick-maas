@@ -589,7 +589,7 @@ juju run-action --wait kubernetes-worker/leader microbot replicas=3
 #
 #kubectl expose deployment microbot --type=LoadBalancer --name=microbot-lb
 
-kubectl wait deployment --all --for condition=Available=True --timeout=15m
+kubectl --kubeconfig ~ubuntu/.kube/config wait deployment --all --for condition=Available=True --timeout=15m
 kubectl --kubeconfig ~ubuntu/.kube/config get -o wide all
 
 juju switch openstack
