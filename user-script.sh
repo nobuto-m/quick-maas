@@ -255,16 +255,22 @@ EOF
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
   barbican-mysql-router:
+    charm: ch:mysql-router
     channel: 8.0/stable
   barbican:
+    charm: ch:barbican
     channel: yoga/stable
   barbican-vault:
+    charm: ch:barbican-vault
     channel: yoga/stable
   octavia-ovn-chassis:
+    charm: ch:ovn-chassis
     channel: 22.03/stable
   octavia-mysql-router:
+    charm: ch:mysql-router
     channel: 8.0/stable
   octavia:
+    charm: ch:octavia
     channel: yoga/stable
     options:
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
@@ -276,8 +282,10 @@ applications:
       amp-ssh-key-name: amp_ssh_pub_key
       amp-ssh-pub-key: include-base64://./.ssh/id_rsa.pub
   octavia-dashboard:
+    charm: ch:octavia-dashboard
     channel: yoga/stable
   glance-simplestreams-sync:
+    charm: ch:glance-simplestreams-sync
     channel: yoga/stable
     annotations:
       gui-x: '-160'
@@ -287,6 +295,7 @@ applications:
         [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
   octavia-diskimage-retrofit:
+    charm: ch:octavia-diskimage-retrofit
     channel: yoga/stable
 EOF
 
