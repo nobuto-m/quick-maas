@@ -194,12 +194,6 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-# strip pinned charm revisions and the cs: prefix
-sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1\n    channel: edge/' \
-    ~ubuntu/loadbalancer-octavia.yaml
-
-openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
-
 mkdir ~ubuntu/certs
 (cd ~ubuntu/certs;
     # https://opendev.org/openstack/charm-octavia#amphora-provider-required-configuration
@@ -260,12 +254,19 @@ EOF
 
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
+  barbican-mysql-router:
+    channel: 8.0/stable
   barbican:
-    options:
-      openstack-origin: "$openstack_origin"
+    channel: yoga/stable
+  barbican-vault:
+    channel: yoga/stable
+  octavia-ovn-chassis:
+    channel: 22.03/stable
+  octavia-mysql-router:
+    channel: 8.0/stable
   octavia:
+    channel: yoga/stable
     options:
-      openstack-origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
       lb-mgmt-issuing-ca-private-key: include-base64://./certs/issuing_ca_key.pem
       lb-mgmt-issuing-ca-key-passphrase: foobar
@@ -274,7 +275,10 @@ applications:
       # debugging purpose
       amp-ssh-key-name: amp_ssh_pub_key
       amp-ssh-pub-key: include-base64://./.ssh/id_rsa.pub
+  octavia-dashboard:
+    channel: yoga/stable
   glance-simplestreams-sync:
+    channel: yoga/stable
     annotations:
       gui-x: '-160'
       gui-y: '1550'
@@ -282,62 +286,15 @@ applications:
       mirror_list: |
         [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
+  octavia-diskimage-retrofit:
+    channel: yoga/stable
 EOF
-
-#openstack_origin='cloud:focal-yoga'
-#cat > ~ubuntu/overlay-release.yaml <<EOF
-#applications:
-#  ceph-mon:
-#    options:
-#      source: "$openstack_origin"
-#  ceph-osd:
-#    options:
-#      source: "$openstack_origin"
-#  ceph-radosgw:
-#    options:
-#      source: "$openstack_origin"
-#  ovn-central:
-#    options:
-#      source: "$openstack_origin"
-#
-#  barbican:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  cinder:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  glance:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  keystone:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  neutron-api:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  nova-cloud-controller:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  nova-compute:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  octavia:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  openstack-dashboard:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#  placement:
-#    options:
-#      openstack-origin: "$openstack_origin"
-#EOF
 
 juju add-model openstack
 juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml \
-    #--overlay ~ubuntu/overlay-release.yaml
+    --overlay ~ubuntu/overlay-octavia-options.yaml
 
 time juju-wait -w --max_wait 4500 \
     --exclude vault \
