@@ -397,6 +397,14 @@ juju add-relation vault:secrets barbican-vault:secrets-storage
 # sync images
 time juju run-action --wait glance-simplestreams-sync/leader sync-images
 
+# make sure the model is settled before running octavia's
+# configure-resources to avoid:
+# running setup_hm_port on juju-2eb009-2-lxd-3.maas
+# Neutron API not available yet, deferring port discovery. ("('neutron',
+# 'ports', InternalServerError())")
+time juju-wait -w --max_wait 1800 \
+    --exclude octavia \
+    --exclude barbican-vault
 juju run-action --wait octavia/leader configure-resources
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
