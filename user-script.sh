@@ -305,6 +305,10 @@ juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
     --overlay ~ubuntu/overlay-octavia-options.yaml
 
+# restarting mysql during tls enablement can cause db_init failures
+# LP: #1984048
+juju remove-relation vault:certificates mysql-innodb-cluster:certificates
+
 time juju-wait -w --max_wait 4500 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
