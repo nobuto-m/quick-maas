@@ -340,7 +340,9 @@ time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 # LP: #1961088
 if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
     echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
+    juju run --application octavia -- ip -br a
     sleep 600
+    juju run --application octavia -- ip -br a
     juju run --application octavia -- hooks/config-changed
     juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 fi
