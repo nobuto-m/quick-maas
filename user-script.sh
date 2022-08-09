@@ -262,7 +262,7 @@ applications:
     charm: ch:barbican
     channel: yoga/stable
     options:
-      openstack_origin: "$openstack_origin"
+      openstack-origin: "$openstack_origin"
   barbican-vault:
     charm: ch:barbican-vault
     channel: yoga/stable
@@ -276,7 +276,7 @@ applications:
     charm: ch:octavia
     channel: yoga/stable
     options:
-      openstack_origin: "$openstack_origin"
+      openstack-origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
       lb-mgmt-issuing-ca-private-key: include-base64://./certs/issuing_ca_key.pem
       lb-mgmt-issuing-ca-key-passphrase: foobar
