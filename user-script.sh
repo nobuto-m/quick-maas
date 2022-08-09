@@ -252,6 +252,7 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
+openstack_origin='cloud:focal-yoga'
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
   barbican-mysql-router:
@@ -260,6 +261,8 @@ applications:
   barbican:
     charm: ch:barbican
     channel: yoga/stable
+    options:
+      openstack_origin: "$openstack_origin"
   barbican-vault:
     charm: ch:barbican-vault
     channel: yoga/stable
@@ -273,6 +276,7 @@ applications:
     charm: ch:octavia
     channel: yoga/stable
     options:
+      openstack_origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
       lb-mgmt-issuing-ca-private-key: include-base64://./certs/issuing_ca_key.pem
       lb-mgmt-issuing-ca-key-passphrase: foobar
