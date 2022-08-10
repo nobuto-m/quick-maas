@@ -238,6 +238,12 @@ applications:
   nova-cloud-controller:
     options:
       console-access-protocol: 'novnc'
+  nova-compute:
+    options:
+      aa-profile-mode: enforce
+  ceph-osd:
+    options:
+      aa-profile-mode: complain
   openstack-dashboard:
     options:
       webroot: /
