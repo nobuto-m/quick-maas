@@ -347,9 +347,8 @@ time juju run-action --wait glance-simplestreams-sync/leader sync-images
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
     --exclude barbican-vault
-juju run-action --wait octavia/leader configure-resources
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
-time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
+juju run-action --wait octavia/leader configure-resources
 
 # LP: #1961088
 if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
@@ -360,6 +359,8 @@ if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; t
     juju run --application octavia -- hooks/config-changed
     juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 fi
+
+time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
