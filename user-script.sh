@@ -344,9 +344,9 @@ time juju run-action --wait glance-simplestreams-sync/leader sync-images
 # running setup_hm_port on juju-2eb009-2-lxd-3.maas
 # Neutron API not available yet, deferring port discovery. ("('neutron',
 # 'ports', InternalServerError())")
+# LP: #1984192
 time juju-wait -w --max_wait 1800 \
-    --exclude octavia \
-    --exclude barbican-vault
+    --exclude octavia
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
 juju run-action --wait octavia/leader configure-resources
 
