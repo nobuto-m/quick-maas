@@ -19,6 +19,8 @@ lxc init ubuntu:focal quick-maas \
 
 lxc network attach lxdbr0 quick-maas eth0 eth0
 lxc config device set quick-maas eth0 ipv4.address 10.0.9.10
+lxc config device add quick-maas proxy-ssh proxy \
+    listen=tcp:0.0.0.0:10910 connect=tcp:127.0.0.1:22
 
 lxc start quick-maas
 
