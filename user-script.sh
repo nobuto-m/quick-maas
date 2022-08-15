@@ -149,7 +149,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v openstack-bundles/development/openstack-base-focal-yoga/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
 cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
 
 time while true; do
