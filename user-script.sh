@@ -149,7 +149,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/development/openstack-base-focal-yoga/bundle.yaml ~ubuntu/
 cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
 
 time while true; do
@@ -194,14 +194,6 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-# strip pinned charm revisions and the cs: prefix
-sed -i.bak -e 's/charm: cs:\(.*\)-[0-9]\+/charm: \1/' \
-    ~ubuntu/bundle.yaml
-sed -i.bak -e 's/charm: cs:\(.*\)/charm: \1/' \
-    ~ubuntu/loadbalancer-octavia.yaml
-
-openstack_origin=$(grep '&openstack-origin' ~ubuntu/bundle.yaml | NF)
-
 mkdir ~ubuntu/certs
 (cd ~ubuntu/certs;
     # https://opendev.org/openstack/charm-octavia#amphora-provider-required-configuration
@@ -238,6 +230,12 @@ applications:
   nova-cloud-controller:
     options:
       console-access-protocol: 'novnc'
+  nova-compute:
+    options:
+      aa-profile-mode: enforce
+  ceph-osd:
+    options:
+      aa-profile-mode: complain
   openstack-dashboard:
     options:
       webroot: /
@@ -260,12 +258,29 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
+openstack_origin='cloud:focal-yoga'
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
+  barbican-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
   barbican:
+    charm: ch:barbican
+    channel: yoga/stable
     options:
       openstack-origin: "$openstack_origin"
+  barbican-vault:
+    charm: ch:barbican-vault
+    channel: yoga/stable
+  octavia-ovn-chassis:
+    charm: ch:ovn-chassis
+    channel: 22.03/stable
+  octavia-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
   octavia:
+    charm: ch:octavia
+    channel: yoga/stable
     options:
       openstack-origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
@@ -276,7 +291,12 @@ applications:
       # debugging purpose
       amp-ssh-key-name: amp_ssh_pub_key
       amp-ssh-pub-key: include-base64://./.ssh/id_rsa.pub
+  octavia-dashboard:
+    charm: ch:octavia-dashboard
+    channel: yoga/stable
   glance-simplestreams-sync:
+    charm: ch:glance-simplestreams-sync
+    channel: yoga/stable
     annotations:
       gui-x: '-160'
       gui-y: '1550'
@@ -284,64 +304,20 @@ applications:
       mirror_list: |
         [{url: 'http://cloud-images.ubuntu.com/releases/', name_prefix: 'ubuntu:released', path: 'streams/v1/index.sjson', max: 1,
         item_filters: ['release=focal', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
-EOF
-
-# Octavia with cloud:focal-wallaby may have some race conditions
-# like LP: #1931734
-openstack_origin='distro'
-cat > ~ubuntu/overlay-release.yaml <<EOF
-applications:
-  ceph-mon:
-    options:
-      source: "$openstack_origin"
-  ceph-osd:
-    options:
-      source: "$openstack_origin"
-  ceph-radosgw:
-    options:
-      source: "$openstack_origin"
-  ovn-central:
-    options:
-      source: "$openstack_origin"
-
-  barbican:
-    options:
-      openstack-origin: "$openstack_origin"
-  cinder:
-    options:
-      openstack-origin: "$openstack_origin"
-  glance:
-    options:
-      openstack-origin: "$openstack_origin"
-  keystone:
-    options:
-      openstack-origin: "$openstack_origin"
-  neutron-api:
-    options:
-      openstack-origin: "$openstack_origin"
-  nova-cloud-controller:
-    options:
-      openstack-origin: "$openstack_origin"
-  nova-compute:
-    options:
-      openstack-origin: "$openstack_origin"
-  octavia:
-    options:
-      openstack-origin: "$openstack_origin"
-  openstack-dashboard:
-    options:
-      openstack-origin: "$openstack_origin"
-  placement:
-    options:
-      openstack-origin: "$openstack_origin"
+  octavia-diskimage-retrofit:
+    charm: ch:octavia-diskimage-retrofit
+    channel: yoga/stable
 EOF
 
 juju add-model openstack
 juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml \
-    --overlay ~ubuntu/overlay-release.yaml
+    --overlay ~ubuntu/overlay-octavia-options.yaml
+
+# restarting mysql during tls enablement can cause db_init failures
+# LP: #1984048
+juju remove-relation vault:certificates mysql-innodb-cluster:certificates
 
 time juju-wait -w --max_wait 4500 \
     --exclude vault \
@@ -363,17 +339,28 @@ juju add-relation vault:secrets barbican-vault:secrets-storage
 # sync images
 time juju run-action --wait glance-simplestreams-sync/leader sync-images
 
-juju run-action --wait octavia/leader configure-resources
+# make sure the model is settled before running octavia's
+# configure-resources to avoid:
+# running setup_hm_port on juju-2eb009-2-lxd-3.maas
+# Neutron API not available yet, deferring port discovery. ("('neutron',
+# 'ports', InternalServerError())")
+# LP: #1984192
+time juju-wait -w --max_wait 1800 \
+    --exclude octavia
 juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
-time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
+juju run-action --wait octavia/leader configure-resources
 
 # LP: #1961088
 if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
     echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
+    juju run --application octavia -- ip -br a
     sleep 600
+    juju run --application octavia -- ip -br a
     juju run --application octavia -- hooks/config-changed
     juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 fi
+
+time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
