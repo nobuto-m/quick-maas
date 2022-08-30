@@ -291,6 +291,40 @@ EOF
 openstack_origin='distro'
 cat > ~ubuntu/overlay-release.yaml <<EOF
 applications:
+  mysql-innodb-cluster:
+    charm: ch:mysql-innodb-cluster
+    channel: 8.0/stable
+  barbican-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  cinder-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  dashboard-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  glance-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  keystone-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  neutron-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  nova-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  octavia-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  placement-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  vault-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+
   ceph-mon:
     options:
       source: "$openstack_origin"
