@@ -309,11 +309,63 @@ applications:
     channel: yoga/stable
 EOF
 
+cat > ~ubuntu/overlay-designate.yaml <<EOF
+applications:
+  neutron-api:
+    options:
+      reverse-dns-lookup: true
+      ipv4-ptr-zone-prefix-size: 24
+  designate:
+    charm: ch:designate
+    channel: yoga/stable
+    num_units: 1
+    options:
+      openstack-origin: "$openstack_origin"
+      nameservers: 'ns1.admin.openstack.example.com.'
+    to:
+    - lxd:1
+  designate-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  designate-bind:
+    charm: ch:designate-bind
+    channel: yoga/stable
+    num_units: 1
+    options:
+      allowed_nets: '10.0.0.0/8;172.16.0.0/12;192.168.0.0/16'
+    to:
+    - lxd:2
+  memcached:
+    charm: ch:memcached
+    num_units: 1
+    to:
+    - lxd:2
+
+relations:
+- - designate:shared-db
+  - designate-mysql-router:shared-db
+- - designate-mysql-router:db-router
+  - mysql-innodb-cluster:db-router
+- - designate:dnsaas
+  - neutron-api:external-dns
+- - keystone:identity-service
+  - designate:identity-service
+- - rabbitmq-server:amqp
+  - designate:amqp
+- - designate:dns-backend
+  - designate-bind:dns-backend
+- - memcached:cache
+  - designate:coordinator-memcached
+- - designate:certificates
+  - vault:certificates
+EOF
+
 juju add-model openstack
 juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml
+    --overlay ~ubuntu/overlay-octavia-options.yaml \
+    --overlay ~ubuntu/overlay-designate.yaml
 
 # restarting mysql during tls enablement can cause db_init failures
 # LP: #1984048
@@ -440,6 +492,24 @@ openstack router add subnet demo-router demo-net_subnet
 # use stdout and stdin to bypass the confinement to read other users' home directory
 # shellcheck disable=SC2002
 cat ~ubuntu/.ssh/id_rsa.pub | openstack keypair create --public-key /dev/stdin mykey
+
+openstack zone create \
+    --email dns-admin@openstack.example.com \
+    admin.openstack.example.com.
+
+openstack recordset create \
+    admin.openstack.example.com. \
+    --type A \
+    --record "$(juju run --unit designate-bind/leader -- network-get dns-backend --ingress-address)" \
+    ns1
+
+openstack zone create \
+    --email dns-admin@openstack.example.com \
+    ext-net.openstack.example.com.
+
+openstack network set \
+    --dns-domain ext-net.openstack.example.com. \
+    ext_net
 
 #openstack security group rule create \
 #    --protocol icmp \
