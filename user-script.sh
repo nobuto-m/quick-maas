@@ -505,11 +505,11 @@ openstack recordset create \
 
 openstack zone create \
     --email dns-admin@openstack.example.com \
-    ext-net.openstack.example.com.
+    admin-tenant.openstack.example.com.
 
 openstack network set \
-    --dns-domain ext-net.openstack.example.com. \
-    ext_net
+    --dns-domain admin-tenant.openstack.example.com. \
+    internal
 
 #openstack security group rule create \
 #    --protocol icmp \
