@@ -19,7 +19,7 @@ loginctl enable-linger root
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
-MAAS_PPA='ppa:maas/3.1'
+MAAS_PPA='ppa:maas/3.2'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
@@ -76,6 +76,7 @@ maas createadmin --username ubuntu --password ubuntu \
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
 maas admin maas set-config name=enable_analytics value=false
+maas admin maas set-config name=release_notifications value=false
 maas admin maas set-config name=maas_name value='Demo'
 maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,115200n8'
 maas admin maas set-config name=completed_intro value=true
