@@ -69,6 +69,61 @@ echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
     | debconf-set-selections
 eatmydata apt-get install -y maas
 
+# generate a demo CA
+mkdir ~ubuntu/certs
+(cd ~ubuntu/certs;
+    mkdir -p demoCA/newcerts
+    touch demoCA/index.txt
+    touch demoCA/index.txt.attr
+
+
+    CA_cmd=/usr/lib/ssl/misc/CA.pl
+    extra_req_ca='-newkey ED25519 -nodes -subj "/C=US/ST=Somestate/O=Org/CN=demoCA"'
+    extra_req_maas='-newkey ED25519 -subj "/C=US/ST=Somestate/O=Org/CN=maas.localdomain"'
+
+    $CA_cmd -newca \
+        -extra-req "$extra_req_ca" \
+        </dev/null
+
+
+# -> openssl req  -new -keyout ./demoCA/private/cakey.pem -out ./demoCA/careq.pem -newkey ED25519 -nodes -subj "/C=US/ST=Somestate/O=Org/CN=demoCA"
+# -> openssl ca  -create_serial -out ./demoCA/cacert.pem -days 1095 -batch -keyfile ./demoCA/private/cakey.pem -selfsign -extensions v3_ca  -infiles ./demoCA/careq.pem
+# -> -rand_serial
+
+
+    $CA_cmd -newreq-nodes -extra-req "$extra_req_maas"
+
+# -> openssl req  -new -nodes -keyout newkey.pem -out newreq.pem -days 365 -newkey ED25519 -subj "/C=US/ST=Somestate/O=Org/CN=maas.localdomain"
+
+    $CA_cmd -sign
+
+# -> openssl ca  -policy policy_anything -out newcert.pem  -infiles newreq.pem
+# -> -batch
+
+
+    mkdir -p demoCA/newcerts
+    touch demoCA/index.txt
+    touch demoCA/index.txt.attr
+    openssl req -x509 -new -newkey ED25519 -nodes -keyout ca_key.pem \
+        -config /etc/ssl/openssl.cnf \
+        -subj "/C=US/ST=Somestate/O=Org/CN=Demo CA" \
+        -days 365 \
+        -out ca.pem
+
+    openssl req \
+        -new -newkey ED25519 -nodes -keyout maas_key.pem \
+        -subj "/C=US/ST=Somestate/O=Org/CN=maas.localdomain" \
+        -addext "subjectAltName = \
+            DNS:maas.localdomain, \
+            IP:192.168.151.1, \
+            IP:10.0.9.10 \
+        " \
+        -out maas.csr
+
+    openssl x509 -CA ca.pem -CAkey ca_key.pem -CAcreateserial \
+        -in maas.csr -req -days 365 -out maas.pem
+)
+
 # maas login as ubuntu/ubuntu
 maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
