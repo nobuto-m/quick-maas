@@ -88,28 +88,24 @@ networks:
     ipv4.dhcp.ranges: 10.0.9.51-10.0.9.200
     ipv6.address: none
   description: ""
-  managed: false
   name: lxdbr0
   type: ""
 storage_pools:
-- config:
-    source: /dev/nvme1n1
+- config: {}
   description: ""
   name: default
-  driver: lvm
+  driver: dir
 profiles:
 - config: {}
   description: ""
   devices:
     eth0:
       name: eth0
-      nictype: bridged
-      parent: lxdbr0
+      network: lxdbr0
       type: nic
     root:
       path: /
       pool: default
-      size: 32GB
       type: disk
   name: default
 cluster: null
