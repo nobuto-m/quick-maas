@@ -72,14 +72,10 @@ $ cat /sys/module/kvm_intel/parameters/nested
 
 Setup LXD on the bare metal to have a clean MAAS environment to be
 confined in a container so you can reset the MAAS env without respawning
-the bare metal instance. LXD 3.0 is to be used for easier preseeding.
+the bare metal instance.
 
 ```bash
-[baremetal] $ sudo apt autoremove --purge lxd lxd-client
-$ sudo snap install --channel 3.0/stable lxd
-
-
-$ cat <<EOF | sudo lxd init --preseed
+[baremetal] $ cat <<EOF | sudo lxd init --preseed
 config: {}
 networks:
 - config:
