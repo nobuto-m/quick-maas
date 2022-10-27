@@ -75,6 +75,9 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
+sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
+maas admin sshkeys create key="$(cat ~ubuntu/.ssh/id_rsa.pub)"
+
 maas admin maas set-config name=enable_analytics value=false
 maas admin maas set-config name=release_notifications value=false
 maas admin maas set-config name=maas_name value='Demo'
@@ -182,8 +185,6 @@ credentials:
       maas-oauth: $(maas apikey --username ubuntu)
 EOF
 juju add-credential --client maas -f credentials.yaml
-
-sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
 
 juju bootstrap maas maas-controller --debug \
     --no-default-model \
