@@ -32,6 +32,9 @@ apt-add-repository -y "$MAAS_PPA"
 
 apt-get update
 
+# utils
+eatmydata apt-get install -y tree
+
 # KVM setup
 eatmydata apt-get install -y libvirt-daemon-system
 eatmydata apt-get install -y virtinst --no-install-recommends
