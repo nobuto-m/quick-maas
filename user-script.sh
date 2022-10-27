@@ -68,7 +68,7 @@ virsh net-autostart maas
 virsh net-start maas
 
 # maas package install
-echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
+echo maas-region-controller maas/default-maas-url string quick-maas-internal.t.739141.xyz \
     | debconf-set-selections
 eatmydata apt-get install -y maas
 
