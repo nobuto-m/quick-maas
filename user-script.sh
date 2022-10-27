@@ -75,8 +75,8 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
-sudo -u ubuntu -H ssh-keygen -f ~ubuntu/.ssh/id_rsa -N ''
-maas admin sshkeys create key="$(cat ~ubuntu/.ssh/id_rsa.pub)"
+sudo -u ubuntu -H ssh-keygen -t ed25519 -f ~ubuntu/.ssh/id_ed25519 -N ''
+maas admin sshkeys create key="$(cat ~ubuntu/.ssh/id_ed25519.pub)"
 
 maas admin maas set-config name=enable_analytics value=false
 maas admin maas set-config name=release_notifications value=false
@@ -111,8 +111,8 @@ done
 sleep 120
 
 # MAAS Pod
-sudo -u maas ssh-keygen -f ~maas/.ssh/id_rsa -N ''
-install -m 0600 ~maas/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+sudo -u maas ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
+install -m 0600 ~maas/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
 
 maas admin pods create \
     type=virsh \
@@ -292,7 +292,7 @@ applications:
       lb-mgmt-controller-cert: include-base64://./certs/controller_cert_bundle.pem
       # debugging purpose
       amp-ssh-key-name: amp_ssh_pub_key
-      amp-ssh-pub-key: include-base64://./.ssh/id_rsa.pub
+      amp-ssh-pub-key: include-base64://./.ssh/id_ed25519.pub
   octavia-dashboard:
     charm: ch:octavia-dashboard
     channel: yoga/stable
@@ -401,7 +401,7 @@ time juju run-action --wait glance-simplestreams-sync/leader sync-images
 # LP: #1984192
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
-juju scp ~ubuntu/.ssh/id_rsa* octavia/leader:
+juju scp ~ubuntu/.ssh/id_ed25519* octavia/leader:
 juju run-action --wait octavia/leader configure-resources
 
 # LP: #1961088
@@ -493,7 +493,7 @@ openstack router add subnet demo-router demo-net_subnet
 
 # use stdout and stdin to bypass the confinement to read other users' home directory
 # shellcheck disable=SC2002
-cat ~ubuntu/.ssh/id_rsa.pub | openstack keypair create --public-key /dev/stdin mykey
+cat ~ubuntu/.ssh/id_ed25519.pub | openstack keypair create --public-key /dev/stdin mykey
 
 openstack zone create \
     --email dns-admin@openstack.example.com \
