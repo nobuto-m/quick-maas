@@ -70,7 +70,7 @@ virsh net-start maas
 # maas package install
 cat <<EOF | debconf-set-selections
 maas-region-controller maas/default-maas-url string quick-maas.lxd
-maas-rack-controller maas-rack-controller/maas-url http://quick-maas.lxd:5240/MAAS
+maas-rack-controller maas-rack-controller/maas-url string http://quick-maas.lxd:5240/MAAS
 EOF
 eatmydata apt-get install -y maas
 
