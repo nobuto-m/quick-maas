@@ -230,6 +230,12 @@ mkdir ~ubuntu/certs
     cat controller_cert.pem controller_key.pem > controller_cert_bundle.pem
 )
 
+sed -i.bak \
+    -e 's|cloud:focal-yoga|distro|' \
+    -e 's|channel: quincy/stable|channel: octopus/edge|' \
+    -e 's|channel: yoga/stable|channel: ussuri/edge|' \
+    ~ubuntu/bundle.yaml
+
 cat > ~ubuntu/overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
@@ -263,7 +269,7 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
-openstack_origin='cloud:focal-yoga'
+openstack_origin='distro'
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
   barbican-mysql-router:
