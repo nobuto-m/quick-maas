@@ -241,6 +241,10 @@ applications:
   nova-compute:
     options:
       aa-profile-mode: enforce
+  ceph-mon:
+    options:
+      # LP: #1929262
+      config-flags: '{"mon":{"auth allow insecure global id reclaim":"false"}}'
   ceph-osd:
     options:
       aa-profile-mode: complain
