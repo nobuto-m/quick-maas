@@ -19,7 +19,7 @@ loginctl enable-linger root
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
-MAAS_PPA='ppa:maas/3.2'
+MAAS_PPA='ppa:maas/3.3'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
@@ -156,7 +156,7 @@ snap install --classic juju-wait
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v openstack-bundles/stable/openstack-base/bundle.yaml ~ubuntu/
+cp -v openstack-bundles/development/openstack-base-jammy-yoga/bundle.yaml ~ubuntu/
 cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
 
 time while true; do
@@ -267,7 +267,7 @@ applications:
       totally-unsecure-auto-unlock: true
 EOF
 
-openstack_origin='cloud:focal-yoga'
+openstack_origin='distro'
 cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
 applications:
   barbican-mysql-router:
