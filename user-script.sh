@@ -111,6 +111,15 @@ time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
 
+# add jammy image
+maas admin boot-source-selections create 1 os=ubuntu release=jammy arches=amd64 subarches='*' labels='*'
+maas admin boot-resources import
+
+# wait image again
+while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+    sleep 15
+done
+
 sleep 120
 
 # MAAS Pod
