@@ -159,7 +159,7 @@ for machine in $(virsh list --all --name); do
 done
 
 # juju
-snap install --classic juju
+snap install --classic juju --channel 3.1/stable
 snap install --classic juju-wait
 
 snap install openstackclients
