@@ -144,7 +144,7 @@ for _ in $(seq 1 "$num_machines"); do
 done
 
 # wait for a while until Pod machines will be booted
-sleep 30
+sleep 15
 
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
