@@ -27,45 +27,50 @@ if host squid-deb-proxy.lxd >/dev/null; then
     echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf
 fi
 
+apt-get update
+
 # ppa
 apt-add-repository -y "$MAAS_PPA"
-
-apt-get update
 
 # utils
 eatmydata apt-get install -y tree
 
-# KVM setup
-eatmydata apt-get install -y libvirt-daemon-system
-eatmydata apt-get install -y virtinst --no-install-recommends
+# LXD prep
 
-cat >> /etc/libvirt/qemu.conf <<EOF
-
-# Avoid the error in LXD containers:
-# Unable to set XATTR trusted.libvirt.security.dac on
-# /var/lib/libvirt/qemu/domain-*: Operation not permitted
-remember_owner = 0
+cat <<EOF | lxd init --preseed
+config:
+  core.https_address: '[::]:8443'
+networks:
+- config:
+    ipv4.address: 192.168.151.1/24
+    ipv4.nat: "true"
+    ipv4.dhcp: "false"
+    ipv6.address: none
+  description: ""
+  name: lxdbr-maas
+  type: ""
+  project: default
+storage_pools:
+- config: {}
+  description: ""
+  name: maas
+  driver: dir
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: lxdbr-maas
+      type: nic
+    root:
+      path: /
+      pool: maas
+      type: disk
+  name: default
+projects: []
+cluster: null
 EOF
-
-systemctl restart libvirtd.service
-
-virsh net-destroy default
-virsh net-autostart --disable default
-
-virsh pool-define-as default dir --target /var/lib/libvirt/images
-virsh pool-autostart default
-virsh pool-start default
-
-cat <<EOF | virsh net-define /dev/stdin
-<network>
-  <name>maas</name>
-  <bridge name='maas' stp='off'/>
-  <forward mode='nat'/>
-  <ip address='192.168.151.1' netmask='255.255.255.0'/>
-</network>
-EOF
-virsh net-autostart maas
-virsh net-start maas
 
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
@@ -121,6 +126,10 @@ while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
 done
 
 sleep 120
+
+
+exit
+
 
 # MAAS Pod
 sudo -u maas ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''

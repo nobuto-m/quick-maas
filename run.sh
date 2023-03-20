@@ -7,7 +7,6 @@ cd "$(dirname "$0")"
 
 lxc profile create quick-maas 2>/dev/null || true
 lxc profile device add quick-maas kvm unix-char path=/dev/kvm 2>/dev/null || true
-lxc profile device add quick-maas vhost-net unix-char path=/dev/vhost-net mode=0600 2>/dev/null || true
 lxc profile set quick-maas security.nesting true
 lxc profile set quick-maas boot.autostart false
 
