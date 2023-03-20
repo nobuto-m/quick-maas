@@ -130,29 +130,27 @@ done
 sleep 120
 
 
-exit
+# MAAS VM host
+maas admin vm-hosts create \
+    type=lxd \
+    power_address=127.0.0.1 \
+    name=localhost
 
-
-# MAAS Pod
-sudo -u maas ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
-install -m 0600 ~maas/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
-
-maas admin pods create \
-    type=virsh \
-    cpu_over_commit_ratio=10 \
-    memory_over_commit_ratio=1.5 \
-    name=localhost \
-    power_address="qemu+ssh://root@127.0.0.1/system"
+maas admin vm-host parameters 1 \
+    | jq -r .certificate \
+    | lxc config trust add --name MAAS -
 
 # compose machines
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
 for _ in $(seq 1 "$num_machines"); do
-    maas admin pod compose 1 \
+    maas admin vm-host compose 1 \
         cores=8 \
         memory=11264 \
         storage='root:48,data1:16,data2:16,data3:16'
 done
+
+exit
 
 # wait for a while until Pod machines will be booted
 # but not too long so we can avoid LP: #2008454
