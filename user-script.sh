@@ -140,6 +140,8 @@ maas admin vm-host parameters 1 \
     | jq -r .certificate \
     | lxc config trust add --name MAAS -
 
+maas admin vm-host refresh 1
+
 # compose machines
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
