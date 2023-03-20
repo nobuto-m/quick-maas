@@ -28,6 +28,8 @@ if host squid-deb-proxy.lxd >/dev/null; then
 fi
 
 apt-get update
+# LP: #2009748
+apt-get upgrade -y
 
 # ppa
 apt-add-repository -y "$MAAS_PPA"
