@@ -37,8 +37,6 @@ applications:
     num_units: 1
     to:
     - lxd:0
-    options:
-      totally-unsecure-auto-unlock: true
   vault-mysql-router:
     charm: mysql-router
     channel: 8.0/stable
