@@ -1,0 +1,59 @@
+series: jammy
+applications:
+  hacluster-keystone:
+    charm: hacluster
+    channel: 2.4/stable
+  keystone:
+    charm: keystone
+    channel: yoga/stable
+    num_units: 3
+    to:
+    - lxd:0
+    - lxd:1
+    - lxd:2
+    options:
+      openstack-origin: distro
+      vip: 192.168.151.99
+  keystone-mysql-router:
+    charm: mysql-router
+    channel: 8.0/stable
+  mysql-innodb-cluster:
+    charm: mysql-innodb-cluster
+    channel: 8.0/stable
+    num_units: 3
+    to:
+    - lxd:0
+    - lxd:1
+    - lxd:2
+  rabbitmq-server:
+    charm: rabbitmq-server
+    channel: 3.9/stable
+    num_units: 1
+    to:
+    - lxd:2
+  vault:
+    charm: vault
+    channel: 1.8/stable
+    num_units: 1
+    to:
+    - lxd:0
+  vault-mysql-router:
+    charm: mysql-router
+    channel: 8.0/stable
+machines:
+  "0": {}
+  "1": {}
+  "2": {}
+relations:
+- - keystone:shared-db
+  - keystone-mysql-router:shared-db
+- - vault:shared-db
+  - vault-mysql-router:shared-db
+- - keystone-mysql-router:db-router
+  - mysql-innodb-cluster:db-router
+- - vault-mysql-router:db-router
+  - mysql-innodb-cluster:db-router
+- - vault:certificates
+  - keystone:certificates
+- - keystone:ha
+  - hacluster-keystone:ha
