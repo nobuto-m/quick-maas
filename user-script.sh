@@ -270,10 +270,6 @@ applications:
       enable-ml2-port-security: true
       enable-ml2-dns: true
       dns-domain: 'openstack.internal.'
-  vault:
-    options:
-      # only for testing and demo purpose
-      totally-unsecure-auto-unlock: true
 EOF
 
 openstack_origin='distro'
@@ -400,6 +396,18 @@ time juju-wait -w --max_wait 5400 \
 
 # LP: #1948621, LP: #1874059, barbican-vault gets stuck sometimes
 juju remove-relation vault:secrets barbican-vault:secrets-storage
+
+VAULT_ADDR="http://$(juju run --unit vault/leader -- network-get certificates --ingress-address):8200"
+export VAULT_ADDR
+
+vault_init_output="$(vault operator init -key-shares=1 -key-threshold=1 -format json)"
+vault operator unseal "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
+
+VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
+export VAULT_TOKEN
+
+juju run-action --wait vault/leader authorize-charm \
+    token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
 juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
