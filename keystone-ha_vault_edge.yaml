@@ -4,8 +4,8 @@ applications:
     charm: hacluster
     channel: 2.4/stable
   keystone:
-    charm: keystone
-    channel: yoga/stable
+    charm: ./charm-keystone
+    #channel: yoga/stable
     num_units: 3
     to:
     - lxd:0
