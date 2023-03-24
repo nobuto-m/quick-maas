@@ -33,7 +33,7 @@ apt-add-repository -y "$MAAS_PPA"
 apt-get update
 
 # utils
-eatmydata apt-get install -y tree
+eatmydata apt-get install -y tree jq
 
 # KVM setup
 eatmydata apt-get install -y libvirt-daemon-system
@@ -88,8 +88,6 @@ maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,11
 maas admin maas set-config name=completed_intro value=true
 
 # configure network / DHCP
-eatmydata apt-get install -y jq
-
 maas admin subnet update 192.168.151.0/24 \
     gateway_ip=192.168.151.1 \
     dns_servers=192.168.151.1
@@ -163,6 +161,7 @@ done
 snap install --classic juju
 snap install --classic juju-wait
 
+snap install vault
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
