@@ -1,0 +1,14 @@
+series: jammy
+applications:
+  keystone:
+    charm: keystone
+    channel: yoga/stable
+    num_units: 3
+    to:
+    - lxd:0
+    - lxd:0
+    - lxd:0
+    options:
+      openstack-origin: distro
+machines:
+  "0": {}
