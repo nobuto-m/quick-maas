@@ -19,7 +19,7 @@ loginctl enable-linger root
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
 
-MAAS_PPA='ppa:cgrabowski/maas-next'
+MAAS_PPA='ppa:maas/3.4-next'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
