@@ -413,7 +413,7 @@ juju run vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
     --exclude barbican-vault
-juju add-relation vault:secrets barbican-vault:secrets-storage
+juju integrate vault:secrets barbican-vault:secrets-storage
 
 # sync images
 time juju run --wait glance-simplestreams-sync/leader sync-images
