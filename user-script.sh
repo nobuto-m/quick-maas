@@ -18,7 +18,7 @@ loginctl enable-linger root
 
 export DEBIAN_FRONTEND=noninteractive
 export JUJU_DATA=~ubuntu/.local/share/juju
-mkdir -p $JUJU_DATA  # to workaround snap confinment on LXD
+mkdir -p $JUJU_DATA/ssh # to workaround snap confinment on LXD
 
 MAAS_PPA='ppa:maas/3.3'
 
