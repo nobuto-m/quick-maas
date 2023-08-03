@@ -33,7 +33,7 @@ apt-add-repository -y "$MAAS_PPA"
 apt-get update
 
 # utils
-eatmydata apt-get install -y tree
+eatmydata apt-get install -y tree jq
 
 # KVM setup
 eatmydata apt-get install -y libvirt-daemon-system
@@ -88,8 +88,6 @@ maas admin maas set-config name=kernel_opts value='console=tty0 console=ttyS0,11
 maas admin maas set-config name=completed_intro value=true
 
 # configure network / DHCP
-eatmydata apt-get install -y jq
-
 maas admin subnet update 192.168.151.0/24 \
     gateway_ip=192.168.151.1 \
     dns_servers=192.168.151.1
@@ -144,7 +142,8 @@ for _ in $(seq 1 "$num_machines"); do
 done
 
 # wait for a while until Pod machines will be booted
-sleep 30
+# but not too long so we can avoid LP: #2008454
+sleep 15
 
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
@@ -159,9 +158,10 @@ for machine in $(virsh list --all --name); do
 done
 
 # juju
-snap install --classic juju --channel 3.1/stable
+snap install --classic juju --channel 3.1
 snap install --classic juju-wait
 
+snap install vault
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
 cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
@@ -270,10 +270,6 @@ applications:
       enable-ml2-port-security: true
       enable-ml2-dns: true
       dns-domain: 'openstack.internal.'
-  vault:
-    options:
-      # only for testing and demo purpose
-      totally-unsecure-auto-unlock: true
 EOF
 
 openstack_origin='distro'
@@ -389,7 +385,7 @@ juju deploy ~ubuntu/bundle.yaml \
 # LP: #1984048
 juju remove-relation vault:certificates mysql-innodb-cluster:certificates
 
-time juju-wait -w --max_wait 4500 \
+time juju-wait -w --max_wait 5400 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
@@ -400,6 +396,18 @@ time juju-wait -w --max_wait 4500 \
 
 # LP: #1948621, LP: #1874059, barbican-vault gets stuck sometimes
 juju remove-relation vault:secrets barbican-vault:secrets-storage
+
+VAULT_ADDR="http://$(juju run --unit vault/leader -- network-get certificates --ingress-address):8200"
+export VAULT_ADDR
+
+vault_init_output="$(vault operator init -key-shares=1 -key-threshold=1 -format json)"
+vault operator unseal "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
+
+VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
+export VAULT_TOKEN
+
+juju run-action --wait vault/leader authorize-charm \
+    token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
 juju run-action vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
