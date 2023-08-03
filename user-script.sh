@@ -397,7 +397,7 @@ time juju-wait -w --max_wait 5400 \
 # LP: #1948621, LP: #1874059, barbican-vault gets stuck sometimes
 juju remove-relation vault:secrets barbican-vault:secrets-storage
 
-VAULT_ADDR="http://$(juju run --unit vault/leader -- network-get certificates --ingress-address):8200"
+VAULT_ADDR="http://$(juju exec --unit vault/leader -- network-get certificates --ingress-address):8200"
 export VAULT_ADDR
 
 vault_init_output="$(vault operator init -key-shares=1 -key-threshold=1 -format json)"
@@ -406,16 +406,16 @@ vault operator unseal "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
 VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
 export VAULT_TOKEN
 
-juju run-action --wait vault/leader authorize-charm \
+juju run --wait vault/leader authorize-charm \
     token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
-juju run-action vault/leader --wait generate-root-ca
+juju run vault/leader --wait generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
     --exclude barbican-vault
 juju add-relation vault:secrets barbican-vault:secrets-storage
 
 # sync images
-time juju run-action --wait glance-simplestreams-sync/leader sync-images
+time juju run --wait glance-simplestreams-sync/leader sync-images
 
 # make sure the model is settled before running octavia's
 # configure-resources to avoid:
@@ -426,19 +426,19 @@ time juju run-action --wait glance-simplestreams-sync/leader sync-images
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
 juju scp ~ubuntu/.ssh/id_ed25519* octavia/leader:
-juju run-action --wait octavia/leader configure-resources
+juju run --wait octavia/leader configure-resources
 
 # LP: #1961088
-if ! juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
+if ! juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
     echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
-    juju run --application octavia -- ip -br a
+    juju exec --application octavia -- ip -br a
     sleep 600
-    juju run --application octavia -- ip -br a
-    juju run --application octavia -- hooks/config-changed
-    juju run --application octavia -- grep bind_ip /etc/octavia/octavia.conf
+    juju exec --application octavia -- ip -br a
+    juju exec --application octavia -- hooks/config-changed
+    juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf
 fi
 
-time juju run-action --wait octavia-diskimage-retrofit/leader retrofit-image
+time juju run --wait octavia-diskimage-retrofit/leader retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
@@ -526,7 +526,7 @@ openstack zone create \
 openstack recordset create \
     admin.openstack.example.com. \
     --type A \
-    --record "$(juju run --unit designate-bind/leader -- network-get dns-backend --ingress-address)" \
+    --record "$(juju exec --unit designate-bind/leader -- network-get dns-backend --ingress-address)" \
     ns1
 
 openstack zone create \
@@ -641,9 +641,9 @@ snap install kubectl --classic
 time juju-wait -w --max_wait 3600
 
 mkdir ~ubuntu/.kube/
-juju run --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
+juju exec --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
-juju run-action --wait kubernetes-worker/leader microbot replicas=3
+juju run --wait kubernetes-worker/leader microbot replicas=3
 
 #juju_model=k8s-on-openstack
 #controller_uuid=$(juju show-model "$juju_model" --format json \
