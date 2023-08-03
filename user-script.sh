@@ -8,6 +8,7 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
 function cleanup () {
     mv -v /root/.maascli.db ~ubuntu/ || true
+    mv -v /root/.local ~ubuntu/ || true
     chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
 }
 
@@ -17,8 +18,8 @@ function cleanup () {
 loginctl enable-linger root
 
 export DEBIAN_FRONTEND=noninteractive
-export JUJU_DATA=~ubuntu/.local/share/juju
-mkdir -p $JUJU_DATA/ssh # to workaround snap confinment on LXD
+mkdir -p /root/.local/share/juju/ssh/ # LP: #2029515
+cd ~/
 
 MAAS_PPA='ppa:maas/3.3'
 
@@ -188,7 +189,8 @@ clouds:
     auth-types: [oauth1]
     endpoint: http://192.168.151.1:5240/MAAS
 EOF
-juju add-cloud --client maas -f clouds.yaml
+# sudo -i for snap confinement on LXD
+sudo -i juju add-cloud --client maas -f clouds.yaml
 
 cat > credentials.yaml <<EOF
 credentials:
