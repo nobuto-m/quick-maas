@@ -82,7 +82,7 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
-sudo -u ubuntu -H ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
 maas admin sshkeys create key="$(cat ~/.ssh/id_ed25519.pub)"
 
 maas admin maas set-config name=enable_analytics value=false
