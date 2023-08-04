@@ -9,6 +9,7 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 function cleanup () {
     mv -v /root/.maascli.db ~ubuntu/ || true
     mv -v /root/.local ~ubuntu/ || true
+    mv -v /root/* ~ubuntu/ || true
     chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
 }
 
@@ -166,9 +167,9 @@ snap install --classic juju-wait
 snap install vault
 snap install openstackclients
 git clone https://github.com/openstack-charmers/openstack-bundles.git
-cp -v openstack-bundles/stable/shared/openrc* ~ubuntu/
-cp -v openstack-bundles/development/openstack-base-jammy-yoga/bundle.yaml ~ubuntu/
-cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ~ubuntu/
+cp -v openstack-bundles/stable/shared/openrc* ./
+cp -v openstack-bundles/development/openstack-base-jammy-yoga/bundle.yaml ./
+cp -v openstack-bundles/stable/overlays/loadbalancer-octavia.yaml ./
 
 time while true; do
     maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
@@ -189,8 +190,7 @@ clouds:
     auth-types: [oauth1]
     endpoint: http://192.168.151.1:5240/MAAS
 EOF
-# sudo -i for snap confinement on LXD
-sudo -i juju add-cloud --client maas -f clouds.yaml
+juju add-cloud --client maas -f clouds.yaml
 
 cat > credentials.yaml <<EOF
 credentials:
@@ -210,8 +210,8 @@ juju bootstrap maas maas-controller --debug \
 
 # deploy openstack
 
-mkdir ~ubuntu/certs
-(cd ~ubuntu/certs;
+mkdir certs/
+(cd certs/;
     # https://opendev.org/openstack/charm-octavia#amphora-provider-required-configuration
     mkdir -p demoCA/newcerts
     touch demoCA/index.txt
@@ -241,7 +241,7 @@ mkdir ~ubuntu/certs
     cat controller_cert.pem controller_key.pem > controller_cert_bundle.pem
 )
 
-cat > ~ubuntu/overlay-options.yaml <<EOF
+cat > overlay-options.yaml <<EOF
 applications:
   nova-cloud-controller:
     options:
@@ -275,7 +275,7 @@ applications:
 EOF
 
 openstack_origin='distro'
-cat > ~ubuntu/overlay-octavia-options.yaml <<EOF
+cat > overlay-octavia-options.yaml <<EOF
 applications:
   barbican-mysql-router:
     charm: ch:mysql-router
@@ -325,7 +325,7 @@ applications:
     channel: yoga/stable
 EOF
 
-cat > ~ubuntu/overlay-designate.yaml <<EOF
+cat > overlay-designate.yaml <<EOF
 applications:
   neutron-api:
     options:
@@ -377,12 +377,11 @@ relations:
 EOF
 
 juju add-model openstack
-# sudo -i for snap confinement on LXD
-sudo -i juju deploy ~ubuntu/bundle.yaml \
-    --overlay ~ubuntu/overlay-options.yaml \
-    --overlay ~ubuntu/loadbalancer-octavia.yaml \
-    --overlay ~ubuntu/overlay-octavia-options.yaml \
-    --overlay ~ubuntu/overlay-designate.yaml
+juju deploy ./bundle.yaml \
+    --overlay ./overlay-options.yaml \
+    --overlay ./loadbalancer-octavia.yaml \
+    --overlay ./overlay-octavia-options.yaml \
+    --overlay ./overlay-designate.yaml
 
 # restarting mysql during tls enablement can cause db_init failures
 # LP: #1984048
@@ -450,7 +449,7 @@ juju model-config update-status-hook-interval=24h
 
 set +u
 # shellcheck disable=SC1091
-. ~ubuntu/openrc
+. openrc
 set -u
 
 openstack role add \
@@ -602,13 +601,13 @@ juju set-model-constraints allocate-public-ip=true # LP: #1947555
 
 juju download --no-progress kubernetes-core - | tee kubernetes-core.bundle >/dev/null
 eatmydata apt-get install -y unzip
-unzip -p kubernetes-core.bundle bundle.yaml > ~ubuntu/k8s_bundle.yaml
+unzip -p kubernetes-core.bundle bundle.yaml > k8s_bundle.yaml
 
 # LP: #1936842
-sed -i.bak -e 's/lxd:0/0/' ~ubuntu/k8s_bundle.yaml
+sed -i.bak -e 's/lxd:0/0/' k8s_bundle.yaml
 
 # https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
-cat > ~ubuntu/openstack-lb-overlay.yaml <<EOF
+cat > openstack-lb-overlay.yaml <<EOF
 machines:
   '0':
     constraints: cores=2 mem=4G root-disk=16G  # mem=8G originally
@@ -636,9 +635,8 @@ relations:
   - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
 EOF
 
-# sudo -i for snap confinement on LXD
-sudo -i juju deploy --trust ~ubuntu/k8s_bundle.yaml \
-    --overlay ~ubuntu/openstack-lb-overlay.yaml
+juju deploy --trust ./k8s_bundle.yaml \
+    --overlay ./openstack-lb-overlay.yaml
 
 snap install kubectl --classic
 
