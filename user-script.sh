@@ -125,7 +125,7 @@ done
 sleep 120
 
 # MAAS Pod
-sudo -u maas ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
+sudo -u maas -H ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
 install -m 0600 ~maas/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
 
 maas admin pods create \
