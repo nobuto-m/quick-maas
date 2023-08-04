@@ -9,6 +9,7 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 function cleanup () {
     mv -v /root/.maascli.db ~ubuntu/ || true
     mv -v /root/.local ~ubuntu/ || true
+    mv -v /root/.ssh ~ubuntu/ || true
     mv -v /root/* ~ubuntu/ || true
     chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
 }
@@ -81,8 +82,8 @@ maas createadmin --username ubuntu --password ubuntu \
 
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
-sudo -u ubuntu -H ssh-keygen -t ed25519 -f ~ubuntu/.ssh/id_ed25519 -N ''
-maas admin sshkeys create key="$(cat ~ubuntu/.ssh/id_ed25519.pub)"
+sudo -u ubuntu -H ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+maas admin sshkeys create key="$(cat ~/.ssh/id_ed25519.pub)"
 
 maas admin maas set-config name=enable_analytics value=false
 maas admin maas set-config name=release_notifications value=false
@@ -427,7 +428,7 @@ time juju run --wait glance-simplestreams-sync/leader sync-images
 # LP: #1984192
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
-juju scp ~ubuntu/.ssh/id_ed25519* octavia/leader:
+juju scp ~/.ssh/id_ed25519* octavia/leader:
 juju run --wait octavia/leader configure-resources
 
 # LP: #1961088
@@ -519,7 +520,7 @@ openstack router add subnet demo-router demo-net_subnet
 
 # use stdout and stdin to bypass the confinement to read other users' home directory
 # shellcheck disable=SC2002
-cat ~ubuntu/.ssh/id_ed25519.pub | openstack keypair create --public-key /dev/stdin mykey
+cat ~/.ssh/id_ed25519.pub | openstack keypair create --public-key /dev/stdin mykey
 
 openstack zone create \
     --email dns-admin@openstack.example.com \
