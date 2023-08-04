@@ -377,7 +377,8 @@ relations:
 EOF
 
 juju add-model openstack
-juju deploy ~ubuntu/bundle.yaml \
+# sudo -i for snap confinement on LXD
+sudo -i juju deploy ~ubuntu/bundle.yaml \
     --overlay ~ubuntu/overlay-options.yaml \
     --overlay ~ubuntu/loadbalancer-octavia.yaml \
     --overlay ~ubuntu/overlay-octavia-options.yaml \
@@ -635,7 +636,8 @@ relations:
   - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
 EOF
 
-juju deploy --trust ~ubuntu/k8s_bundle.yaml \
+# sudo -i for snap confinement on LXD
+sudo -i juju deploy --trust ~ubuntu/k8s_bundle.yaml \
     --overlay ~ubuntu/openstack-lb-overlay.yaml
 
 snap install kubectl --classic
