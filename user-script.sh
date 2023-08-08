@@ -449,6 +449,7 @@ juju model-config update-status-hook-interval=24h
 # setup openstack
 
 set +u
+sed -i 's/juju run /juju exec /' openrc*
 # shellcheck disable=SC1091
 . openrc
 set -u
