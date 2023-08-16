@@ -600,7 +600,7 @@ credentials:
       version: "$OS_IDENTITY_API_VERSION"
 EOF
 
-juju model-defaults "openstack/${OS_REGION_NAME}" \
+juju model-defaults --region "openstack/${OS_REGION_NAME}" \
     test-mode=true \
     logging-config='<root>=INFO;unit=DEBUG' \
     apt-http-proxy='http://192.168.151.1:8000/' \
