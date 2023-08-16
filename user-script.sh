@@ -23,7 +23,7 @@ export DEBIAN_FRONTEND=noninteractive
 mkdir -p /root/.local/share/juju/ssh/ # LP: #2029515
 cd ~/
 
-MAAS_PPA='ppa:maas/3.3'
+MAAS_PPA='ppa:maas/3.4-next'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
@@ -80,6 +80,8 @@ eatmydata apt-get install -y maas
 maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
 
+# FIXME
+sleep 30
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
@@ -114,6 +116,8 @@ time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
 done
 
 # add jammy image
+# FIXME
+sleep 30
 maas admin boot-source-selections create 1 os=ubuntu release=jammy arches=amd64 subarches='*' labels='*'
 maas admin boot-resources import
 
