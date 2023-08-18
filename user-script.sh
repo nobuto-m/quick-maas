@@ -80,7 +80,7 @@ eatmydata apt-get install -y maas
 maas createadmin --username ubuntu --password ubuntu \
     --email ubuntu@localhost.localdomain
 
-# FIXME
+# LP: #2031842
 sleep 30
 maas login admin http://localhost:5240/MAAS "$(maas apikey --username ubuntu)"
 
@@ -116,7 +116,7 @@ time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
 done
 
 # add jammy image
-# FIXME
+# LP: #2031842
 sleep 30
 maas admin boot-source-selections create 1 os=ubuntu release=jammy arches=amd64 subarches='*' labels='*'
 maas admin boot-resources import
