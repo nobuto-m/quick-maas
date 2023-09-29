@@ -391,6 +391,10 @@ relations:
 EOF
 
 juju add-model openstack
+
+# FIXME: LP: #2030280
+juju model-config num-container-provision-workers=1
+
 juju deploy ./bundle.yaml \
     --overlay ./overlay-options.yaml \
     --overlay ./loadbalancer-octavia.yaml \
