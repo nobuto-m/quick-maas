@@ -427,16 +427,16 @@ vault operator unseal "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
 VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
 export VAULT_TOKEN
 
-juju run vault/leader --wait=10m authorize-charm \
+juju run --format=yaml vault/leader --wait=10m authorize-charm \
     token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
-juju run vault/leader --wait=10m generate-root-ca
+juju run --format=yaml vault/leader --wait=10m generate-root-ca
 time juju-wait -w --max_wait 1800 \
     --exclude octavia \
     --exclude barbican-vault
 juju integrate vault:secrets barbican-vault:secrets-storage
 
 # sync images
-time juju run glance-simplestreams-sync/leader --wait=30m sync-images
+time juju run --format=yaml glance-simplestreams-sync/leader --wait=30m sync-images
 
 # make sure the model is settled before running octavia's
 # configure-resources to avoid:
@@ -447,7 +447,7 @@ time juju run glance-simplestreams-sync/leader --wait=30m sync-images
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
 juju scp ~/.ssh/id_ed25519* octavia/leader:
-time juju run octavia/leader --wait=20m configure-resources
+time juju run --format=yaml octavia/leader --wait=20m configure-resources
 
 # LP: #1961088
 if ! juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
@@ -456,7 +456,7 @@ if ! juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf; 
     exit 1
 fi
 
-time juju run octavia-diskimage-retrofit/leader --wait=30m retrofit-image
+time juju run --format=yaml octavia-diskimage-retrofit/leader --wait=30m retrofit-image
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
@@ -662,7 +662,7 @@ time juju-wait -w --max_wait 3600
 mkdir ~ubuntu/.kube/
 juju exec --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
-juju run kubernetes-worker/leader --wait=30m microbot replicas=3
+juju run --format=yaml kubernetes-worker/leader --wait=30m microbot replicas=3
 
 #juju_model=k8s-on-openstack
 #controller_uuid=$(juju show-model "$juju_model" --format json \
