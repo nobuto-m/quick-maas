@@ -447,7 +447,7 @@ time juju run glance-simplestreams-sync/leader --wait=30m sync-images
 time juju-wait -w --max_wait 1800 \
     --exclude octavia
 juju scp ~/.ssh/id_ed25519* octavia/leader:
-juju run octavia/leader --wait=10m configure-resources
+time juju run octavia/leader --wait=20m configure-resources
 
 # LP: #1961088
 if ! juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
