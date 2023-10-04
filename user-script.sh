@@ -310,7 +310,8 @@ applications:
     channel: 8.0/stable
   octavia:
     charm: ch:octavia
-    channel: yoga/stable
+    # LP: #1961088
+    channel: latest/edge
     options:
       openstack-origin: "$openstack_origin"
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
