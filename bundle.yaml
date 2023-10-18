@@ -1,0 +1,73 @@
+series: jammy
+applications:
+  ceph-dashboard:
+    charm: ceph-dashboard
+    channel: quincy/stable
+    num_units: 0
+  ceph-loadbalancer:
+    charm: openstack-loadbalancer
+    channel: jammy/stable
+    num_units: 1
+    to:
+    - lxd:1
+  ceph-mon:
+    charm: ceph-mon
+    channel: quincy/stable
+    num_units: 3
+    to:
+    - lxd:0
+    - lxd:1
+    - lxd:2
+    options:
+      config-flags: '{"mon":{"auth allow insecure global id reclaim":"false"}}'
+      expected-osd-count: 3
+      monitor-count: 3
+      source: distro
+  ceph-osd:
+    charm: ceph-osd
+    channel: quincy/stable
+    num_units: 3
+    to:
+    - "0"
+    - "1"
+    - "2"
+    options:
+      aa-profile-mode: enforce
+      osd-devices: /dev/sdb /dev/vdb
+      source: distro
+  ceph-radosgw:
+    charm: ceph-radosgw
+    channel: quincy/stable
+    num_units: 1
+    to:
+    - lxd:0
+    options:
+      source: distro
+  ntp:
+    charm: ntp
+    channel: stable
+  vault:
+    charm: vault
+    channel: 1.8/stable
+    num_units: 1
+    to:
+    - lxd:2
+machines:
+  "0": {}
+  "1": {}
+  "2": {}
+relations:
+- - ceph-osd:mon
+  - ceph-mon:osd
+- - ntp:juju-info
+  - ceph-osd:juju-info
+- - ceph-radosgw:mon
+  - ceph-mon:radosgw
+- - vault:certificates
+  - ceph-radosgw:certificates
+- - ceph-dashboard:dashboard
+  - ceph-mon:dashboard
+- - ceph-dashboard:certificates
+  - vault:certificates
+- - ceph-dashboard:loadbalancer
+  - ceph-loadbalancer:loadbalancer
