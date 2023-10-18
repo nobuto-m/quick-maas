@@ -226,6 +226,7 @@ juju deploy ./bundle.yaml
 
 time juju-wait -w --max_wait 5400 \
     --exclude vault \
+    --exclude ceph-dashboard
 
 VAULT_ADDR="http://$(juju exec --unit vault/leader -- network-get certificates --ingress-address):8200"
 export VAULT_ADDR
@@ -243,5 +244,8 @@ time juju-wait -w --max_wait 1800
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
+
+juju run --format=yaml ceph-dashboard/leader --wait=10m add-user \
+    username=admin role=administrator
 
 juju models
