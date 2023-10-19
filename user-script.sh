@@ -157,7 +157,6 @@ for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
 
     # SATA SSD emulation
-    # TODO: rotation_rate=1
     for i in {a..c}; do
         virsh vol-create-as default --format raw \
             --allocation 0 \
@@ -166,7 +165,11 @@ for machine in $(virsh list --all --name); do
         virsh attach-disk "$machine" \
             "/var/lib/libvirt/images/${machine}-sata-${i}" \
             "sd${i}" \
-            --subdriver raw --targetbus sata --config
+            --subdriver raw --targetbus sata \
+            --serial "QM_${machine}_${i}" \
+            --config
+
+        virt-xml --edit target="sd${i}" --disk "target.rotation_rate=1" "$machine"
     done
 
     # one more NIC
