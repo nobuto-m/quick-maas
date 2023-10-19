@@ -156,9 +156,6 @@ sleep 15
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
 
-    # expose CPU model
-    virt-xml --edit --cpu mode=host-passthrough "$machine"
-
     # one more NIC
     virsh attach-interface "$machine" network maas --model virtio --config
 
