@@ -237,6 +237,11 @@ vault operator unseal -format json "$(echo "$vault_init_output" | jq -r .unseal_
 VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
 export VAULT_TOKEN
 
+# wait until Vault HA status settles, LP: #1987677
+until vault status -format json | jq -r --exit-status .leader_cluster_address; do
+    sleep 1
+done
+
 juju run --format=yaml vault/leader --wait=10m authorize-charm \
     token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
 juju run --format=yaml vault/leader --wait=10m generate-root-ca
