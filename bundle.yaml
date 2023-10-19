@@ -34,7 +34,7 @@ applications:
     - "1"
     - "2"
     options:
-      aa-profile-mode: enforce
+      aa-profile-mode: complain  # LP: #2031637
       osd-devices: /dev/sdb /dev/vdb
       source: distro
   ceph-radosgw:

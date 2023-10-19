@@ -146,7 +146,7 @@ for _ in $(seq 1 "$num_machines"); do
     maas admin pod compose 1 \
         cores=8 \
         memory=11264 \
-        storage='root:64,data1:16,data2:16,data3:16'
+        storage='root:64'
 done
 
 # wait for a while until Pod machines will be booted
@@ -158,6 +158,19 @@ for machine in $(virsh list --all --name); do
 
     # expose CPU model
     virt-xml --edit --cpu mode=host-passthrough "$machine"
+
+    # SATA SSD emulation
+    # TODO: rotation_rate=1
+    for i in {a..c}; do
+        virsh vol-create-as uvtool --format raw \
+            --allocation 0 \
+            "${machine}-sata-${i}" 16G
+
+        virsh attach-disk "$machine" \
+            "/var/lib/libvirt/images/${machine}-sata-${i}" \
+            "sd{$i}" \
+            --subdriver raw --targetbus sata --config
+    done
 
     # one more NIC
     virsh attach-interface "$machine" network maas --model virtio --config
