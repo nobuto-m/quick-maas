@@ -153,8 +153,26 @@ done
 # but not too long so we can avoid LP: #2008454
 sleep 15
 
+
+# Allow the NVMe virtual drive with qemu commandline (outside of libvirt)
+# https://github.com/coreos/bugs/issues/2083#issuecomment-380429909
+echo '/var/lib/libvirt/images/*-nvme-* rwk,' > /etc/apparmor.d/local/abstractions/libvirt-qemu
+
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
+
+    # NVMe SSD emulation
+    # https://gitlab.com/libvirt/libvirt/-/issues/112
+    virsh vol-create-as default --format raw \
+        --allocation 0 \
+        "${machine}-nvme-1" 16G
+
+    virt-xml --edit \
+        --qemu-commandline="-drive file=/var/lib/libvirt/images/${machine}-nvme-1,format=raw,if=none,id=NVME1" \
+        "$machine"
+    virt-xml --edit \
+        --qemu-commandline="-device nvme,drive=NVME1,serial=QM_${machine}_nvme-1" \
+        "$machine"
 
     # SATA SSD emulation
     for i in {a..c}; do
