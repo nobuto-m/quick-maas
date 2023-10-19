@@ -232,7 +232,7 @@ VAULT_ADDR="http://$(juju exec --unit vault/leader -- network-get certificates -
 export VAULT_ADDR
 
 vault_init_output="$(vault operator init -key-shares=1 -key-threshold=1 -format json)"
-vault operator unseal "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
+vault operator unseal -format json "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
 
 VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
 export VAULT_TOKEN
