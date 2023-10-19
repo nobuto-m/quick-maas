@@ -162,7 +162,7 @@ for machine in $(virsh list --all --name); do
     # SATA SSD emulation
     # TODO: rotation_rate=1
     for i in {a..c}; do
-        virsh vol-create-as uvtool --format raw \
+        virsh vol-create-as default --format raw \
             --allocation 0 \
             "${machine}-sata-${i}" 16G
 
