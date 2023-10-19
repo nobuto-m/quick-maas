@@ -165,7 +165,7 @@ for machine in $(virsh list --all --name); do
 
         virsh attach-disk "$machine" \
             "/var/lib/libvirt/images/${machine}-sata-${i}" \
-            "sd{$i}" \
+            "sd${i}" \
             --subdriver raw --targetbus sata --config
     done
 
