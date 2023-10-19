@@ -156,9 +156,6 @@ sleep 15
 for machine in $(virsh list --all --name); do
     virsh destroy "$machine"
 
-    # expose CPU model
-    virt-xml --edit --cpu mode=host-passthrough "$machine"
-
     # SATA SSD emulation
     # TODO: rotation_rate=1
     for i in {a..c}; do
