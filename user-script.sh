@@ -167,6 +167,9 @@ for machine in $(virsh list --all --name); do
         --allocation 0 \
         "${machine}-nvme-1" 16G
 
+    # The NVMe drive will be handled by qemu outside of libvirt
+    chown -v libvirt-qemu:kvm "/var/lib/libvirt/images/${machine}-nvme-1"
+
     virt-xml --edit \
         --qemu-commandline="-drive file=/var/lib/libvirt/images/${machine}-nvme-1,format=raw,if=none,id=NVME1" \
         "$machine"
