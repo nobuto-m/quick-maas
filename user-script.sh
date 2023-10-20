@@ -174,7 +174,7 @@ for machine in $(virsh list --all --name); do
         --qemu-commandline="-drive file=/var/lib/libvirt/images/${machine}-nvme-1,format=raw,if=none,id=NVME1" \
         "$machine"
     virt-xml --edit \
-        --qemu-commandline="-device nvme,drive=NVME1,serial=QM_${machine}_nvme-1" \
+        --qemu-commandline="-device nvme,drive=NVME1,serial=${machine}_nvme1" \
         "$machine"
 
     # SATA SSD emulation
@@ -187,7 +187,7 @@ for machine in $(virsh list --all --name); do
             "/var/lib/libvirt/images/${machine}-sata-${i}" \
             "sd${i}" \
             --subdriver raw --targetbus sata \
-            --serial "QM_${machine}_${i}" \
+            --serial "${machine}_${i}" \
             --config
 
         virt-xml --edit target="sd${i}" --disk "target.rotation_rate=1" "$machine"
