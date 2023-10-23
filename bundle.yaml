@@ -1,8 +1,11 @@
 series: jammy
 applications:
   ceph-dashboard:
-    charm: ceph-dashboard
-    channel: quincy/stable
+    #charm: ceph-dashboard
+    #channel: quincy/stable
+    # LP: #2039763
+    # LP: #2040022
+    charm: ./ceph-dashboard_ubuntu-20.04-amd64.charm
   ceph-loadbalancer:
     charm: openstack-loadbalancer
     channel: jammy/stable

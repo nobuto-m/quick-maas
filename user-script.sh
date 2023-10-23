@@ -256,6 +256,11 @@ juju add-model ceph
 # FIXME: LP: #2030280
 juju model-config num-container-provision-workers=1
 
+# LP: #2039763
+# LP: #2040022
+wget -O ./ceph-dashboard_ubuntu-20.04-amd64.charm \
+    'https://launchpad.net/~openstack-charmers/charm-ceph-dashboard/+charm/charm-ceph-dashboard.master.reef-latest/+build/15426/+files/ceph-dashboard_ubuntu-20.04-amd64-s390x-ppc64el-arm64_ubuntu-22.04-amd64-s390x-ppc64el-arm64_ubuntu-23.04-amd64-s390x-ppc64el-arm64_ubuntu-23.10-amd64-s390x-ppc64el-arm64.charm'
+
 juju deploy ./bundle.yaml
 
 time juju-wait -w --max_wait 5400 \
