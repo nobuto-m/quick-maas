@@ -29,8 +29,10 @@ applications:
       monitor-count: 3
       source: distro
   ceph-osd:
-    charm: ceph-osd
-    channel: quincy/stable
+    #charm: ceph-osd
+    #channel: quincy/stable
+    # LP: #2031637
+    charm: ./charm-ceph-osd
     num_units: 3
     to:
     - "0"
