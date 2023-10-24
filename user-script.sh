@@ -256,14 +256,9 @@ juju add-model ceph
 # FIXME: LP: #2030280
 juju model-config num-container-provision-workers=1
 
-# LP: #2039763
-# LP: #2040022
-wget -O ./ceph-dashboard_ubuntu-20.04-amd64.charm \
-    'https://launchpad.net/~openstack-charmers/charm-ceph-dashboard/+charm/charm-ceph-dashboard.master.reef-latest/+build/15426/+files/ceph-dashboard_ubuntu-20.04-amd64-s390x-ppc64el-arm64_ubuntu-22.04-amd64-s390x-ppc64el-arm64_ubuntu-23.04-amd64-s390x-ppc64el-arm64_ubuntu-23.10-amd64-s390x-ppc64el-arm64.charm'
-
 # LP: #2031637
 git clone https://review.opendev.org/openstack/charm-ceph-osd
-(cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/3 && git checkout FETCH_HEAD)
+(cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/4 && git checkout FETCH_HEAD)
 
 juju deploy ./bundle.yaml
 

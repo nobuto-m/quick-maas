@@ -1,11 +1,10 @@
 series: jammy
 applications:
   ceph-dashboard:
-    #charm: ceph-dashboard
+    charm: ceph-dashboard
     #channel: quincy/stable
     # LP: #2039763
-    # LP: #2040022
-    charm: ./ceph-dashboard_ubuntu-20.04-amd64.charm
+    channel: latest/edge
   ceph-loadbalancer:
     charm: openstack-loadbalancer
     channel: jammy/stable
@@ -39,7 +38,7 @@ applications:
     - "1"
     - "2"
     options:
-      aa-profile-mode: complain  # LP: #2031637
+      aa-profile-mode: enforce  # LP: #2031637
       osd-devices: /dev/sdb /dev/vdb /dev/nvme0n1
       source: distro
   ceph-radosgw:
