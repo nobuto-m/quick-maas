@@ -9,6 +9,7 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 function cleanup () {
     mv -v /root/.maascli.db ~ubuntu/ || true
     mv -v /root/.local ~ubuntu/ || true
+    mv -v /root/.kube ~ubuntu/ || true
     mv -v /root/.ssh/id_ed25519* ~ubuntu/.ssh/ || true
     mv -v /root/* ~ubuntu/ || true
     chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
@@ -255,10 +256,34 @@ juju model-defaults num-container-provision-workers=1
 ## host properties, proxy
 
 
-juju add-model microk8s
+# COS
+
+juju add-model cos-microk8s
 juju deploy ./microk8s_bundle.yaml
 
-juju add-model ceph
+time juju-wait -w --max_wait 1800
+
+juju exec --unit microk8s/leader -- \
+    microk8s enable metallb:192.168.151.81-192.168.151.100
+
+# TODO: check if enabling ingress and rbac add-ons are necessary
+
+snap install kubectl --classic
+mkdir ~/.kube/
+juju exec --unit microk8s/leader -- microk8s config | tee ~/.kube/config
+
+juju add-k8s \
+    --client --controller maas-controller \
+    --context-name microk8s \
+    cos-microk8s
+
+juju add-model cos cos-microk8s
+juju deploy cos-lite --trust
+
+
+# Ceph
+
+juju add-model ceph maas
 
 # LP: #2031637
 git clone https://review.opendev.org/openstack/charm-ceph-osd
