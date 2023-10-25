@@ -107,7 +107,5 @@ relations:
   - ceph-mon:client
 - - ceph-iscsi:admin-access
   - ceph-dashboard:iscsi-dashboard
-# LP: #2040271
-# To test /api/_ping with HTTP instead of HTTPS
-#- - ceph-iscsi:certificates
-#  - vault:certificates
+- - ceph-iscsi:certificates
+  - vault:certificates
