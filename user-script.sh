@@ -296,6 +296,8 @@ juju exec --unit ceph-mon/leader '
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
+# print the access info
+juju status ceph-loadbalancer
 juju run --format=yaml ceph-dashboard/leader --wait=10m add-user \
     username=admin role=administrator
 
