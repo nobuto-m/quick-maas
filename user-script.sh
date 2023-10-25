@@ -249,12 +249,16 @@ juju bootstrap maas maas-controller --debug \
     --model-default apt-http-proxy='http://192.168.151.1:8000/' \
     --model-default ./cloudinit-userdata.yaml # LP: #2030280
 
+# FIXME: LP: #2030280
+juju model-defaults num-container-provision-workers=1
+
 ## host properties, proxy
 
-juju add-model ceph
 
-# FIXME: LP: #2030280
-juju model-config num-container-provision-workers=1
+juju add-model microk8s
+juju deploy ./microk8s_bundle.yaml
+
+juju add-model ceph
 
 # LP: #2031637
 git clone https://review.opendev.org/openstack/charm-ceph-osd

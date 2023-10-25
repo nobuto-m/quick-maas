@@ -1,0 +1,18 @@
+series: jammy
+applications:
+  microk8s:
+    charm: microk8s
+    channel: 1.28/stable
+    num_units: 1
+    to:
+    - "0"
+    options:
+      hostpath_storage: true
+  ntp:
+    charm: ntp
+    channel: stable
+machines:
+  "0": {}
+relations:
+- - ntp:juju-info
+  - microk8s:juju-info
