@@ -107,3 +107,6 @@ relations:
   - ceph-mon:client
 - - ceph-iscsi:admin-access
   - ceph-dashboard:iscsi-dashboard
+# LP: #2040271
+- - ceph-iscsi:certificates
+  - vault:certificates
