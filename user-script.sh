@@ -285,6 +285,14 @@ juju run --format=yaml vault/leader --wait=10m authorize-charm \
 juju run --format=yaml vault/leader --wait=10m generate-root-ca
 time juju-wait -w --max_wait 1800
 
+# LP: #2040274
+juju exec --unit ceph-mon/leader '
+    ceph osd pool application disable ceph-iscsi unknown --yes-i-really-mean-it
+    ceph osd pool application disable iscsi unknown --yes-i-really-mean-it
+    ceph osd pool application enable ceph-iscsi rbd
+    ceph osd pool application enable iscsi rbd
+'
+
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
