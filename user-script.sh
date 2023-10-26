@@ -278,7 +278,13 @@ juju add-k8s \
     cos-microk8s
 
 juju add-model cos cos-microk8s
-juju deploy cos-lite --trust
+
+wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml
+wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml
+
+juju deploy cos-lite --trust \
+    --overlay ./offers-overlay.yaml \
+    --overlay ./storage-small-overlay.yaml  # TODO: to remove due to https://github.com/canonical/cos-lite-bundle/issues/86
 
 
 # Ceph
