@@ -329,6 +329,13 @@ juju exec --unit ceph-mon/leader '
     ceph osd pool application enable iscsi rbd
 '
 
+time juju-wait -w --max_wait 300 -m cos
+
+juju deploy ./bundle.yaml \
+    --overlay ./overlay-consume-cos.yaml
+
+time juju-wait -w --max_wait 1800
+
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 

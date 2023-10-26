@@ -1,0 +1,45 @@
+series: jammy
+applications:
+  grafana-agent:
+    charm: grafana-agent
+    # https://github.com/canonical/grafana-agent-operator/issues/20
+    channel: latest/edge
+saas:
+  cos-alertmanager:
+    url: cos.alertmanager-karma-dashboard
+  cos-grafana:
+    url: cos.grafana-dashboards
+  cos-loki:
+    url: cos.loki-logging
+  cos-prometheus:
+    url: cos.prometheus-receive-remote-write
+  cos-prometheus-scrape:
+    url: cos.prometheus-scrape
+
+relations:
+- - grafana-agent:logging-consumer
+  - cos-loki:logging
+- - grafana-agent:send-remote-write
+  - cos-prometheus:receive-remote-write
+- - grafana-agent:grafana-dashboards-provider
+  - cos-grafana:grafana-dashboard
+
+- - grafana-agent:juju-info
+  - ceph-osd:juju-info
+- - grafana-agent:juju-info
+  - ceph-mon:juju-info
+- - grafana-agent:juju-info
+  - ceph-radosgw:juju-info
+- - grafana-agent:juju-info
+  - ceph-loadbalancer:juju-info
+- - grafana-agent:juju-info
+  - ceph-fs:juju-info
+- - grafana-agent:juju-info
+  - ceph-nfs:juju-info
+- - grafana-agent:juju-info
+  - ceph-iscsi:juju-info
+- - grafana-agent:juju-info
+  - vault:juju-info
+
+- - cos-prometheus-scrape:metrics-endpoint
+  - ceph-mon:metrics-endpoint
