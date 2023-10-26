@@ -346,4 +346,8 @@ juju status ceph-loadbalancer
 juju run --format=yaml ceph-dashboard/leader --wait=10m add-user \
     username=admin role=administrator
 
+juju show-unit -m cos catalogue/0 --format json \
+    | jq -r '."catalogue/0"."relation-info"[]."application-data".url'
+juju run -m cos grafana/leader get-admin-password
+
 juju models
