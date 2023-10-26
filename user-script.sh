@@ -283,8 +283,10 @@ wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/o
 wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml
 
 juju deploy cos-lite --trust \
-    --overlay ./offers-overlay.yaml \
-    --overlay ./storage-small-overlay.yaml  # TODO: to remove due to https://github.com/canonical/cos-lite-bundle/issues/86
+    --overlay ./offers-overlay.yaml
+
+# https://github.com/canonical/cos-lite-bundle/issues/86
+#    --overlay ./storage-small-overlay.yaml
 
 
 # Ceph
