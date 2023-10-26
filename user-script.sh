@@ -343,7 +343,7 @@ juju model-config update-status-hook-interval=24h
 
 # print the access info
 juju status ceph-loadbalancer
-juju run --format=yaml ceph-dashboard/leader --wait=10m add-user \
+juju run ceph-dashboard/leader add-user \
     username=admin role=administrator
 
 juju show-unit -m cos catalogue/0 --format json \
