@@ -43,3 +43,7 @@ relations:
 
 - - cos-prometheus-scrape:metrics-endpoint
   - ceph-mon:metrics-endpoint
+
+# LP: #2041173
+- - cos-grafana:grafana-dashboard
+  - ceph-dashboard:grafana-k8s-dashboard
