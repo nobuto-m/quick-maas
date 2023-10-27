@@ -5,24 +5,24 @@ applications:
     # https://github.com/canonical/grafana-agent-operator/issues/20
     channel: latest/edge
 saas:
-  cos-alertmanager:
+  cos-alertmanager-karma-dashboard:
     url: cos.alertmanager-karma-dashboard
-  cos-grafana:
+  cos-grafana-dashboards:
     url: cos.grafana-dashboards
-  cos-loki:
+  cos-loki-logging:
     url: cos.loki-logging
-  cos-prometheus:
+  cos-prometheus-receive-remote-write:
     url: cos.prometheus-receive-remote-write
   cos-prometheus-scrape:
     url: cos.prometheus-scrape
 
 relations:
 - - grafana-agent:logging-consumer
-  - cos-loki:logging
+  - cos-loki-logging:logging
 - - grafana-agent:send-remote-write
-  - cos-prometheus:receive-remote-write
+  - cos-prometheus-receive-remote-write:receive-remote-write
 - - grafana-agent:grafana-dashboards-provider
-  - cos-grafana:grafana-dashboard
+  - cos-grafana-dashboards:grafana-dashboard
 
 - - grafana-agent:juju-info
   - ceph-osd:juju-info
@@ -45,5 +45,5 @@ relations:
   - ceph-mon:metrics-endpoint
 
 # LP: #2041173
-- - cos-grafana:grafana-dashboard
+- - cos-grafana-dashboards:grafana-dashboard
   - ceph-dashboard:grafana-k8s-dashboard
