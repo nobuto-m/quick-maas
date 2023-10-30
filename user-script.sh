@@ -254,6 +254,7 @@ juju bootstrap maas maas-controller --debug \
 # FIXME: LP: #2030280
 juju model-defaults num-container-provision-workers=1
 
+# LP: #2039156
 juju deploy -m controller juju-dashboard --to 0
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
