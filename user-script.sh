@@ -341,6 +341,18 @@ juju exec --unit ceph-mon/leader '
 
 time juju-wait -w --max_wait 300 -m cos
 
+# https://github.com/canonical/grafana-agent-operator/issues/20
+juju deploy -m controller grafana-agent --channel latest/edge
+juju integrate -m controller controller:juju-info grafana-agent:juju-info
+juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
+juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
+
+# LP: #2041773 - no metrics integration
+
+# LP: #2038495 - log spamming
+#juju consume -m controller cos.loki-logging cos-loki-logging
+#juju integrate -m controller grafana-agent:logging-consumer cos-loki-logging:logging
+
 juju deploy ./bundle.yaml \
     --overlay ./overlay-consume-cos.yaml
 
