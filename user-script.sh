@@ -282,11 +282,10 @@ juju add-k8s \
 
 juju add-model cos cos-microk8s
 
-wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml
-wget https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml
+git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
 juju deploy cos-lite --trust \
-    --overlay ./offers-overlay.yaml
+    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
 
 # https://github.com/canonical/cos-lite-bundle/issues/86
 #    --overlay ./storage-small-overlay.yaml
