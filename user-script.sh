@@ -12,6 +12,7 @@ function cleanup () {
     mv /root/.kube ~ubuntu/ || true
     mv /root/.ssh/id_* ~ubuntu/.ssh/ || true
     mv /root/* ~ubuntu/ || true
+    chown -f ubuntu:ubuntu -R ~ubuntu
 }
 
 # try not to kill some commands by session management
