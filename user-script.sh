@@ -249,11 +249,13 @@ juju bootstrap maas maas-controller --debug \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/' \
     --model-default ./cloudinit-userdata.yaml # LP: #2030280
+## TODO: host properties, proxy
 
 # FIXME: LP: #2030280
 juju model-defaults num-container-provision-workers=1
 
-## host properties, proxy
+juju deploy -m controller juju-dashboard --to 0
+juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 
 # COS
@@ -347,6 +349,10 @@ time juju-wait -w --max_wait 1800
 juju model-config update-status-hook-interval=24h
 
 # print the access info
+juju status -m controller
+# LP: #2039155
+timeout 5 juju dashboard || true
+
 juju status ceph-loadbalancer
 juju run ceph-dashboard/leader add-user \
     username=admin role=administrator
