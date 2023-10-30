@@ -341,6 +341,8 @@ juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-re
 juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
 
 # LP: #2041773 - no metrics integration
+juju consume -m controller cos.grafana-dashboards cos-grafana-dashboards
+juju integrate -m controller grafana-agent:grafana-dashboards-provider cos-grafana-dashboards:grafana-dashboard
 
 # LP: #2038495 - log spamming
 #juju consume -m controller cos.loki-logging cos-loki-logging
@@ -349,6 +351,10 @@ juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-rece
 juju deploy ./bundle.yaml \
     --overlay ./overlay-consume-cos.yaml
 
+juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
+    --overlay ./microk8s-consume-cos.yaml
+
+time juju-wait -m cos-microk8s -w --max_wait 1800
 time juju-wait -w --max_wait 1800
 
 # be nice to my SSD

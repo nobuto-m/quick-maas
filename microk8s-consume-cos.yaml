@@ -1,0 +1,31 @@
+series: jammy
+applications:
+  grafana-agent:
+    charm: grafana-agent
+    # https://github.com/canonical/grafana-agent-operator/issues/20
+    channel: latest/edge
+
+saas:
+  cos-alertmanager-karma-dashboard:
+    url: cos.alertmanager-karma-dashboard
+  cos-grafana-dashboards:
+    url: cos.grafana-dashboards
+  cos-loki-logging:
+    url: cos.loki-logging
+  cos-prometheus-receive-remote-write:
+    url: cos.prometheus-receive-remote-write
+  cos-prometheus-scrape:
+    url: cos.prometheus-scrape
+
+relations:
+- - microk8s:cos-agent
+  - grafana-agent:cos-agent
+
+- - grafana-agent:send-remote-write
+  - cos-prometheus-receive-remote-write:receive-remote-write
+- - grafana-agent:logging-consumer
+  - cos-loki-logging:logging
+# https://microk8s.io/docs/external-lma#prometheus-11
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/templates/grafana/dashboards-1.14
+- - grafana-agent:grafana-dashboards-provider
+  - cos-grafana-dashboards:grafana-dashboard
