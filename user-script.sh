@@ -10,9 +10,8 @@ function cleanup () {
     mv -v /root/.maascli.db ~ubuntu/ || true
     mv -v /root/.local ~ubuntu/ || true
     mv -v /root/.kube ~ubuntu/ || true
-    mv -v /root/.ssh/id_ed25519* ~ubuntu/.ssh/ || true
+    mv -v /root/.ssh/id_* ~ubuntu/.ssh/ || true
     mv -v /root/* ~ubuntu/ || true
-    chown -f ubuntu:ubuntu -R ~ubuntu /tmp/juju-store-lock-*
 }
 
 # try not to kill some commands by session management
