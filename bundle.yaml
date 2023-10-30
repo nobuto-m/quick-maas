@@ -1,12 +1,10 @@
 series: jammy
 applications:
   ceph-dashboard:
-    #charm: ceph-dashboard
+    charm: ceph-dashboard
     #channel: quincy/stable
     # LP: #2039763
-    #channel: latest/edge
-    # LP: #2041173
-    charm: ./ceph-dashboard.charm
+    channel: latest/edge
   ceph-fs:
     charm: ceph-fs
     channel: quincy/stable

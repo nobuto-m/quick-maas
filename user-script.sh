@@ -300,11 +300,6 @@ juju add-model ceph maas
 git clone https://review.opendev.org/openstack/charm-ceph-osd
 (cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/4 && git checkout FETCH_HEAD)
 
-# LP: #2041173
-wget https://openstack-ci-reports.ubuntu.com/artifacts/b53/896248/5/check/charm-build/b53ecc6/ceph-dashboard-fd3fc5227bbc412c90ba7e11bca7c1d2.tar.bz2
-apt-get install -y lbzip2
-tar xvf ceph-dashboard-fd3fc5227bbc412c90ba7e11bca7c1d2.tar.bz2
-
 juju deploy ./bundle.yaml
 
 time juju-wait -w --max_wait 5400 \
