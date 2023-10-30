@@ -357,10 +357,10 @@ juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
 
 # LP: #2041173
 # LP: #2041500
-juju deploy -m cos cos-configuration-k8s \
+juju deploy -m cos cos-configuration-k8s cos-configuration \
     --config git_repo=https://github.com/ceph/ceph.git \
     --config git_branch=main \
-    --config grafana_dashboards_path=monitoring/ceph-mixin/dashboards_out
+    --config grafana_dashboards_path=monitoring/ceph-mixin/dashboards_out/
 
 juju relate -m cos grafana:grafana-dashboard cos-configuration-k8s:grafana-dashboards
 
