@@ -4,6 +4,7 @@ applications:
     charm: grafana-agent
     # https://github.com/canonical/grafana-agent-operator/issues/20
     channel: latest/edge
+
 saas:
   cos-alertmanager-karma-dashboard:
     url: cos.alertmanager-karma-dashboard
