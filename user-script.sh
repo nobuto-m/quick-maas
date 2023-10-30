@@ -357,8 +357,8 @@ juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
 # LP: #2041173
 # LP: #2041500
 juju deploy -m cos cos-configuration-k8s \
-    --config git_repo=https://opendev.org/openstack/charm-ceph-dashboard.git \
-    --config git_rev=4aa658e92a31ee375e30c54977b67e8e2d8350ce \
+    --config git_repo=https://github.com/nobuto-m/charm-ceph-dashboard.git \
+    --config git_branch=bug/1982910 \
     --config grafana_dashboards_path=src/dashboards/
 
 juju relate -m cos grafana:grafana-dashboard cos-configuration-k8s:grafana-dashboards
