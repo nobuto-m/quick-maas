@@ -356,7 +356,7 @@ juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
     --overlay ./microk8s-consume-cos.yaml
 
 # LP: #2041500
-# the inteval is from:
+# the interval is from:
 # https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
 juju deploy -m cos prometheus-scrape-config-k8s prometheus-scrape-config --config scrape_interval=15s
 juju integrate -m cos prometheus:metrics-endpoint prometheus-scrape-config:metrics-endpoint
