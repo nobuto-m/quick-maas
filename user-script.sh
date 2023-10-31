@@ -285,7 +285,8 @@ juju add-model cos cos-microk8s
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
 juju deploy cos-lite --trust \
-    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
+    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml \
+    --overlay ./overlay-customize-cos-lite.yaml
 
 # https://github.com/canonical/cos-lite-bundle/issues/86
 #    --overlay ./storage-small-overlay.yaml
@@ -354,25 +355,6 @@ juju deploy ./bundle.yaml \
 
 juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
     --overlay ./microk8s-consume-cos.yaml
-
-# LP: #2041500
-# the interval is from:
-# https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
-juju deploy -m cos prometheus-scrape-config-k8s prometheus-scrape-config --config scrape_interval=15s
-juju integrate -m cos prometheus:metrics-endpoint prometheus-scrape-config:metrics-endpoint
-
-juju offer cos.prometheus-scrape-config:configurable-scrape-jobs
-juju consume cos.prometheus-scrape-config cos-prometheus-scrape-config
-juju integrate ceph-mon:metrics-endpoint cos-prometheus-scrape-config:configurable-scrape-jobs
-
-# LP: #2041173
-# https://github.com/canonical/cos-configuration-k8s-operator/issues/75
-juju deploy -m cos cos-configuration-k8s cos-configuration \
-    --config git_repo=https://github.com/nobuto-m/ceph.git \
-    --config git_branch=cos-testing \
-    --config grafana_dashboards_path=monitoring/ceph-mixin/dashboards_out/
-
-juju relate -m cos grafana:grafana-dashboard cos-configuration:grafana-dashboards
 
 time juju-wait -m cos-microk8s -w --max_wait 1800
 time juju-wait -w --max_wait 1800

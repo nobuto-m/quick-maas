@@ -1,0 +1,29 @@
+bundle: kubernetes
+applications:
+  # LP: #2041173
+  cos-configuration:
+    charm: cos-configuration-k8s
+    channel: stable
+    scale: 1
+    options:
+      # https://github.com/canonical/cos-configuration-k8s-operator/issues/75
+      git_repo: https://github.com/nobuto-m/ceph.git
+      git_branch: cos-testing
+      grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
+  # LP: #2041500
+  prometheus-scrape-config:
+    charm: prometheus-scrape-config-k8s
+    channel: stable
+    scale: 1
+    options:
+      # https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
+      scrape_interval: 15s
+    offers:
+      prometheus-scrape-config:
+        endpoints:
+        - configurable-scrape-jobs
+relations:
+- - grafana:grafana-dashboard
+  - cos-configuration:grafana-dashboards
+- - prometheus:metrics-endpoint
+  - prometheus-scrape-config:metrics-endpoint

@@ -16,6 +16,8 @@ saas:
     url: cos.prometheus-receive-remote-write
   cos-prometheus-scrape:
     url: cos.prometheus-scrape
+  cos-prometheus-scrape-config:
+    url: cos.prometheus-scrape-config
 
 relations:
 - - grafana-agent:logging-consumer
@@ -45,3 +47,5 @@ relations:
 # LP: #2041500
 #- - cos-prometheus-scrape:metrics-endpoint
 #  - ceph-mon:metrics-endpoint
+- - cos-prometheus-scrape-config:configurable-scrape-jobs
+  - ceph-mon:metrics-endpoint
