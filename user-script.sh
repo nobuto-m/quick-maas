@@ -372,7 +372,7 @@ juju deploy -m cos cos-configuration-k8s cos-configuration \
     --config git_branch=cos-testing \
     --config grafana_dashboards_path=monitoring/ceph-mixin/dashboards_out/
 
-juju relate -m cos grafana:grafana-dashboard cos-configuration-k8s:grafana-dashboards
+juju relate -m cos grafana:grafana-dashboard cos-configuration:grafana-dashboards
 
 time juju-wait -m cos-microk8s -w --max_wait 1800
 time juju-wait -w --max_wait 1800
