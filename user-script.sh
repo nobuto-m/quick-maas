@@ -355,8 +355,17 @@ juju deploy ./bundle.yaml \
 juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
     --overlay ./microk8s-consume-cos.yaml
 
-# LP: #2041173
 # LP: #2041500
+# the inteval is from:
+# https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
+juju deploy -m cos prometheus-scrape-config-k8s prometheus-scrape-config --config scrape_interval=15s
+juju integrate -m cos prometheus:metrics-endpoint prometheus-scrape-config:metrics-endpoint
+
+juju offer -m cos prometheus-scrape-config:configurable-scrape-jobs
+juju consume cos.prometheus-scrape-config cos-prometheus-scrape-config
+juju integrate ceph-mon:metrics-endpoint cos-prometheus-scrape-config:configurable-scrape-jobs
+
+# LP: #2041173
 # https://github.com/canonical/cos-configuration-k8s-operator/issues/75
 juju deploy -m cos cos-configuration-k8s cos-configuration \
     --config git_repo=https://github.com/nobuto-m/ceph.git \

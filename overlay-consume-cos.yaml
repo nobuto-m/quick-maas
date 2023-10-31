@@ -42,5 +42,6 @@ relations:
 - - grafana-agent:juju-info
   - vault:juju-info
 
-- - cos-prometheus-scrape:metrics-endpoint
-  - ceph-mon:metrics-endpoint
+# LP: #2041500
+#- - cos-prometheus-scrape:metrics-endpoint
+#  - ceph-mon:metrics-endpoint
