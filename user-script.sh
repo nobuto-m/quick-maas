@@ -361,7 +361,7 @@ juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
 juju deploy -m cos prometheus-scrape-config-k8s prometheus-scrape-config --config scrape_interval=15s
 juju integrate -m cos prometheus:metrics-endpoint prometheus-scrape-config:metrics-endpoint
 
-juju offer -m cos prometheus-scrape-config:configurable-scrape-jobs
+juju offer cos.prometheus-scrape-config:configurable-scrape-jobs
 juju consume cos.prometheus-scrape-config cos-prometheus-scrape-config
 juju integrate ceph-mon:metrics-endpoint cos-prometheus-scrape-config:configurable-scrape-jobs
 
