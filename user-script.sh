@@ -362,6 +362,23 @@ time juju-wait -w --max_wait 1800
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
+# LP: #2042405 - manually enable the optional RBD per-image IO statistics
+juju exec --unit ceph-mon/leader 'ceph config set mgr mgr/prometheus/rbd_stats_pools "*"'
+
+juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
+   client-initiatorname=iqn.2004-10.com.ubuntu:01:de21d53afe31 \
+   client-username=testclient \
+   client-password=12to16characters \
+   image-size=5G \
+   image-name=disk_1 \
+   rbd-pool-name=ceph-iscsi
+
+# do some activities in the Ceph cluster to have some metrics generated
+juju exec --unit ceph-mon/leader -- ceph osd pool create scbench 32 32
+juju exec --unit ceph-mon/leader -- ceph osd pool application enable scbench test
+juju exec --unit ceph-mon/leader -- rados bench -p scbench 60 write -b 4096
+
+
 # print the access info
 juju status -m controller
 # LP: #2039155
