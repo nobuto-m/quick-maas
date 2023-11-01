@@ -369,7 +369,7 @@ juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
    client-initiatorname=iqn.2004-10.com.ubuntu:01:de21d53afe31 \
    client-username=testclient \
    client-password=12to16characters \
-   image-size=5G \
+   image-size=3G \
    image-name=disk_1 \
    rbd-pool-name=ceph-iscsi
 
