@@ -371,7 +371,8 @@ juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
    client-password=12to16characters \
    image-size=3G \
    image-name=disk_1 \
-   rbd-pool-name=ceph-iscsi
+   rbd-pool-name=ceph-iscsi \
+   ec-rbd-metadata-pool=''  # LP: #2042419
 
 # do some activities in the Ceph cluster to have some metrics generated
 juju exec --unit ceph-mon/leader -- ceph osd pool create scbench 32 32
