@@ -331,7 +331,7 @@ juju exec --unit ceph-mon/leader '
     ceph osd pool application disable ceph-iscsi unknown --yes-i-really-mean-it
     ceph osd pool application disable iscsi unknown --yes-i-really-mean-it
     ceph osd pool application enable ceph-iscsi rbd
-    ceph osd pool application enable iscsi rbd
+    ceph osd pool application enable iscsi rados
 '
 
 time juju-wait -w --max_wait 300 -m cos
