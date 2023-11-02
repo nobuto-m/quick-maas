@@ -295,6 +295,9 @@ juju add-model cos cos-microk8s
 
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
+# https://github.com/canonical/prometheus-k8s-operator/issues/543
+wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
+
 juju deploy cos-lite --trust \
     --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml \
     --overlay ./overlay-customize-cos-lite.yaml
