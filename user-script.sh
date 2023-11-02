@@ -259,6 +259,17 @@ juju deploy -m controller juju-dashboard --to 0
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 
+# Ceph
+
+juju add-model ceph maas
+
+# LP: #2031637
+git clone https://review.opendev.org/openstack/charm-ceph-osd
+(cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/4 && git checkout FETCH_HEAD)
+
+juju deploy ./bundle.yaml
+
+
 # COS
 
 juju add-model cos-microk8s
@@ -292,15 +303,7 @@ juju deploy cos-lite --trust \
 #    --overlay ./storage-small-overlay.yaml
 
 
-# Ceph
-
-juju add-model ceph maas
-
-# LP: #2031637
-git clone https://review.opendev.org/openstack/charm-ceph-osd
-(cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/4 && git checkout FETCH_HEAD)
-
-juju deploy ./bundle.yaml
+# Ceph post-deployment
 
 time juju-wait -w --max_wait 5400 \
     --exclude vault \
@@ -334,6 +337,9 @@ juju exec --unit ceph-mon/leader '
     ceph osd pool application enable ceph-iscsi rbd
     ceph osd pool application enable iscsi rados
 '
+
+
+# COS post-deployment
 
 time juju-wait -w --max_wait 300 -m cos
 
