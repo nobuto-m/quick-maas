@@ -88,9 +88,8 @@ relations:
   - ceph-mon:radosgw
 - - vault:certificates
   - ceph-radosgw:certificates
-# FIXME: to test LP: #2042405 by hand
-#- - ceph-dashboard:dashboard
-#  - ceph-mon:dashboard
+- - ceph-dashboard:dashboard
+  - ceph-mon:dashboard
 - - ceph-dashboard:certificates
   - vault:certificates
 - - ceph-dashboard:loadbalancer
