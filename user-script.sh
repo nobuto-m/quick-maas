@@ -327,6 +327,7 @@ juju run --format=yaml vault/leader --wait=10m generate-root-ca
 time juju-wait -w --max_wait 1800
 
 # LP: #2040274
+# LP: #2042419
 juju exec --unit ceph-mon/leader '
     ceph osd pool application disable ceph-iscsi unknown --yes-i-really-mean-it
     ceph osd pool application disable iscsi unknown --yes-i-really-mean-it
