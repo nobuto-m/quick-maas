@@ -275,7 +275,7 @@ juju deploy ./bundle.yaml
 juju add-model cos-microk8s
 juju deploy ./microk8s_bundle.yaml
 
-time juju-wait -w --max_wait 1800
+time juju-wait -m cos-microk8s -w --max_wait 1800
 
 juju exec --unit microk8s/leader -- \
     microk8s enable metallb:192.168.151.81-192.168.151.100
@@ -309,7 +309,7 @@ juju deploy cos-lite --trust \
 # Ceph post-deployment
 
 juju switch ceph
-time juju-wait -w --max_wait 5400 \
+time juju-wait -m ceph -w --max_wait 5400 \
     --exclude vault \
     --exclude ceph-dashboard
 
@@ -330,13 +330,13 @@ done
 juju run --format=yaml vault/leader --wait=10m authorize-charm \
     token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
 juju run --format=yaml vault/leader --wait=10m generate-root-ca
-#time juju-wait -w --max_wait 1800 --retry_errors 3  # LP: #2040351
-time juju-wait -w --max_wait 1800
+#time juju-wait -m ceph -w --max_wait 1800 --retry_errors 3  # LP: #2040351
+time juju-wait - ceph -w --max_wait 1800
 
 
 # COS post-deployment
 
-time juju-wait -w --max_wait 300 -m cos
+time juju-wait -m cos -w --max_wait 300
 
 # https://github.com/canonical/grafana-agent-operator/issues/20
 #juju deploy -m controller grafana-agent --channel latest/edge
@@ -361,7 +361,7 @@ juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
     --overlay ./microk8s-consume-cos.yaml
 
 time juju-wait -m cos-microk8s -w --max_wait 1800
-time juju-wait -w --max_wait 1800
+time juju-wait -m ceph -w --max_wait 1800
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
