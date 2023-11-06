@@ -339,8 +339,7 @@ time juju-wait -w --max_wait 1800
 time juju-wait -w --max_wait 300 -m cos
 
 # https://github.com/canonical/prometheus-k8s-operator/issues/543
-wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
-juju refresh prometheus --path ./prometheus-k8s_r129_patched.charm
+juju refresh -m cos prometheus --channel latest/edge
 
 # https://github.com/canonical/grafana-agent-operator/issues/20
 #juju deploy -m controller grafana-agent --channel latest/edge
