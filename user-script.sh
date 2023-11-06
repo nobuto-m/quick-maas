@@ -305,10 +305,6 @@ juju deploy cos-lite --trust \
 # https://github.com/canonical/cos-lite-bundle/issues/86
 #    --overlay ./storage-small-overlay.yaml
 
-# https://github.com/canonical/prometheus-k8s-operator/issues/543
-wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
-juju refresh prometheus --path ./prometheus-k8s_r129_patched.charm
-
 
 # Ceph post-deployment
 
@@ -350,6 +346,10 @@ juju exec --unit ceph-mon/leader '
 # COS post-deployment
 
 time juju-wait -w --max_wait 300 -m cos
+
+# https://github.com/canonical/prometheus-k8s-operator/issues/543
+wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
+juju refresh prometheus --path ./prometheus-k8s_r129_patched.charm
 
 # https://github.com/canonical/grafana-agent-operator/issues/20
 #juju deploy -m controller grafana-agent --channel latest/edge
