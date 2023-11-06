@@ -333,16 +333,6 @@ juju run --format=yaml vault/leader --wait=10m generate-root-ca
 #time juju-wait -w --max_wait 1800 --retry_errors 3  # LP: #2040351
 time juju-wait -w --max_wait 1800
 
-# LP: #2040274
-# LP: #2042419
-# LP: #2042798
-juju exec --unit ceph-mon/leader '
-    ceph osd pool application disable ceph-iscsi unknown --yes-i-really-mean-it
-    ceph osd pool application disable iscsi unknown --yes-i-really-mean-it
-    ceph osd pool application enable ceph-iscsi rbd
-    ceph osd pool application enable iscsi rados
-'
-
 
 # COS post-deployment
 
@@ -388,9 +378,7 @@ juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
    client-username=testclient \
    client-password=12to16characters \
    image-size=3G \
-   image-name=disk_1 \
-   rbd-pool-name=ceph-iscsi \
-   ec-rbd-metadata-pool='' # LP: #2042419
+   image-name=disk_test
 
 # do some activities in the Ceph cluster to have some metrics generated
 juju exec --unit ceph-mon/leader -- ceph osd pool create scbench 32 32
