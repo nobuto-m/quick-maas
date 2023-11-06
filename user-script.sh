@@ -295,9 +295,6 @@ juju add-model cos cos-microk8s
 
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
-# https://github.com/canonical/prometheus-k8s-operator/issues/543
-wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
-
 # https://github.com/canonical/grafana-agent-operator/issues/24
 wget https://people.ubuntu.com/~nobuto/grafana-agent_ubuntu-22.04-amd64.charm
 
@@ -307,6 +304,10 @@ juju deploy cos-lite --trust \
 
 # https://github.com/canonical/cos-lite-bundle/issues/86
 #    --overlay ./storage-small-overlay.yaml
+
+# https://github.com/canonical/prometheus-k8s-operator/issues/543
+wget https://people.ubuntu.com/~nobuto/prometheus-k8s_r129_patched.charm
+juju refresh prometheus --path ./prometheus-k8s_r129_patched.charm
 
 
 # Ceph post-deployment

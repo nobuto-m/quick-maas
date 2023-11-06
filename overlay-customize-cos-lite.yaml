@@ -1,8 +1,5 @@
 bundle: kubernetes
 applications:
-  # https://github.com/canonical/prometheus-k8s-operator/issues/543
-  prometheus:
-    charm: ./prometheus-k8s_r129_patched.charm
   # LP: #2041173
   cos-configuration:
     charm: cos-configuration-k8s
