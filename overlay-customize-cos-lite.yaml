@@ -16,6 +16,7 @@ applications:
     channel: stable
     scale: 1
     options:
+      # https://github.com/canonical/prometheus-k8s-operator/issues/544
       # https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
       scrape_interval: 15s
     offers:
