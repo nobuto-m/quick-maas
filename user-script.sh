@@ -312,6 +312,7 @@ juju refresh prometheus --path ./prometheus-k8s_r129_patched.charm
 
 # Ceph post-deployment
 
+juju switch ceph
 time juju-wait -w --max_wait 5400 \
     --exclude vault \
     --exclude ceph-dashboard
