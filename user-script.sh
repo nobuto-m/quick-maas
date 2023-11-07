@@ -298,7 +298,10 @@ git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 # https://github.com/canonical/grafana-agent-operator/issues/24
 wget https://people.ubuntu.com/~nobuto/grafana-agent_ubuntu-22.04-amd64.charm
 
-juju deploy cos-lite --trust \
+# use latest/edge for now:
+# https://github.com/canonical/prometheus-k8s-operator/issues/543
+# https://github.com/canonical/prometheus-k8s-operator/issues/547
+juju deploy cos-lite --trust --channel latest/edge \
     --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml \
     --overlay ./overlay-customize-cos-lite.yaml
 
