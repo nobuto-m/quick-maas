@@ -11,10 +11,7 @@ applications:
     - lxd:0
   ceph-iscsi:
     charm: ceph-iscsi
-    #channel: quincy/stable
-    # LP: #2040274
-    # LP: #2042419
-    channel: latest/edge
+    channel: quincy/stable
     num_units: 2
     to:
     - "1"
