@@ -263,10 +263,6 @@ juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 juju add-model ceph maas
 
-# LP: #2031637
-git clone https://review.opendev.org/openstack/charm-ceph-osd
-(cd charm-ceph-osd/ && git fetch https://review.opendev.org/openstack/charm-ceph-osd refs/changes/66/898966/4 && git checkout FETCH_HEAD)
-
 juju deploy ./bundle.yaml
 
 
