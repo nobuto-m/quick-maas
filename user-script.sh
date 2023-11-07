@@ -331,7 +331,7 @@ juju run --format=yaml vault/leader --wait=10m authorize-charm \
     token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
 juju run --format=yaml vault/leader --wait=10m generate-root-ca
 #time juju-wait -m ceph -w --max_wait 1800 --retry_errors 3  # LP: #2040351
-time juju-wait - ceph -w --max_wait 1800
+time juju-wait -m ceph -w --max_wait 1800
 
 
 # COS post-deployment
