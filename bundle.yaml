@@ -45,17 +45,15 @@ applications:
     to:
     - lxd:1
   ceph-osd:
-    #charm: ceph-osd
-    #channel: quincy/stable
-    # LP: #2031637
-    charm: ./charm-ceph-osd
+    charm: ceph-osd
+    channel: quincy/stable
     num_units: 3
     to:
     - "0"
     - "1"
     - "2"
     options:
-      aa-profile-mode: enforce  # LP: #2031637
+      aa-profile-mode: enforce
       osd-devices: /dev/sdb /dev/vdb /dev/nvme0n1
       source: distro
   ceph-radosgw:
