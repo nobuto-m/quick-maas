@@ -2,7 +2,9 @@ bundle: kubernetes
 applications:
   # https://github.com/canonical/prometheus-k8s-operator/issues/543
   prometheus:
-    charm: prometheus-k8s
+    channel: latest/edge
+  # https://github.com/canonical/prometheus-k8s-operator/issues/547
+  traefik:
     channel: latest/edge
   # LP: #2041173
   cos-configuration:
