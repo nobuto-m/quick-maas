@@ -287,6 +287,9 @@ juju add-k8s \
     --context-name microk8s \
     cos-microk8s
 
+juju model-defaults --cloud cos-microk8s \
+    logging-config='<root>=INFO;unit=DEBUG'
+
 juju add-model cos cos-microk8s
 
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
