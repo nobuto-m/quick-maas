@@ -236,19 +236,10 @@ credentials:
 EOF
 juju add-credential --client maas -f credentials.yaml
 
-# add debugging for LP: #2030280
-cat <<EOF | tee cloudinit-userdata.yaml
-cloudinit-userdata: |
-  preruncmd:
-  - snap set lxd daemon.debug=true
-  - systemctl restart snap.lxd.daemon.service
-EOF
-
 juju bootstrap maas maas-controller --debug \
     --model-default test-mode=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
-    --model-default apt-http-proxy='http://192.168.151.1:8000/' \
-    --model-default ./cloudinit-userdata.yaml # LP: #2030280
+    --model-default apt-http-proxy='http://192.168.151.1:8000/'
 ## TODO: host properties, proxy
 
 # FIXME: LP: #2030280
