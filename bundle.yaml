@@ -25,10 +25,8 @@ applications:
     options:
       vip: 192.168.151.51  # LP: #2039678
   ceph-mon:
-    # LP: #2042405
-    #charm: ceph-mon
-    #channel: quincy/stable
-    charm: ./charm-ceph-mon_review900153_7.charm
+    charm: ceph-mon
+    channel: quincy/stable
     num_units: 3
     to:
     - lxd:0
@@ -40,8 +38,6 @@ applications:
       expected-osd-count: 3
       monitor-count: 3
       source: distro
-      # LP: #2042405
-      rbd-stats-pools: "*"
   ceph-nfs:
     charm: ceph-nfs
     channel: quincy/stable
