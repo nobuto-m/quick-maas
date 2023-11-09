@@ -9,7 +9,7 @@ applications:
     options:
       # https://github.com/canonical/cos-configuration-k8s-operator/issues/75
       git_repo: https://github.com/nobuto-m/ceph.git
-      git_branch: cos-testing
+      git_branch: cos-configuration
       grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
   # LP: #2041500
   prometheus-scrape-config:
