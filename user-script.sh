@@ -254,6 +254,9 @@ juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 juju add-model ceph maas
 
+# LP: #2042405
+wget https://people.ubuntu.com/~nobuto/charm-ceph-mon_review900153_9.charm
+
 juju deploy ./bundle.yaml
 
 
@@ -356,9 +359,6 @@ time juju-wait -m ceph -w --max_wait 1800
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
-
-# LP: #2042405 - manually enable the optional RBD per-image IO statistics
-juju exec --unit ceph-mon/leader 'ceph config set mgr mgr/prometheus/rbd_stats_pools "*"'
 
 juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
    client-initiatorname=iqn.2004-10.com.ubuntu:01:de21d53afe31 \
