@@ -288,9 +288,6 @@ juju add-model cos cos-microk8s
 
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
-# https://github.com/canonical/grafana-agent-operator/issues/24
-wget https://people.ubuntu.com/~nobuto/grafana-agent_ubuntu-22.04-amd64.charm
-
 # use latest/edge for now:
 # https://github.com/canonical/prometheus-k8s-operator/issues/543
 # https://github.com/canonical/prometheus-k8s-operator/issues/547
@@ -338,9 +335,7 @@ time juju-wait -m cos -w --max_wait 300
 # /usr/share/maas/grafana_agent/agent.yaml.example
 
 # https://github.com/canonical/grafana-agent-operator/issues/20
-#juju deploy -m controller grafana-agent --channel latest/edge
-# https://github.com/canonical/grafana-agent-operator/issues/24
-juju deploy -m controller ./grafana-agent_ubuntu-22.04-amd64.charm
+juju deploy -m controller grafana-agent --channel latest/edge
 juju integrate -m controller controller:juju-info grafana-agent:juju-info
 juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
 juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write

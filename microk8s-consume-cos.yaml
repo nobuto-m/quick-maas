@@ -1,11 +1,9 @@
 series: jammy
 applications:
   grafana-agent:
-    #charm: grafana-agent
+    charm: grafana-agent
     # https://github.com/canonical/grafana-agent-operator/issues/20
-    #channel: latest/edge
-    # https://github.com/canonical/grafana-agent-operator/issues/24
-    charm: ./grafana-agent_ubuntu-22.04-amd64.charm
+    channel: latest/edge
 
 saas:
   cos-alertmanager-karma-dashboard:
