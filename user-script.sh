@@ -255,7 +255,8 @@ juju integrate -m controller controller:dashboard juju-dashboard:controller
 juju add-model ceph maas
 
 # LP: #2042405
-wget https://people.ubuntu.com/~nobuto/charm-ceph-mon_review900153_9.charm
+wget -O charm-ceph-mon_review900153.charm \
+    https://people.ubuntu.com/~nobuto/charm-ceph-mon_review900153_12.charm
 
 juju deploy ./bundle.yaml
 

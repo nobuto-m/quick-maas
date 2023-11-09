@@ -28,7 +28,7 @@ applications:
     # LP: #2042405
     #charm: ceph-mon
     #channel: quincy/stable
-    charm: ./charm-ceph-mon_review900153_7.charm
+    charm: ./charm-ceph-mon_review900153.charm
     num_units: 3
     to:
     - lxd:0
