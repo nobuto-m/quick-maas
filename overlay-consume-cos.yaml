@@ -39,8 +39,9 @@ relations:
   - ceph-fs:juju-info
 - - grafana-agent:juju-info
   - ceph-nfs:juju-info
-- - grafana-agent:juju-info
-  - ceph-iscsi:juju-info
+# ceph-iscsi is co-located with ceph-osd
+#- - grafana-agent:juju-info
+#  - ceph-iscsi:juju-info
 - - grafana-agent:juju-info
   - vault:juju-info
 
