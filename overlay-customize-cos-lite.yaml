@@ -1,7 +1,7 @@
 bundle: kubernetes
 applications:
   # LP: #2041173
-  cos-configuration:
+  cos-configuration-ceph:
     charm: cos-configuration-k8s
     #channel: stable
     channel: latest/edge
@@ -14,7 +14,7 @@ applications:
       loki_alert_rules_path: ''
       prometheus_alert_rules_path: monitoring/ceph-mixin/
   # LP: #2041500
-  prometheus-scrape-config:
+  prometheus-scrape-config-ceph:
     charm: prometheus-scrape-config-k8s
     #channel: stable
     channel: latest/edge
@@ -24,13 +24,13 @@ applications:
       # https://docs.ceph.com/en/latest/mgr/prometheus/#confval-mgr-prometheus-scrape_interval
       scrape_interval: 15s
     offers:
-      prometheus-scrape-config:
+      prometheus-scrape-config-ceph:
         endpoints:
         - configurable-scrape-jobs
 relations:
 - - grafana:grafana-dashboard
-  - cos-configuration:grafana-dashboards
+  - cos-configuration-ceph:grafana-dashboards
 - - prometheus:metrics-endpoint
-  - cos-configuration:prometheus-config
+  - cos-configuration-ceph:prometheus-config
 - - prometheus:metrics-endpoint
-  - prometheus-scrape-config:metrics-endpoint
+  - prometheus-scrape-config-ceph:metrics-endpoint
