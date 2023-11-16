@@ -11,6 +11,8 @@ applications:
       git_repo: https://github.com/nobuto-m/ceph.git
       git_branch: cos-configuration
       grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
+      loki_alert_rules_path: ''
+      prometheus_alert_rules_path: monitoring/ceph-mixin/
   # LP: #2041500
   prometheus-scrape-config:
     charm: prometheus-scrape-config-k8s
@@ -28,5 +30,7 @@ applications:
 relations:
 - - grafana:grafana-dashboard
   - cos-configuration:grafana-dashboards
+- - prometheus:metrics-endpoint
+  - cos-configuration:prometheus-config
 - - prometheus:metrics-endpoint
   - prometheus-scrape-config:metrics-endpoint
