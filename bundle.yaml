@@ -38,6 +38,7 @@ applications:
       expected-osd-count: 3
       monitor-count: 3
       source: distro
+      rbd-stats-pools: "*"
   ceph-nfs:
     charm: ceph-nfs
     channel: quincy/stable
