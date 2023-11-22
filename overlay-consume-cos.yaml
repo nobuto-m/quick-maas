@@ -2,7 +2,13 @@ series: jammy
 applications:
   grafana-agent:
     charm: grafana-agent
-    # https://github.com/canonical/grafana-agent-operator/issues/20
+    # https://github.com/canonical/grafana-agent-operator/issues/22
+    channel: latest/edge
+
+  # https://github.com/canonical/grafana-agent-operator/issues/17
+  grafana-agent-ceph-mon:
+    charm: grafana-agent
+    # https://github.com/canonical/grafana-agent-operator/issues/22
     channel: latest/edge
 
 saas:
@@ -27,10 +33,20 @@ relations:
 - - grafana-agent:grafana-dashboards-provider
   - cos-grafana-dashboards:grafana-dashboard
 
+# https://github.com/canonical/grafana-agent-operator/issues/17
+- - grafana-agent-ceph-mon:logging-consumer
+  - cos-loki-logging:logging
+- - grafana-agent-ceph-mon:send-remote-write
+  - cos-prometheus-receive-remote-write:receive-remote-write
+- - grafana-agent-ceph-mon:grafana-dashboards-provider
+  - cos-grafana-dashboards:grafana-dashboard
+
+# https://github.com/canonical/grafana-agent-operator/issues/17
+- - grafana-agent-ceph-mon:juju-info
+  - ceph-mon:juju-info
+
 - - grafana-agent:juju-info
   - ceph-osd:juju-info
-- - grafana-agent:juju-info
-  - ceph-mon:juju-info
 - - grafana-agent:juju-info
   - ceph-radosgw:juju-info
 - - grafana-agent:juju-info
