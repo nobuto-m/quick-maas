@@ -5,6 +5,12 @@ applications:
     # https://github.com/canonical/grafana-agent-operator/issues/20
     channel: latest/edge
 
+  # TODO: bug number
+  grafana-agent-container:
+    charm: grafana-agent
+    # https://github.com/canonical/grafana-agent-operator/issues/20
+    channel: latest/edge
+
 saas:
   cos-alertmanager-karma-dashboard:
     url: cos.alertmanager-karma-dashboard
@@ -27,22 +33,30 @@ relations:
 - - grafana-agent:grafana-dashboards-provider
   - cos-grafana-dashboards:grafana-dashboard
 
+- - grafana-agent-container:logging-consumer
+  - cos-loki-logging:logging
+- - grafana-agent-container:send-remote-write
+  - cos-prometheus-receive-remote-write:receive-remote-write
+- - grafana-agent-container:grafana-dashboards-provider
+  - cos-grafana-dashboards:grafana-dashboard
+
 - - grafana-agent:juju-info
   - ceph-osd:juju-info
-- - grafana-agent:juju-info
+
+- - grafana-agent-container:juju-info
   - ceph-mon:juju-info
-- - grafana-agent:juju-info
+- - grafana-agent-container:juju-info
   - ceph-radosgw:juju-info
-- - grafana-agent:juju-info
+- - grafana-agent-container:juju-info
   - ceph-loadbalancer:juju-info
-- - grafana-agent:juju-info
+- - grafana-agent-container:juju-info
   - ceph-fs:juju-info
-- - grafana-agent:juju-info
+- - grafana-agent-container:juju-info
   - ceph-nfs:juju-info
 # ceph-iscsi is co-located with ceph-osd
 #- - grafana-agent:juju-info
 #  - ceph-iscsi:juju-info
-- - grafana-agent:juju-info
+- - grafana-agent-container:juju-info
   - vault:juju-info
 
 # LP: #2041500
