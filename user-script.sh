@@ -72,6 +72,15 @@ EOF
 virsh net-autostart maas
 virsh net-start maas
 
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>maas2</name>
+  <bridge name='maas2' stp='off'/>
+</network>
+EOF
+virsh net-autostart maas2
+virsh net-start maas2
+
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
     | debconf-set-selections
@@ -194,8 +203,11 @@ for machine in $(virsh list --all --name); do
         virt-xml --edit target="sd${i}" --disk "target.rotation_rate=1" "$machine"
     done
 
-    # one more NIC
+    # one more NIC for OVN
     virsh attach-interface "$machine" network maas --model virtio --config
+
+    # one more NIC for an isolated network
+    virsh attach-interface "$machine" network maas2 --model virtio --config
 
     virsh start "$machine"
 done
