@@ -121,8 +121,8 @@ fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.151.0/
 maas admin vlan update "$fabric_id" 0 space=space-first
 
 maas admin spaces create name=space-isolated1
-maas admin vlans create "$fabric_id" vid=101 space=space-isolated
-maas admin subnets create cidr='192.168.152.0/24' fabric="$fabric_id" vid=101
+maas admin vlans create "$fabric_id" vid=102 space=space-isolated
+maas admin subnets create cidr='192.168.152.0/24' fabric="$fabric_id" vid=102
 maas admin ipranges create type=reserved \
     start_ip=192.168.152.1 end_ip=192.168.152.100
 maas admin ipranges create type=dynamic \
@@ -237,6 +237,13 @@ time while true; do
         break
     fi
     sleep 15
+done
+
+vlan_id=$(maas admin vlan read "$fabric_id" 102 | jq -r '.id')
+subnet_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.152.0/24").id')
+for system_id in $(maas admin machines read | jq -r '.[].system_id'); do
+    maas admin interface update "$system_id" ens9 vlan="$vlan_id"
+    maas admin interface link-subnet "$system_id" ens9 mode='AUTO' subnet="$subnet_id"
 done
 
 # bootstrap
