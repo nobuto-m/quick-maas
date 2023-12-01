@@ -9,7 +9,8 @@ applications:
     options:
       # https://github.com/canonical/cos-configuration-k8s-operator/issues/75
       git_repo: https://github.com/nobuto-m/ceph.git
-      git_branch: cos-configuration
+      # FIXME: go back to cos-configuration branch
+      git_branch: cos-configuration-testing
       grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
       loki_alert_rules_path: ''
       prometheus_alert_rules_path: ''
