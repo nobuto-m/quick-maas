@@ -12,8 +12,7 @@ applications:
       git_branch: cos-configuration
       grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
       loki_alert_rules_path: ''
-      # to investigate LP: #2043758
-      #prometheus_alert_rules_path: monitoring/ceph-mixin/
+      prometheus_alert_rules_path: ''
   # LP: #2041500
   prometheus-scrape-config-ceph:
     charm: prometheus-scrape-config-k8s
