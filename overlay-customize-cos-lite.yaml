@@ -12,8 +12,6 @@ applications:
       # FIXME: go back to cos-configuration branch
       git_branch: cos-configuration-testing
       grafana_dashboards_path: monitoring/ceph-mixin/dashboards_out/
-      loki_alert_rules_path: ''
-      prometheus_alert_rules_path: ''
   # LP: #2041500
   prometheus-scrape-config-ceph:
     charm: prometheus-scrape-config-k8s
