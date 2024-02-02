@@ -8,6 +8,9 @@ applications:
     - "0"
     options:
       hostpath_storage: true
+      # FIXME: just for testing
+      containerd_http_proxy: http://192.168.151.1:8000/
+      containerd_https_proxy: http://192.168.151.1:8000/
   ntp:
     charm: ntp
     channel: stable
