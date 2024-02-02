@@ -238,6 +238,7 @@ juju add-credential --client maas -f credentials.yaml
 
 juju bootstrap maas maas-controller --debug \
     --model-default test-mode=true \
+    --model-default disable-telemetry=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 ## TODO: host properties, proxy
@@ -279,6 +280,8 @@ juju add-k8s \
     cos-microk8s
 
 juju model-defaults --cloud cos-microk8s \
+    test-mode=true \
+    disable-telemetry=true \
     logging-config='<root>=INFO;unit=DEBUG'
 
 juju add-model cos cos-microk8s
