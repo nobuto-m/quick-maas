@@ -11,7 +11,8 @@ applications:
       # FIXME: just for testing
       containerd_http_proxy: http://192.168.151.1:8000/
       containerd_https_proxy: http://192.168.151.1:8000/
-      containerd_no_proxy: "127.0.0.1,localhost,::1,.cluster.local"
+      #containerd_no_proxy: "127.0.0.1,localhost,::1,10.152.183.0/24,.cluster.local"
+      containerd_no_proxy: "127.0.0.1,localhost,::1,10.152.183.0/24"
   ntp:
     charm: ntp
     channel: stable
