@@ -163,7 +163,7 @@ for machine in $(virsh list --all --name); do
 done
 
 # juju
-snap install --classic juju --channel 3.1
+snap install juju
 snap install --classic juju-wait
 
 snap install vault
