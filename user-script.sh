@@ -329,7 +329,8 @@ time juju-wait -m ceph -w --max_wait 1800
 
 # COS post-deployment
 
-time juju-wait -m cos -w --max_wait 300
+time juju-wait -m cos -w --max_wait 300 \
+    --exclude prometheus-scrape-config-ceph
 
 # TODO: enable MAAS monitoring
 # /usr/share/maas/grafana_agent/agent.yaml.example
