@@ -14,8 +14,6 @@ saas:
     url: cos.loki-logging
   cos-prometheus-receive-remote-write:
     url: cos.prometheus-receive-remote-write
-  cos-prometheus-scrape:
-    url: cos.prometheus-scrape
 
 relations:
 - - microk8s:cos-agent

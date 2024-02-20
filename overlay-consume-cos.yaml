@@ -20,8 +20,9 @@ saas:
     url: cos.loki-logging
   cos-prometheus-receive-remote-write:
     url: cos.prometheus-receive-remote-write
-  cos-prometheus-scrape:
-    url: cos.prometheus-scrape
+  # LP: #2041500
+  #cos-prometheus-scrape:
+  #  url: cos.prometheus-scrape
   cos-prometheus-scrape-config-ceph:
     url: cos.prometheus-scrape-config-ceph
 
