@@ -385,7 +385,7 @@ juju add-model openstack
 juju model-config num-container-provision-workers=1
 
 # LP: #2039156
-juju deploy -m controller juju-dashboard --to 0
+juju deploy -m controller juju-dashboard --to 0 --base ubuntu@22.04  # LP: #2054375
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 juju deploy ./bundle.yaml \
