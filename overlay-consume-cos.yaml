@@ -28,13 +28,6 @@ relations:
 - - grafana-agent:grafana-dashboards-provider
   - cos-grafana-dashboards:grafana-dashboard
 
-- - grafana-agent:logging-consumer
-  - cos-loki-logging:logging
-- - grafana-agent:send-remote-write
-  - cos-prometheus-receive-remote-write:receive-remote-write
-- - grafana-agent:grafana-dashboards-provider
-  - cos-grafana-dashboards:grafana-dashboard
-
 - - grafana-agent:juju-info
   - ceph-mon:juju-info
 
