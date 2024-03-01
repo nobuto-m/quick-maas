@@ -251,13 +251,6 @@ juju deploy -m controller juju-dashboard --to 0 --base ubuntu@22.04  # LP: #2054
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 
-# Ceph
-
-juju add-model ceph maas
-
-juju deploy ./bundle.yaml
-
-
 # COS
 
 juju add-model cos-microk8s
@@ -298,6 +291,35 @@ juju deploy cos-lite --trust --channel latest/edge \
 # https://github.com/canonical/cos-lite-bundle/issues/86
 #    --overlay ./storage-small-overlay.yaml
 
+# COS post-deployment
+
+time juju-wait -m cos -w --max_wait 1800 \
+    --exclude prometheus-scrape-config-ceph
+
+# TODO: enable MAAS monitoring
+# /usr/share/maas/grafana_agent/agent.yaml.example
+
+# https://github.com/canonical/grafana-agent-operator/issues/20
+juju deploy -m controller grafana-agent --channel latest/edge
+juju integrate -m controller controller:juju-info grafana-agent:juju-info
+juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
+juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
+
+# LP: #2041773 - no metrics integration
+juju consume -m controller cos.grafana-dashboards cos-grafana-dashboards
+juju integrate -m controller grafana-agent:grafana-dashboards-provider cos-grafana-dashboards:grafana-dashboard
+
+# LP: #2038495 - log spamming
+#juju consume -m controller cos.loki-logging cos-loki-logging
+#juju integrate -m controller grafana-agent:logging-consumer cos-loki-logging:logging
+
+
+# Ceph
+
+juju add-model ceph maas
+
+juju deploy ./bundle.yaml \
+    --overlay ./overlay-consume-cos.yaml
 
 # Ceph post-deployment
 
@@ -326,31 +348,6 @@ juju run --format=yaml vault/leader --wait=10m generate-root-ca
 #time juju-wait -m ceph -w --max_wait 1800 --retry_errors 3  # LP: #2040351
 time juju-wait -m ceph -w --max_wait 1800
 
-
-# COS post-deployment
-
-time juju-wait -m cos -w --max_wait 300 \
-    --exclude prometheus-scrape-config-ceph
-
-# TODO: enable MAAS monitoring
-# /usr/share/maas/grafana_agent/agent.yaml.example
-
-# https://github.com/canonical/grafana-agent-operator/issues/20
-juju deploy -m controller grafana-agent --channel latest/edge
-juju integrate -m controller controller:juju-info grafana-agent:juju-info
-juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
-juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
-
-# LP: #2041773 - no metrics integration
-juju consume -m controller cos.grafana-dashboards cos-grafana-dashboards
-juju integrate -m controller grafana-agent:grafana-dashboards-provider cos-grafana-dashboards:grafana-dashboard
-
-# LP: #2038495 - log spamming
-#juju consume -m controller cos.loki-logging cos-loki-logging
-#juju integrate -m controller grafana-agent:logging-consumer cos-loki-logging:logging
-
-juju deploy ./bundle.yaml \
-    --overlay ./overlay-consume-cos.yaml
 
 juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
     --overlay ./microk8s-consume-cos.yaml
