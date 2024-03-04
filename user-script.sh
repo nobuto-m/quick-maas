@@ -318,6 +318,10 @@ juju integrate -m controller grafana-agent:grafana-dashboards-provider cos-grafa
 
 juju add-model ceph maas
 
+apt-get install -y lbzip2
+wget https://openstack-ci-reports.ubuntu.com/artifacts/e7c/910706/2/check/charm-build/e7c350f/ceph-mon-9a6c982fba804c71b0e2effaa53a1a3d.tar.bz2
+tar xf ceph-mon-9a6c982fba804c71b0e2effaa53a1a3d.tar.bz2
+
 juju deploy ./bundle.yaml \
     --overlay ./overlay-consume-cos.yaml
 
