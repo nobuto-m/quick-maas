@@ -7,10 +7,10 @@ set -x
 trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
 function cleanup () {
-    mv -v /root/.maascli.db ~ubuntu/ || true
-    mv -v /root/.local ~ubuntu/ || true
-    mv -v /root/.ssh/id_* ~ubuntu/.ssh/ || true
-    mv -v /root/* ~ubuntu/ || true
+    mv /root/.maascli.db ~ubuntu/ || true
+    mv /root/.local ~ubuntu/ || true
+    mv /root/.ssh/id_* ~ubuntu/.ssh/ || true
+    mv /root/* ~ubuntu/ || true
     chown -f ubuntu:ubuntu -R ~ubuntu
 }
 
