@@ -93,9 +93,8 @@ relations:
   - vault:certificates
 - - ceph-dashboard:loadbalancer
   - ceph-loadbalancer:loadbalancer
-# LP: #1986593
-#- - ceph-dashboard:radosgw-dashboard
-#  - ceph-radosgw:radosgw-user
+- - ceph-dashboard:radosgw-dashboard
+  - ceph-radosgw:radosgw-user
 - - ceph-fs:ceph-mds
   - ceph-mon:mds
 - - ceph-nfs:ceph-client
