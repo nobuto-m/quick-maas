@@ -143,7 +143,8 @@ maas admin pods create \
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
 for _ in $(seq 1 "$num_machines"); do
-    maas admin pod compose 1 \
+    # LP: #1965554 - "Connection was closed cleanly" can happen
+    time maas admin pod compose 1 \
         cores=8 \
         memory=11264 \
         storage='root:64,data1:16,data2:16,data3:16'
