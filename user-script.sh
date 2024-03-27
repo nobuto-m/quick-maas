@@ -629,8 +629,11 @@ machines:
   '1':
     constraints: cores=2 mem=4G root-disk=16G
 applications:
+  kubeapi-load-balancer: null                            # excludes the kubeapi-load-balancer
   kubernetes-control-plane:
     constraints: cores=2 mem=4G root-disk=16G
+    options:
+      allow-privileged: "true"
   kubernetes-worker:
     constraints: cores=2 mem=4G root-disk=16G
   openstack-integrator:
@@ -644,10 +647,19 @@ applications:
     - '0'
     options:
       lb-floating-network: ext_net
+  openstack-cloud-controller:
+    charm: openstack-cloud-controller
+  cinder-csi:
+    charm: cinder-csi
 relations:
-  - ['openstack-integrator:loadbalancer', 'kubernetes-control-plane:loadbalancer']
-  - ['openstack-integrator:clients', 'kubernetes-control-plane:openstack']
-  - ['openstack-integrator:clients', 'kubernetes-worker:openstack']
+  - [openstack-cloud-controller:certificates,            easyrsa:client]
+  - [openstack-cloud-controller:kube-control,            kubernetes-control-plane:kube-control]
+  - [openstack-cloud-controller:external-cloud-provider, kubernetes-control-plane:external-cloud-provider]
+  - [openstack-cloud-controller:openstack,               openstack-integrator:clients]
+  - [easyrsa:client,                                     cinder-csi:certificates]
+  - [kubernetes-control-plane:kube-control,              cinder-csi:kube-control]
+  - [openstack-integrator:clients,                       cinder-csi:openstack]
+  - [kubernetes-control-plane:loadbalancer-external,     openstack-integrator:lb-consumer]
 EOF
 
 juju deploy --trust ./k8s_bundle.yaml \
