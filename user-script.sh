@@ -659,7 +659,8 @@ relations:
   - [easyrsa:client,                                     cinder-csi:certificates]
   - [kubernetes-control-plane:kube-control,              cinder-csi:kube-control]
   - [openstack-integrator:clients,                       cinder-csi:openstack]
-  - [kubernetes-control-plane:loadbalancer-external,     openstack-integrator:lb-consumer]
+  # https://github.com/charmed-kubernetes/bundle/pull/895
+  - [kubernetes-control-plane:loadbalancer-external,     openstack-integrator:lb-consumers]
 EOF
 
 juju deploy --trust ./k8s_bundle.yaml \
