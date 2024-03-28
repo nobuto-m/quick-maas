@@ -26,7 +26,9 @@ applications:
       vip: 192.168.151.51  # LP: #2039678
   ceph-mon:
     charm: ceph-mon
-    channel: quincy/stable
+    #channel: quincy/stable
+    # LP: #2058636
+    channel: latest/edge
     num_units: 3
     to:
     - lxd:0
