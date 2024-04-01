@@ -142,15 +142,9 @@ maas admin pods create \
 cat <<"EOF" | install -m 0755 /dev/stdin /usr/local/bin/virt-ssh-helper
 #!/bin/bash
 
-cat<<"PROMPT"
-Welcome to virsh, the virtualization interactive terminal.
+printf '%s' 'virsh # '
 
-Type:  'help' for help with commands
-       'quit' to quit
-
-virsh # 
-PROMPT
-
+echo "$0" "$@"
 logger "$0 - start of the sleep"
 sleep 300
 logger "$0 - end of the sleep"
