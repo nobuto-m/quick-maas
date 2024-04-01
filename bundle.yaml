@@ -27,7 +27,7 @@ applications:
   ceph-mon:
     charm: ceph-mon
     #channel: quincy/stable
-    # LP: #2058636
+    # TODO: LP: #2058636
     channel: latest/edge
     num_units: 3
     to:
