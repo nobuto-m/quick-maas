@@ -139,8 +139,18 @@ maas admin pods create \
     name=localhost \
     power_address="qemu+ssh://root@127.0.0.1/system"
 
-cat <<EOF | install -m 0755 /dev/stdin /usr/local/bin/virt-ssh-helper
+cat <<"EOF" | install -m 0755 /dev/stdin /usr/local/bin/virt-ssh-helper
 #!/bin/bash
+
+cat<<"PROMPT"
+Welcome to virsh, the virtualization interactive terminal.
+
+Type:  'help' for help with commands
+       'quit' to quit
+
+virsh # 
+PROMPT
+
 logger "$0 - start of the sleep"
 sleep 300
 logger "$0 - end of the sleep"
