@@ -254,7 +254,7 @@ applications:
     options:
       aa-profile-mode: enforce
   ceph-mon:
-    # LP: #2058636
+    # TODO: LP: #2058636
     channel: latest/edge
     options:
       # LP: #1929262
@@ -443,17 +443,6 @@ time juju-wait -w --max_wait 1800 \
     --exclude octavia
 juju scp ~/.ssh/id_ed25519* octavia/leader:
 time juju run --format=yaml octavia/leader --wait=20m configure-resources
-
-# LP: #1961088
-if ! juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf; then
-    echo 'WARNING: Missing bind_ip in octavia.conf, LP: #1961088'
-    juju exec --application octavia -- ip -br a
-    sleep 600
-    juju exec --application octavia -- ip -br a
-    juju exec --application octavia -- hooks/config-changed
-    juju exec --application octavia -- grep bind_ip /etc/octavia/octavia.conf
-fi
-
 time juju run --format=yaml octavia-diskimage-retrofit/leader --wait=30m retrofit-image
 
 # be nice to my SSD
@@ -462,6 +451,7 @@ juju model-config update-status-hook-interval=24h
 # setup openstack
 
 set +u
+# LP: #1995971
 sed -i 's/juju run /juju exec /' openrc*
 # shellcheck disable=SC1091
 . openrc
@@ -618,7 +608,7 @@ juju download --no-progress kubernetes-core - | tee kubernetes-core.bundle >/dev
 eatmydata apt-get install -y unzip
 unzip -p kubernetes-core.bundle bundle.yaml > k8s_bundle.yaml
 
-# LP: #1936842
+# LP: #1919296
 sed -i.bak -e 's/lxd:0/0/' k8s_bundle.yaml
 
 # https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
