@@ -139,6 +139,22 @@ maas admin pods create \
     name=localhost \
     power_address="qemu+ssh://root@127.0.0.1/system"
 
+cat <<EOF | install -m 0755 /dev/stdin /usr/local/bin/virt-ssh-helper
+#!/bin/bash
+logger "$0 - start of the sleep"
+sleep 300
+logger "$0 - end of the sleep"
+exit 1
+EOF
+
+# LP: #1965554 - "Connection was closed cleanly" can happen
+time maas admin pod compose 1 \
+    cores=8 \
+    memory=11264 \
+    storage='root:64,data1:16,data2:16,data3:16'
+
+exit
+
 # compose machines
 ## TODO: somehow lldpd in commissioning fails with num=8
 num_machines=7
