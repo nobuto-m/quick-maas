@@ -133,50 +133,45 @@ sleep 120
 sudo -u maas -H ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
 install -m 0600 ~maas/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
 
+# "pod compose" is not going to be used
+# but register the KVM host just for the UI demo purpose
 maas admin pods create \
     type=virsh \
     cpu_over_commit_ratio=10 \
     memory_over_commit_ratio=1.5 \
     name=localhost \
-    power_address="qemu+ssh://root@127.0.0.1/system"
+    power_address='qemu+ssh://root@127.0.0.1/system'
 
 # compose machines
-## TODO: somehow lldpd in commissioning fails with num=8
-num_machines=7
-for _ in $(seq 1 "$num_machines"); do
-    maas admin pod compose 1 \
-        cores=8 \
-        memory=11264 \
-        storage='root:64'
-done
+num_machines=8
+for i in $(seq 1 "$num_machines"); do
+    # TODO: --boot uefi
+    # Starting vTPM manufacturing as swtpm:swtpm
+    # swtpm process terminated unexpectedly.
+    # Could not start the TPM 2.
+    # An error occurred. Authoring the TPM state failed.
+    virt-install \
+        --import --noreboot \
+        --name "machine-$i"\
+        --osinfo ubuntujammy \
+        --boot network,hd \
+        --vcpus cores=8 \
+        --cpu host-passthrough,cache.mode=passthrough \
+        --memory 11264 \
+        --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
+        --network network=maas \
+        --network network=maas
 
-# wait for a while until Pod machines will be booted
-# but not too long so we can avoid LP: #2008454
-sleep 15
-
-for machine in $(virsh list --all --name); do
-    virsh destroy "$machine"
-
-    # SATA SSD emulation
-    for i in {a..c}; do
-        virsh vol-create-as default --format raw \
-            --allocation 0 \
-            "${machine}-sata-${i}" 16G
-
-        virsh attach-disk "$machine" \
-            "/var/lib/libvirt/images/${machine}-sata-${i}" \
-            "sd${i}" \
-            --subdriver raw --targetbus sata \
-            --serial "${machine}_${i}" \
-            --config
-
-        virt-xml --edit target="sd${i}" --disk "target.rotation_rate=1" "$machine"
-    done
-
-    # one more NIC
-    virsh attach-interface "$machine" network maas --model virtio --config
-
-    virsh start "$machine"
+    maas admin machines create \
+        hostname="machine-$i" \
+        architecture=amd64 \
+        mac_addresses="$(virsh dumpxml "machine-$i" | xmllint --xpath 'string(//mac/@address)' -)" \
+        power_type=virsh \
+        power_parameters_power_address='qemu+ssh://root@127.0.0.1/system' \
+        power_parameters_power_id="machine-$i"
 done
 
 # juju
