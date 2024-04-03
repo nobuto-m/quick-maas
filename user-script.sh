@@ -255,8 +255,6 @@ applications:
     options:
       aa-profile-mode: enforce
   ceph-mon:
-    # TODO: LP: #2058636
-    channel: latest/edge
     options:
       # LP: #1929262
       config-flags: '{"mon":{"auth allow insecure global id reclaim":"false"}}'
