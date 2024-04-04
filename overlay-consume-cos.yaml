@@ -2,8 +2,7 @@ series: jammy
 applications:
   grafana-agent:
     charm: grafana-agent
-    # https://github.com/canonical/grafana-agent-operator/issues/22
-    channel: latest/edge
+    channel: latest/stable
 
 saas:
   cos-alertmanager-karma-dashboard:

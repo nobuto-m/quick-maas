@@ -262,10 +262,7 @@ juju add-model cos cos-microk8s
 
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
-# use latest/edge for now:
-# https://github.com/canonical/prometheus-k8s-operator/issues/543
-# https://github.com/canonical/prometheus-k8s-operator/issues/547
-juju deploy cos-lite --trust --channel latest/edge \
+juju deploy cos-lite --trust \
     --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml \
     --overlay ./overlay-customize-cos-lite.yaml
 
@@ -310,7 +307,7 @@ time juju-wait -m cos -w --max_wait 300 \
 # /usr/share/maas/grafana_agent/agent.yaml.example
 
 # https://github.com/canonical/grafana-agent-operator/issues/20
-juju deploy -m controller grafana-agent --channel latest/edge
+juju deploy -m controller grafana-agent
 juju integrate -m controller controller:juju-info grafana-agent:juju-info
 juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
 juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
