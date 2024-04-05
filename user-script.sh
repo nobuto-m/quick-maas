@@ -356,7 +356,19 @@ juju run ceph-dashboard/leader add-user \
     username=admin role=administrator
 
 juju show-unit -m cos catalogue/0 --format json \
+    | jq -r '."catalogue/0"."relation-info"[]."application-data".ingress'
+juju show-unit -m cos catalogue/0 --format json \
     | jq -r '."catalogue/0"."relation-info"[]."application-data".url'
 juju run -m cos grafana/leader get-admin-password
+
+# LP: #2041756
+prometheus_endpoint="$(juju show-unit -m cos catalogue/0 --format json \
+    | jq -r '."catalogue/0"."relation-info"[]."application-data" | select(.name=="Prometheus").url')"
+juju exec -m ceph -u ceph-dashboard/leader -- ceph dashboard set-prometheus-api-host "$prometheus_endpoint"
+
+# https://tracker.ceph.com/issues/65070
+#alertmanager_endpoint="$(juju show-unit -m cos catalogue/0 --format json \
+#    | jq -r '."catalogue/0"."relation-info"[]."application-data" | select(.name=="Alertmanager").url')"
+#juju exec -m ceph -u ceph-dashboard/leader -- ceph dashboard set-alertmanager-api-host "$alertmanager_endpoint"
 
 juju models
