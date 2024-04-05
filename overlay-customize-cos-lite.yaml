@@ -3,7 +3,8 @@ applications:
   # LP: #2041173
   cos-configuration-ceph:
     charm: cos-configuration-k8s
-    channel: latest/stable
+    #channel: latest/stable
+    channel: latest/edge
     scale: 1
     options:
       # https://github.com/canonical/cos-configuration-k8s-operator/issues/75
@@ -14,7 +15,8 @@ applications:
   # LP: #2041500
   prometheus-scrape-config-ceph:
     charm: prometheus-scrape-config-k8s
-    channel: latest/stable
+    #channel: latest/stable
+    channel: latest/edge
     scale: 1
     options:
       # https://github.com/canonical/prometheus-k8s-operator/issues/544
