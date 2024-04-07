@@ -333,25 +333,37 @@ time juju-wait -m ceph -w --max_wait 1800
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
 
+# do some activities in the Ceph cluster to have some metrics generated
 juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
    client-initiatorname=iqn.2004-10.com.ubuntu:01:de21d53afe31 \
    client-username=testclient \
    client-password=12to16characters \
    image-size=3G \
    image-name=disk_test
-
-# do some activities in the Ceph cluster to have some metrics generated
 juju exec --unit ceph-mon/leader -- ceph osd pool create scbench 32 32
 juju exec --unit ceph-mon/leader -- ceph osd pool application enable scbench test
 juju exec --unit ceph-mon/leader -- rados bench -p scbench 60 write -b 4096
-
+apt-get install -y s3cmd
+juju exec --unit ceph-mon/leader -- radosgw-admin user create \
+   --uid='ubuntu' --display-name='Test Ubuntu user'
+AWS_ACCESS_KEY_ID="$(juju exec --unit ceph-mon/leader -- \
+    radosgw-admin user info --uid ubuntu | jq -r '.keys[].access_key')"
+AWS_SECRET_ACCESS_KEY="$(juju exec --unit ceph-mon/leader -- \
+    radosgw-admin user info --uid ubuntu | jq -r '.keys[].secret_key')"
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
+S3_HOST="https://$(juju exec --unit ceph-radosgw/leader -- network-get public --ingress-address):443"
+s3cmd -v --host="$S3_HOST" --host-bucket="$S3_HOST" --no-check-certificate \
+    mb s3://my-test-bucket
+s3cmd -v --host="$S3_HOST" --host-bucket="$S3_HOST" --no-check-certificate \
+    sync /usr/lib/python3/dist-packages/S3 s3://my-test-bucket/
 
 # print the access info
 juju status -m controller
 # LP: #2039155
 timeout 5 juju dashboard || true
 
-juju status ceph-loadbalancer
+echo "https://$(juju exec --unit ceph-loadbalancer/leader -- network-get public --ingress-address):8443/"
 juju run ceph-dashboard/leader add-user \
     username=admin role=administrator
 
