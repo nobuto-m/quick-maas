@@ -346,10 +346,12 @@ juju exec --unit ceph-mon/leader '
     rados bench -p scbench 60 write -b 4096
 '
 juju exec --unit ceph-mon/leader '
+    ceph config set mgr mgr/prometheus/rbd_stats_pools_refresh_interval 60
     ceph osd pool create rbdbench 32 32
     ceph osd pool application enable rbdbench rbd
     rbd create --pool rbdbench fio_test --size 4096
     apt-get install -y fio
+    sleep 60
     fio --ioengine rbd --pool rbdbench --rbdname fio_test \
         --rw randwrite --bs 4k --iodepth 32 --name rbd_test --runtime 60
 '
