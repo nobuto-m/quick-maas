@@ -15,8 +15,6 @@ saas:
   cos-prometheus-receive-remote-write:
     url: cos.prometheus-receive-remote-write
   # LP: #2041500
-  #cos-prometheus-scrape:
-  #  url: cos.prometheus-scrape
   cos-prometheus-scrape-config-ceph:
     url: cos.prometheus-scrape-config-ceph
 
@@ -48,7 +46,5 @@ relations:
   - vault:juju-info
 
 # LP: #2041500
-#- - cos-prometheus-scrape:metrics-endpoint
-#  - ceph-mon:metrics-endpoint
 - - cos-prometheus-scrape-config-ceph:configurable-scrape-jobs
   - ceph-mon:metrics-endpoint
