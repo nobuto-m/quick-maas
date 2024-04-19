@@ -1,0 +1,48 @@
+applications:
+  neutron-api:
+    options:
+      reverse-dns-lookup: true
+      ipv4-ptr-zone-prefix-size: 24
+  designate:
+    charm: ch:designate
+    channel: yoga/stable
+    num_units: 1
+    options:
+      openstack-origin: distro
+      nameservers: 'ns1.admin.openstack.example.com.'
+    to:
+    - lxd:1
+  designate-mysql-router:
+    charm: ch:mysql-router
+    channel: 8.0/stable
+  designate-bind:
+    charm: ch:designate-bind
+    channel: yoga/stable
+    num_units: 1
+    options:
+      allowed_nets: '10.0.0.0/8;172.16.0.0/12;192.168.0.0/16'
+    to:
+    - lxd:2
+  memcached:
+    charm: ch:memcached
+    num_units: 1
+    to:
+    - lxd:2
+
+relations:
+- - designate:shared-db
+  - designate-mysql-router:shared-db
+- - designate-mysql-router:db-router
+  - mysql-innodb-cluster:db-router
+- - designate:dnsaas
+  - neutron-api:external-dns
+- - keystone:identity-service
+  - designate:identity-service
+- - rabbitmq-server:amqp
+  - designate:amqp
+- - designate:dns-backend
+  - designate-bind:dns-backend
+- - memcached:cache
+  - designate:coordinator-memcached
+- - designate:certificates
+  - vault:certificates
