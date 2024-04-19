@@ -158,7 +158,7 @@ for i in $(seq 1 "$num_machines"); do
         --boot network,hd \
         --vcpus cores=8 \
         --cpu host-passthrough,cache.mode=passthrough \
-        --memory 8192 \
+        --memory 12288 \
         --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
