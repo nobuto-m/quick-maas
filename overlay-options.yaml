@@ -18,7 +18,7 @@ applications:
       allow-password-autocompletion: true
   ovn-chassis:
     options:
-      bridge-interface-mappings: 'br-ex:ens10'
+      bridge-interface-mappings: 'br-ex:enp2s0'
   neutron-api-plugin-ovn:
     options:
       dns-servers: '8.8.8.8,8.8.4.4'
