@@ -43,7 +43,7 @@ Then, SSH to the instance and import keys.
 ``` bash
 [local] $ ssh demo-baremetal
 
-[baremetal] $ ssh-import-id <Launchpad accounts>
+[baremetal] $ ssh-import-id "<Launchpad accounts>"
 ```
 
 ## enable nested KVM
