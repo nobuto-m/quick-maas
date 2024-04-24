@@ -7,7 +7,7 @@
 ## prepare a bare metal instance
 
 If you don't have any physical machine with 64GB of memory or more,
-launch a baremetal instance with Ubuntu 20.04 LTS.
+launch a baremetal instance with Ubuntu 22.04 LTS.
 
 If you get "Your account is currently being verified", have a cup of
 coffee.
