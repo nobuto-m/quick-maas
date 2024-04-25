@@ -224,6 +224,41 @@ juju bootstrap maas maas-controller --debug \
 
 ## host properties, proxy
 
+# COS
+
+juju add-model cos-microk8s
+juju deploy ./microk8s_bundle.yaml
+
+time juju-wait -m cos-microk8s -w --max_wait 1800
+
+juju exec --unit microk8s/leader -- \
+    microk8s enable metallb:192.168.151.81-192.168.151.100
+
+# TODO: check if enabling ingress and rbac add-ons are necessary
+
+snap install kubectl --classic
+mkdir ~/.kube/
+juju exec --unit microk8s/leader -- microk8s config | tee ~/.kube/config
+
+juju add-k8s \
+    --client --controller maas-controller \
+    --context-name microk8s \
+    cos-microk8s
+
+juju model-defaults --cloud cos-microk8s \
+    test-mode=true \
+    disable-telemetry=true \
+    logging-config='<root>=INFO;unit=DEBUG'
+
+juju add-model cos cos-microk8s
+
+git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
+
+# use latest/edge for now:
+juju deploy cos-lite --trust --channel latest/edge \
+    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
+
+
 # deploy openstack
 
 mkdir certs/
@@ -257,7 +292,7 @@ mkdir certs/
     cat controller_cert.pem controller_key.pem > controller_cert_bundle.pem
 )
 
-juju add-model openstack
+juju add-model openstack maas
 
 # FIXME: LP: #2030280
 juju model-defaults num-container-provision-workers=1
@@ -346,7 +381,7 @@ openstack subnet create \
     --network ext_net \
     --subnet-range 192.168.151.0/24 \
     --gateway 192.168.151.1 \
-    --allocation-pool start=192.168.151.51,end=192.168.151.100 \
+    --allocation-pool start=192.168.151.51,end=192.168.151.80 \
     ext_net_subnet
 
 openstack network create internal
