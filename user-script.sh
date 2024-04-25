@@ -156,13 +156,13 @@ for i in $(seq 1 "$num_machines"); do
         --name "machine-$i"\
         --osinfo ubuntujammy \
         --boot network,hd \
-        --vcpus cores=8 \
+        --vcpus cores=16 \
         --cpu host-passthrough,cache.mode=passthrough \
-        --memory 12288 \
-        --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi \
-        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
-        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
-        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi \
+        --memory 16384 \
+        --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
+        --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --network network=maas \
         --network network=maas
 
