@@ -538,7 +538,8 @@ time juju-wait -w --max_wait 3600
 mkdir ~ubuntu/.kube/
 juju exec --unit kubernetes-control-plane/leader 'cat ~ubuntu/config' | tee ~ubuntu/.kube/config
 
-juju run --format=yaml kubernetes-worker/leader --wait=30m microbot replicas=3
+# action "microbot" not defined on unit "kubernetes-worker/0"
+#juju run --format=yaml kubernetes-worker/leader --wait=30m microbot replicas=3
 
 #juju_model=k8s-on-openstack
 #controller_uuid=$(juju show-model "$juju_model" --format json \
@@ -553,7 +554,7 @@ juju run --format=yaml kubernetes-worker/leader --wait=30m microbot replicas=3
 #
 #kubectl expose deployment microbot --type=LoadBalancer --name=microbot-lb
 
-kubectl --kubeconfig ~ubuntu/.kube/config wait deployment --all --for condition=Available=True --timeout=15m
+#kubectl --kubeconfig ~ubuntu/.kube/config wait deployment --all --for condition=Available=True --timeout=15m
 kubectl --kubeconfig ~ubuntu/.kube/config get -o wide all
 
 juju switch openstack
