@@ -295,7 +295,7 @@ mkdir certs/
 juju add-model openstack maas
 
 # FIXME: LP: #2030280
-juju model-defaults num-container-provision-workers=1
+juju model-defaults --cloud maas num-container-provision-workers=1
 
 # LP: #2039156
 juju deploy -m controller juju-dashboard --to 0 --base ubuntu@22.04  # LP: #2054375
