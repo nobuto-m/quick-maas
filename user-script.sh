@@ -198,7 +198,7 @@ maas admin tags create name=storage
 for i in $(seq 0 "$((num_machines -1))"); do
     system_id="$(maas admin machines read hostname="machine-$i" | jq -r '.[].system_id')"
 
-    maas admine machine update "$system_id" pool=sunbeam
+    maas admin machine update "$system_id" pool=sunbeam
 
     case "$i" in
         0)
