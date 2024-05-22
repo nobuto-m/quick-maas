@@ -144,8 +144,8 @@ maas admin pods create \
     power_address='qemu+ssh://root@127.0.0.1/system'
 
 # compose machines
-num_machines=8
-for i in $(seq 1 "$num_machines"); do
+num_machines=6
+for i in $(seq 0 "$((num_machines -1))"); do
     # TODO: --boot uefi
     # Starting vTPM manufacturing as swtpm:swtpm
     # swtpm process terminated unexpectedly.
@@ -175,14 +175,54 @@ for i in $(seq 1 "$num_machines"); do
         power_parameters_power_id="machine-$i"
 done
 
+time while true; do
+    maas_machines_statuses="$(maas admin machines read | jq -r '.[].status_name')"
+    if echo "$maas_machines_statuses" | grep -w 'Failed commissioning'; then
+        exit 1
+    fi
+    if [ "$(echo "$maas_machines_statuses" | grep -c -w 'Ready')" = "$num_machines" ]; then
+        break
+    fi
+    sleep 15
+done
+
+
 # https://microstack.run/docs/multi-node-maas
+
+maas admin resource-pools create name=sunbeam
+maas admin tags create name=juju-controller
+maas admin tags create name=control
+maas admin tags create name=compute
+maas admin tags create name=storage
+
+for i in $(seq 0 "$((num_machines -1))"); do
+    system_id="$(maas admin machines read hostname="machine-$i" | jq -r '.[].system_id')"
+
+    maas admine machine update "$system_id" pool=sunbeam
+
+    case "$i" in
+        0)
+            maas admin tag update-nodes juju-controller add="$system_id"
+        ;;
+        *)
+            maas admin tag update-nodes control add="$system_id"
+            maas admin tag update-nodes compute add="$system_id"
+            maas admin tag update-nodes storage add="$system_id"
+
+            block_device_id="$(maas admin block-devices read "$system_id" | jq '.[] | select(.name=="sdb").id')"
+            maas admin block-device add-tag "$system_id" "$block_device_id" tag=ceph
+        ;;
+    esac
+done
+
 snap install openstack --channel 2024.1/edge
 
 sunbeam prepare-node-script --client | bash -x
 
-sunbeam deployment add maas --name my_maas \
+sunbeam deployment add maas --name demo_maas \
     --token "$(maas apikey --username ubuntu)" \
-    --url 'http://192.168.151.1:5240/MAAS'  # --resource-pool my_cloud
+    --url 'http://192.168.151.1:5240/MAAS' \
+    --resource-pool sunbeam
 
 sunbeam deployment space map space-first data
 sunbeam deployment space map space-first internal
