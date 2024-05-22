@@ -103,7 +103,7 @@ maas admin subnet update 192.168.151.0/24 \
 fabric=$(maas admin subnets read | jq -r \
     '.[] | select(.cidr=="192.168.151.0/24").vlan.fabric')
 maas admin ipranges create type=reserved \
-    start_ip=192.168.151.1 end_ip=192.168.151.100
+    start_ip=192.168.151.1 end_ip=192.168.151.80
 maas admin ipranges create type=dynamic \
     start_ip=192.168.151.201 end_ip=192.168.151.254
 maas admin vlan update "$fabric" 0 dhcp_on=true primary_rack="$HOSTNAME"
@@ -194,6 +194,13 @@ maas admin tags create name=juju-controller
 maas admin tags create name=control
 maas admin tags create name=compute
 maas admin tags create name=storage
+
+maas admin ipranges create type=reserved \
+    comment=sunbeam-public-api \
+    start_ip=192.168.151.81 end_ip=192.168.151.90
+maas admin ipranges create type=reserved \
+    comment=sunbeam-internal-api \
+    start_ip=192.168.151.91 end_ip=192.168.151.100
 
 for i in $(seq 0 "$((num_machines -1))"); do
     system_id="$(maas admin machines read hostname="machine-$i" | jq -r '.[].system_id')"
