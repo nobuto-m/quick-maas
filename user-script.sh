@@ -211,7 +211,7 @@ for i in $(seq 0 "$((num_machines -1))"); do
         0)
             maas admin tag update-nodes juju-controller add="$system_id"
         ;;
-        *)
+        1|2|3)
             maas admin tag update-nodes control add="$system_id"
             maas admin tag update-nodes compute add="$system_id"
             maas admin tag update-nodes storage add="$system_id"
