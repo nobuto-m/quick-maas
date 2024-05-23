@@ -250,7 +250,7 @@ sunbeam deployment space map space-first storage-cluster
 
 sunbeam deployment validate
 
-# tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
+tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
 # LP: #2066540
 sunbeam cluster bootstrap --manifest manifest.yaml &
