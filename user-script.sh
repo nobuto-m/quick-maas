@@ -255,7 +255,7 @@ tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 # LP: #2066540
 sunbeam cluster bootstrap --manifest manifest.yaml &
     snap install --classic juju-wait
-    until juju controllers --refresh; do
+    until juju status -m controller; do
         sleep 10
     done
     if ! juju-wait -m controller -w; then
