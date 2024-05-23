@@ -146,6 +146,16 @@ maas admin pods create \
 # compose machines
 num_machines=6
 for i in $(seq 0 "$((num_machines -1))"); do
+
+    case "$i" in
+        0)
+            memory=4096
+        ;;
+        *)
+            memory=16384
+        ;;
+    esac
+
     # TODO: --boot uefi
     # Starting vTPM manufacturing as swtpm:swtpm
     # swtpm process terminated unexpectedly.
@@ -158,7 +168,7 @@ for i in $(seq 0 "$((num_machines -1))"); do
         --boot network,hd \
         --vcpus cores=16 \
         --cpu host-passthrough,cache.mode=passthrough \
-        --memory 16384 \
+        --memory "$memory" \
         --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
