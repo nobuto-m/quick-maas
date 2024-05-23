@@ -88,6 +88,8 @@ software:
       channel: 2024.1/edge
     sunbeam-clusterd:
       channel: 2024.1/edge
+      # LP: #2066540
+      revision: 15
       config:
         snap-channel: 2024.1/edge
     sunbeam-machine:
