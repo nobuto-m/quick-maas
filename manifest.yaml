@@ -1,18 +1,6 @@
 deployment:
   proxy:
     proxy_required: false
-  bootstrap:
-    management_cidr: 10.0.123.0/24
-  addons:
-    metallb: 10.0.123.81-10.0.123.90
-  microceph_config:
-    sunbeam-1.localdomain:
-      # LP: #2065470, LP: #2065698
-      osd_devices: /dev/vdc,/dev/vdd
-    sunbeam-2.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
-    sunbeam-3.localdomain:
-      osd_devices: /dev/vdc,/dev/vdd
   external_network:
     nic: enp9s0
     cidr: 10.0.123.0/24
