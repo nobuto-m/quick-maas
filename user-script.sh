@@ -212,7 +212,7 @@ maas admin ipranges create type=reserved \
     comment=sunbeam-internal-api \
     start_ip=192.168.151.91 end_ip=192.168.151.100
 
-for i in $(seq 0 "$((num_machines -1))"); do
+for i in $(seq 1 "$num_machines"); do
     system_id="$(maas admin machines read hostname="machine-$i" | jq -r '.[].system_id')"
 
     maas admin machine update "$system_id" pool=sunbeam
