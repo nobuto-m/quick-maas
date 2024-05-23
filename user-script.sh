@@ -144,11 +144,11 @@ maas admin pods create \
     power_address='qemu+ssh://root@127.0.0.1/system'
 
 # compose machines
-num_machines=6
-for i in $(seq 0 "$((num_machines -1))"); do
+num_machines=8
+for i in $(seq 1 "$num_machines"); do
 
     case "$i" in
-        0)
+        6|7|8)
             memory=4096
         ;;
         *)
@@ -218,7 +218,7 @@ for i in $(seq 0 "$((num_machines -1))"); do
     maas admin machine update "$system_id" pool=sunbeam
 
     case "$i" in
-        0)
+        6|7|8)
             maas admin tag update-nodes juju-controller add="$system_id"
         ;;
         1|2|3)
