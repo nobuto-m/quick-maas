@@ -251,10 +251,13 @@ sunbeam deployment space map space-first storage-cluster
 sunbeam deployment validate
 
 # tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
-if ! sunbeam cluster bootstrap --manifest manifest.yaml; then
-    # LP: #2066540
-    juju refresh -m controller sunbeam-clusterd --revision 16 --force-units
-    sunbeam cluster bootstrap --manifest manifest.yaml
-fi
+
+# LP: #2066540
+sunbeam cluster bootstrap --manifest manifest.yaml &
+    snap install --classic juju-wait
+    if ! juju-wait -m controller -w; then
+        juju refresh -m controller sunbeam-clusterd --revision 16 --force-units
+    fi
+wait
 
 sunbeam cluster deploy --manifest manifest.yaml
