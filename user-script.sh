@@ -152,7 +152,7 @@ for i in $(seq 1 "$num_machines"); do
             memory=4096
         ;;
         *)
-            memory=16384
+            memory=18432
         ;;
     esac
 
