@@ -254,8 +254,8 @@ sunbeam deployment validate
 tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
 # LP: #2066540
+snap install --classic juju-wait
 sunbeam cluster bootstrap --manifest manifest.yaml &
-    snap install --classic juju-wait
     until juju status -m controller; do
         sleep 10
     done
@@ -264,4 +264,8 @@ sunbeam cluster bootstrap --manifest manifest.yaml &
     fi
 wait
 
-sunbeam cluster deploy --manifest manifest.yaml
+# LP: #2067016
+if ! sunbeam cluster deploy --manifest manifest.yaml; then
+    juju-wait -m openstack -w
+    sunbeam cluster deploy --manifest manifest.yaml
+fi
