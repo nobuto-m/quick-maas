@@ -218,7 +218,8 @@ for i in $(seq 1 "$num_machines"); do
     maas admin machine update "$system_id" pool=sunbeam
 
     case "$i" in
-        6|7|8)
+        #6|7|8)  # HA
+        6)  # no HA
             maas admin tag update-nodes juju-controller add="$system_id"
         ;;
         1|2|3)
