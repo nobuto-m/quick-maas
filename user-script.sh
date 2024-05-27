@@ -264,8 +264,14 @@ sunbeam cluster bootstrap --manifest manifest.yaml &
     fi
 wait
 
-# LP: #2067016
+juju models
+
 if ! sunbeam cluster deploy --manifest manifest.yaml; then
+    # LP: #2065490
+    juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
+    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
+
+    # LP: #2067016
     juju-wait -m openstack -w
     sunbeam cluster deploy --manifest manifest.yaml
 fi
