@@ -267,7 +267,8 @@ time wait -n
 if ! time sunbeam cluster deploy --manifest manifest.yaml; then
     # LP: #2065490
     juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
-    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
+    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
+        update-status-hook-interval=30m  # TODO: bug number
 
     # LP: #2067016
     time juju-wait -m openstack -w
