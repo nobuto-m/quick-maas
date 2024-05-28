@@ -253,16 +253,7 @@ sunbeam deployment validate
 
 tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
-# LP: #2066540
-snap install --classic juju-wait
-sunbeam cluster bootstrap --manifest manifest.yaml &
-    until juju status -m controller; do
-        sleep 10
-    done
-    if ! time juju-wait -m controller -w; then
-        juju refresh -m controller sunbeam-clusterd --revision 16 --force-units
-    fi
-time wait -n
+time sunbeam cluster bootstrap --manifest manifest.yaml
 
 if ! time sunbeam cluster deploy --manifest manifest.yaml; then
     # LP: #2065490
@@ -271,6 +262,7 @@ if ! time sunbeam cluster deploy --manifest manifest.yaml; then
         update-status-hook-interval=30m  # TODO: bug number
 
     # LP: #2067016
+    snap install --classic juju-wait
     time juju-wait -m openstack -w
     time sunbeam cluster deploy --manifest manifest.yaml
 fi
