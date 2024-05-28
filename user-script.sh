@@ -249,20 +249,23 @@ sunbeam deployment space map space-first public
 sunbeam deployment space map space-first storage
 sunbeam deployment space map space-first storage-cluster
 
-sunbeam deployment validate
+time sunbeam deployment validate
 
 tail -n+2 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-if ! time sunbeam cluster deploy --manifest manifest.yaml; then
+sunbeam cluster deploy --manifest manifest.yaml &
+    time until juju status -m openstack; do
+        sleep 10
+    done
     # LP: #2065490
     juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
         update-status-hook-interval=30m  # TODO: bug number
-
+time wait -n || (
     # LP: #2067016
     snap install --classic juju-wait
     time juju-wait -m openstack -w
     time sunbeam cluster deploy --manifest manifest.yaml
-fi
+)
