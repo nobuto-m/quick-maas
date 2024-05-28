@@ -259,19 +259,17 @@ sunbeam cluster bootstrap --manifest manifest.yaml &
     until juju status -m controller; do
         sleep 10
     done
-    if ! juju-wait -m controller -w; then
+    if ! time juju-wait -m controller -w; then
         juju refresh -m controller sunbeam-clusterd --revision 16 --force-units
     fi
-wait
+time wait -n
 
-juju models
-
-if ! sunbeam cluster deploy --manifest manifest.yaml; then
+if ! time sunbeam cluster deploy --manifest manifest.yaml; then
     # LP: #2065490
     juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
 
     # LP: #2067016
-    juju-wait -m openstack -w
-    sunbeam cluster deploy --manifest manifest.yaml
+    time juju-wait -m openstack -w
+    time sunbeam cluster deploy --manifest manifest.yaml
 fi
