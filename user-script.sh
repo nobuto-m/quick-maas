@@ -236,6 +236,9 @@ snap install openstack --channel 2024.1/edge
 
 sunbeam prepare-node-script --client | bash -x
 
+# LP: #2066541
+adduser ubuntu snap_daemon
+
 sunbeam deployment add maas --name demo_maas \
     --token "$(maas apikey --username ubuntu)" \
     --url 'http://192.168.151.1:5240/MAAS' \
