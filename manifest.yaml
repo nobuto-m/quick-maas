@@ -85,37 +85,7 @@ software:
       channel: reef/edge
 
     # LP: #2059774 and possibly for other race conditions
-    cinder-ceph-mysql-router:
+    mysql-k8s:
       channel: 8.0/edge
-    cinder-mysql:
-      channel: 8.0/edge
-    cinder-mysql-router:
-      channel: 8.0/edge
-    glance-mysql:
-      channel: 8.0/edge
-    glance-mysql-router:
-      channel: 8.0/edge
-    horizon-mysql:
-      channel: 8.0/edge
-    horizon-mysql-router:
-      channel: 8.0/edge
-    keystone-mysql:
-      channel: 8.0/edge
-    keystone-mysql-router:
-      channel: 8.0/edge
-    neutron-mysql:
-      channel: 8.0/edge
-    neutron-mysql-router:
-      channel: 8.0/edge
-    nova-api-mysql-router:
-      channel: 8.0/edge
-    nova-cell-mysql-router:
-      channel: 8.0/edge
-    nova-mysql:
-      channel: 8.0/edge
-    nova-mysql-router:
-      channel: 8.0/edge
-    placement-mysql:
-      channel: 8.0/edge
-    placement-mysql-router:
+    mysql-router-k8s:
       channel: 8.0/edge
