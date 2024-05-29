@@ -266,6 +266,11 @@ sunbeam cluster deploy --manifest manifest.yaml &
     time until juju status -m openstack-machines; do
         sleep 10
     done
+
+    # FIXME: delete it after checking if multiple generations of
+    # manifests exist
+    sunbeam manifest list
+
     time until juju status -m openstack; do
         sleep 10
     done
