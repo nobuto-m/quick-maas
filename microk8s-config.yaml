@@ -5,6 +5,8 @@ version: 0.1.0
 #  --cluster-dns: 10.152.183.10
 #addons:
 #  - name: dns
+
+# LP: #2067451
 extraKubeControllerManagerArgs:
   --leader-elect-lease-duration: 180s
   --leader-elect-renew-deadline: 120s
