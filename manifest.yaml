@@ -2,7 +2,6 @@ deployment:
   proxy:
     proxy_required: false
   external_network:
-    nic: enp9s0
     cidr: 10.0.123.0/24
     gateway: 10.0.123.1
     start: 10.0.123.51

@@ -271,3 +271,9 @@ time wait -n || (
     time juju-wait -m openstack -w
     time sunbeam cluster deploy --manifest manifest.yaml
 )
+
+time sunbeam --verbose configure --openrc demo-openrc --manifest manifest.yaml
+
+time sunbeam openrc > admin-openrc
+
+time sunbeam launch ubuntu --name test
