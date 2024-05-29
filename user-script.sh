@@ -269,7 +269,7 @@ sunbeam cluster deploy --manifest manifest.yaml &
     # LP: #2065490
     juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
-        update-status-hook-interval=30m  # TODO: bug number
+        update-status-hook-interval=30m  # LP: #2067451
 time wait -n || (
     # LP: #2067016
     snap install --classic juju-wait

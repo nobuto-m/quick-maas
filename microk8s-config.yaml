@@ -1,0 +1,13 @@
+---
+version: 0.1.0
+#extraKubeletArgs:
+#  --cluster-domain: cluster.local
+#  --cluster-dns: 10.152.183.10
+#addons:
+#  - name: dns
+extraKubeControllerManagerArgs:
+  --leader-elect-lease-duration: 180s
+  --leader-elect-renew-deadline: 120s
+extraKubeSchedulerArgs:
+  --leader-elect-lease-duration: 180s
+  --leader-elect-renew-deadline: 120s
