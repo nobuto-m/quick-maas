@@ -22,6 +22,7 @@ function cleanup () {
 loginctl enable-linger root
 
 export DEBIAN_FRONTEND=noninteractive
+export HOME=/root 
 cd ~/
 
 MAAS_PPA='ppa:maas/3.4-next'
@@ -238,7 +239,7 @@ done
 
 snap install openstack --channel 2024.1/edge
 
-env HOME=/root sunbeam prepare-node-script --client | bash -x
+sunbeam prepare-node-script --client | bash -x
 
 # LP: #2066541
 adduser ubuntu snap_daemon
