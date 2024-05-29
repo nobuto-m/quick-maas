@@ -234,7 +234,7 @@ done
 
 snap install openstack --channel 2024.1/edge
 
-sunbeam prepare-node-script --client | bash -x
+env HOME=/root sunbeam prepare-node-script --client | bash -x
 
 # LP: #2066541
 adduser ubuntu snap_daemon
