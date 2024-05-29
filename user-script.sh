@@ -226,8 +226,12 @@ for i in $(seq 1 "$num_machines"); do
             maas admin tag update-nodes compute add="$system_id"
             maas admin tag update-nodes storage add="$system_id"
 
-            block_device_id="$(maas admin block-devices read "$system_id" | jq '.[] | select(.name=="sdb").id')"
+            block_device_id="$(maas admin block-devices read "$system_id" | jq -r '.[] | select(.name=="sdb").id')"
             maas admin block-device add-tag "$system_id" "$block_device_id" tag=ceph
+
+            # LP: #2066379
+            interface_id="$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="enp2s0").id')"
+            maas admin interface add-tag "$system_id" "$interface_id" tag=compute
         ;;
     esac
 done
