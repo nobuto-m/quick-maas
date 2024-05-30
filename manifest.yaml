@@ -24,6 +24,8 @@ software:
       - --model-default=disable-telemetry=true
       # LP: #2065490
       - --model-default=logging-config=<root>=INFO;unit=DEBUG
+      # LP: #2067451
+      - --model-default=cloudinit-userdata@=./microk8s-config.yaml
   charms:
     # LP: #2059774 and possibly for other race conditions
     mysql-k8s:
