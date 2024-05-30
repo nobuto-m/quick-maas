@@ -262,15 +262,7 @@ tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-sunbeam cluster deploy --manifest manifest.yaml &
-    time until juju status -m openstack-machines; do
-        sleep 10
-    done
-
-    # FIXME: delete it after checking if multiple generations of
-    # manifests exist
-    sunbeam manifest list
-
+sunbeam cluster deploy &
     time until juju status -m openstack; do
         sleep 10
     done
@@ -282,10 +274,10 @@ time wait -n || (
     # LP: #2067016
     snap install --classic juju-wait
     time juju-wait -m openstack -w
-    time sunbeam cluster deploy --manifest manifest.yaml
+    time sunbeam cluster deploy
 )
 
-time sunbeam --verbose configure --openrc demo-openrc --manifest manifest.yaml
+time sunbeam --verbose configure --openrc demo-openrc
 
 time sunbeam openrc > admin-openrc
 
