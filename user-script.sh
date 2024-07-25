@@ -199,7 +199,7 @@ done
 
 # https://microstack.run/docs/multi-node-maas
 
-maas admin resource-pools create name=sunbeam
+maas admin tags create name=openstack-sunbeam
 maas admin tags create name=juju-controller
 maas admin tags create name=control
 maas admin tags create name=compute
@@ -215,14 +215,14 @@ maas admin ipranges create type=reserved \
 for i in $(seq 1 "$num_machines"); do
     system_id="$(maas admin machines read hostname="machine-$i" | jq -r '.[].system_id')"
 
-    maas admin machine update "$system_id" pool=sunbeam
-
     case "$i" in
         #6|7|8)  # HA
         6)  # no HA
+            maas admin tag update-nodes openstack-sunbeam add="$system_id"
             maas admin tag update-nodes juju-controller add="$system_id"
         ;;
         1|2|3)
+            maas admin tag update-nodes openstack-sunbeam add="$system_id"
             maas admin tag update-nodes control add="$system_id"
             maas admin tag update-nodes compute add="$system_id"
             maas admin tag update-nodes storage add="$system_id"
@@ -247,7 +247,6 @@ adduser ubuntu snap_daemon
 sunbeam deployment add maas --name demo_maas \
     --token "$(maas apikey --username ubuntu)" \
     --url 'http://192.168.151.1:5240/MAAS' \
-    --resource-pool sunbeam
 
 sunbeam deployment space map space-first data
 sunbeam deployment space map space-first internal
