@@ -199,17 +199,17 @@ done
 
 # https://microstack.run/docs/multi-node-maas
 
-maas admin tags create name=openstack-sunbeam
+maas admin tags create name=openstack-mysunbeam
 maas admin tags create name=juju-controller
 maas admin tags create name=control
 maas admin tags create name=compute
 maas admin tags create name=storage
 
 maas admin ipranges create type=reserved \
-    comment=sunbeam-public-api \
+    comment=mysunbeam-public-api \
     start_ip=192.168.151.81 end_ip=192.168.151.90
 maas admin ipranges create type=reserved \
-    comment=sunbeam-internal-api \
+    comment=mysunbeam-internal-api \
     start_ip=192.168.151.91 end_ip=192.168.151.100
 
 for i in $(seq 1 "$num_machines"); do
@@ -218,11 +218,11 @@ for i in $(seq 1 "$num_machines"); do
     case "$i" in
         #6|7|8)  # HA
         6)  # no HA
-            maas admin tag update-nodes openstack-sunbeam add="$system_id"
+            maas admin tag update-nodes openstack-mysunbeam add="$system_id"
             maas admin tag update-nodes juju-controller add="$system_id"
         ;;
         1|2|3)
-            maas admin tag update-nodes openstack-sunbeam add="$system_id"
+            maas admin tag update-nodes openstack-mysunbeam add="$system_id"
             maas admin tag update-nodes control add="$system_id"
             maas admin tag update-nodes compute add="$system_id"
             maas admin tag update-nodes storage add="$system_id"
@@ -244,7 +244,7 @@ sunbeam prepare-node-script --client | bash -x
 # LP: #2066541
 adduser ubuntu snap_daemon
 
-sunbeam deployment add maas --name demo_maas \
+sunbeam deployment add maas --name mysunbeam \
     --token "$(maas apikey --username ubuntu)" \
     --url 'http://192.168.151.1:5240/MAAS' \
 
