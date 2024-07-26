@@ -201,6 +201,7 @@ done
 
 maas admin tags create name=openstack-mysunbeam
 maas admin tags create name=juju-controller
+maas admin tags create name=infra
 maas admin tags create name=control
 maas admin tags create name=compute
 maas admin tags create name=storage
@@ -220,6 +221,10 @@ for i in $(seq 1 "$num_machines"); do
         6)  # no HA
             maas admin tag update-nodes openstack-mysunbeam add="$system_id"
             maas admin tag update-nodes juju-controller add="$system_id"
+        ;;
+        5)
+            maas admin tag update-nodes openstack-mysunbeam add="$system_id"
+            maas admin tag update-nodes infra add="$system_id"
         ;;
         1|2|3)
             maas admin tag update-nodes openstack-mysunbeam add="$system_id"
