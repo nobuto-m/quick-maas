@@ -232,7 +232,7 @@ for i in $(seq 1 "$num_machines"); do
 
             # LP: #2066379
             interface_id="$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="enp2s0").id')"
-            maas admin interface add-tag "$system_id" "$interface_id" tag=compute
+            maas admin interface add-tag "$system_id" "$interface_id" tag='neutron:physnet1'
         ;;
     esac
 done
