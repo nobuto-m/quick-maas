@@ -25,7 +25,7 @@ export DEBIAN_FRONTEND=noninteractive
 mkdir -p /root/.local/share/juju/ssh/ # LP: #2029515
 cd ~/
 
-MAAS_PPA='ppa:maas/3.4-next'
+MAAS_PPA='ppa:maas/3.5-next'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
