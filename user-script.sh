@@ -271,10 +271,6 @@ sunbeam cluster deploy --manifest manifest.yaml &
         sleep 10
     done
 
-    # FIXME: delete it after checking if multiple generations of
-    # manifests exist
-    sunbeam manifest list
-
     time until juju status -m openstack; do
         sleep 10
     done
@@ -282,14 +278,9 @@ sunbeam cluster deploy --manifest manifest.yaml &
     juju model-default --cloud sunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
         update-status-hook-interval=30m  # LP: #2067451
-time wait -n || (
-    # LP: #2067016
-    snap install --classic juju-wait
-    time juju-wait -m openstack -w
-    time sunbeam cluster deploy --manifest manifest.yaml
-)
+time wait
 
-time sunbeam --verbose configure --openrc demo-openrc --manifest manifest.yaml
+time sunbeam --verbose configure --openrc demo-openrc
 
 time sunbeam openrc > admin-openrc
 
