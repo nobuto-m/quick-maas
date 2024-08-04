@@ -275,7 +275,7 @@ sunbeam cluster deploy &
         sleep 10
     done
     # LP: #2065490
-    juju model-default --cloud mysunbeam-microk8s logging-config='<root>=INFO;unit=DEBUG'
+    juju model-default --cloud mysunbeam-k8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
         update-status-hook-interval=30m  # LP: #2067451
 time wait
