@@ -278,7 +278,7 @@ sunbeam cluster deploy &
     juju model-default --cloud mysunbeam-k8s logging-config='<root>=INFO;unit=DEBUG'
     juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
         update-status-hook-interval=30m  # LP: #2067451
-time wait
+time wait -n
 
 time sunbeam --verbose configure --openrc demo-openrc
 
