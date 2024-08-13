@@ -232,7 +232,7 @@ juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 juju add-model ceph maas
 
-juju deploy ./bundle.yaml
+#juju deploy ./bundle.yaml
 
 
 # COS
@@ -269,10 +269,16 @@ git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 juju deploy cos-lite --trust --channel latest/edge \
     --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
 
+time juju-wait -m cos -w --max_wait 300
+
 
 # Ceph post-deployment
 
 juju switch ceph
+
+juju deploy ./bundle.yaml \
+    --overlay ./overlay-consume-cos.yaml
+
 time juju-wait -m ceph -w --max_wait 5400 \
     --exclude vault \
     --exclude ceph-dashboard
