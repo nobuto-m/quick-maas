@@ -266,14 +266,8 @@ juju add-model cos cos-microk8s
 git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
 
 # use latest/edge for now:
-# https://github.com/canonical/prometheus-k8s-operator/issues/543
-# https://github.com/canonical/prometheus-k8s-operator/issues/547
 juju deploy cos-lite --trust --channel latest/edge \
-    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml \
-    --overlay ./overlay-customize-cos-lite.yaml
-
-# https://github.com/canonical/cos-lite-bundle/issues/86
-#    --overlay ./storage-small-overlay.yaml
+    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
 
 
 # Ceph post-deployment
@@ -306,8 +300,7 @@ time juju-wait -m ceph -w --max_wait 1800
 
 # COS post-deployment
 
-time juju-wait -m cos -w --max_wait 300 \
-    --exclude prometheus-scrape-config-ceph
+time juju-wait -m cos -w --max_wait 300
 
 # TODO: enable MAAS monitoring
 # /usr/share/maas/grafana_agent/agent.yaml.example

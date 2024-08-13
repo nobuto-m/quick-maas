@@ -2,7 +2,6 @@ series: jammy
 applications:
   grafana-agent:
     charm: grafana-agent
-    # https://github.com/canonical/grafana-agent-operator/issues/22
     channel: latest/edge
 
 saas:
@@ -14,11 +13,6 @@ saas:
     url: cos.loki-logging
   cos-prometheus-receive-remote-write:
     url: cos.prometheus-receive-remote-write
-  # LP: #2041500
-  #cos-prometheus-scrape:
-  #  url: cos.prometheus-scrape
-  cos-prometheus-scrape-config-ceph:
-    url: cos.prometheus-scrape-config-ceph
 
 relations:
 - - grafana-agent:logging-consumer
@@ -28,8 +22,8 @@ relations:
 - - grafana-agent:grafana-dashboards-provider
   - cos-grafana-dashboards:grafana-dashboard
 
-- - grafana-agent:juju-info
-  - ceph-mon:juju-info
+- - grafana-agent:cos-agent
+  - ceph-mon:cos-agent
 
 - - grafana-agent:juju-info
   - ceph-osd:juju-info
@@ -46,9 +40,3 @@ relations:
 #  - ceph-iscsi:juju-info
 - - grafana-agent:juju-info
   - vault:juju-info
-
-# LP: #2041500
-#- - cos-prometheus-scrape:metrics-endpoint
-#  - ceph-mon:metrics-endpoint
-- - cos-prometheus-scrape-config-ceph:configurable-scrape-jobs
-  - ceph-mon:metrics-endpoint

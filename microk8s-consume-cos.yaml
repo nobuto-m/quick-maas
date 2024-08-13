@@ -2,7 +2,6 @@ series: jammy
 applications:
   grafana-agent:
     charm: grafana-agent
-    # https://github.com/canonical/grafana-agent-operator/issues/20
     channel: latest/edge
 
 saas:
