@@ -269,19 +269,7 @@ tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-sunbeam cluster deploy &
-    time until juju status -m openstack-machines; do
-        sleep 10
-    done
-
-    time until juju status -m openstack; do
-        sleep 10
-    done
-    # LP: #2065490
-    juju model-default --cloud mysunbeam-k8s logging-config='<root>=INFO;unit=DEBUG'
-    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
-        update-status-hook-interval=30m  # LP: #2067451
-time wait -n
+time sunbeam cluster deploy
 
 time sunbeam configure --openrc demo-openrc
 
