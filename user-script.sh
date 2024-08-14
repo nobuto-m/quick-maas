@@ -283,8 +283,8 @@ sunbeam cluster deploy &
         update-status-hook-interval=30m  # LP: #2067451
 time wait -n
 
-time sunbeam --verbose configure --openrc demo-openrc
+time sunbeam configure --openrc demo-openrc
 
-time sunbeam openrc > admin-openrc
+time sunbeam openrc | tee admin-openrc
 
 time sunbeam launch ubuntu --name test
