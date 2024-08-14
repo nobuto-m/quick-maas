@@ -151,8 +151,11 @@ for i in $(seq 1 "$num_machines"); do
         6|7|8)
             memory=4096
         ;;
+        5)
+            memory=4096
+        ;;
         *)
-            memory=18432
+            memory=49152
         ;;
     esac
 
@@ -166,7 +169,7 @@ for i in $(seq 1 "$num_machines"); do
         --name "machine-$i"\
         --osinfo ubuntujammy \
         --boot network,hd \
-        --vcpus cores=16 \
+        --vcpus cores=32 \
         --cpu host-passthrough,cache.mode=passthrough \
         --memory "$memory" \
         --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
