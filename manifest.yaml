@@ -1,6 +1,7 @@
 deployment:
   proxy:
     proxy_required: false
+  region: RegionOne
   external_network:
     cidr: 10.0.123.0/24
     gateway: 10.0.123.1
