@@ -6,8 +6,8 @@
 
 ## prepare a bare metal instance
 
-If you don't have any physical machine with 64GB of memory or more,
-launch a baremetal instance with Ubuntu 22.04 LTS.
+If you don't have any physical machine with 96GB of memory or more,
+launch a baremetal instance (e.g. `c5n.metal`) with Ubuntu 22.04 LTS.
 
 If you get "Your account is currently being verified", have a cup of
 coffee.
@@ -45,28 +45,6 @@ Then, SSH to the instance and import keys.
 
 [baremetal] $ ssh-import-id "<Launchpad accounts>"
 ```
-
-## enable nested KVM
-
-Enable it.
-
-```bash
-[baremetal] $ sudo rmmod kvm_intel
-
-$ cat <<EOF | sudo tee /etc/modprobe.d/nested-kvm-intel.conf
-options kvm_intel nested=1
-EOF
-
-$ sudo modprobe kvm_intel
-```
-
-Verify if it returns "Y".
-
-```bash
-$ cat /sys/module/kvm_intel/parameters/nested
--> Y
-```
-
 
 ## prepare a LXD container to have a clean MAAS environment
 
