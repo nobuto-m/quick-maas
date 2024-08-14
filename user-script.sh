@@ -151,6 +151,9 @@ for i in $(seq 1 "$num_machines"); do
         6|7|8)
             memory=4096
         ;;
+        5)
+            memory=4096
+        ;;
         *)
             memory=18432
         ;;
