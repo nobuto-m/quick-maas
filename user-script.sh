@@ -253,7 +253,7 @@ sunbeam prepare-node-script --client | bash -x
 adduser ubuntu snap_daemon
 
 sunbeam deployment add maas --name mysunbeam \
-    --token "$(maas apikey --username ubuntu)" \
+    --token "$(sudo maas apikey --username ubuntu)" \
     --url 'http://192.168.151.1:5240/MAAS' \
 
 sunbeam deployment space map space-first data
