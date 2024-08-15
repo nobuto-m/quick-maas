@@ -276,6 +276,7 @@ time juju-wait -m cos -w --max_wait 300
 
 juju switch ceph
 
+apt-get install -y bzip2
 wget https://openstack-ci-reports.ubuntu.com/artifacts/c94/926243/2/check/charm-build/c94c888/ceph-mon-25ac13b83cee41d58677006fb2745b9a.tar.bz2
 tar xvf ceph-mon-25ac13b83cee41d58677006fb2745b9a.tar.bz2
 
