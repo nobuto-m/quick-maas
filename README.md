@@ -1,9 +1,8 @@
 ## rough estimated time
 
 - maas: 15m
-- sunbeam
-  + cluster bootstrap: 12m
-  + cluster deploy: 35m
+- openstack: 40m
+- kubernetes: 18m
 
 ## prepare a bare metal instance
 

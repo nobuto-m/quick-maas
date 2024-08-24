@@ -252,14 +252,8 @@ sunbeam prepare-node-script --client | bash -x
 # LP: #2066541
 adduser ubuntu snap_daemon
 
-tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
-#time sunbeam deployment validate
-#time sunbeam openrc | tee admin-openrc
-
-token="$(sudo maas apikey --username ubuntu)"
-
 sunbeam deployment add maas --name mysunbeam \
-    --token "$token" \
+    --token "$(sudo maas apikey --username ubuntu)" \
     --url 'http://192.168.151.1:5240/MAAS' \
 
 sunbeam deployment space map space-first data
@@ -269,11 +263,16 @@ sunbeam deployment space map space-first public
 sunbeam deployment space map space-first storage
 sunbeam deployment space map space-first storage-cluster
 
+time sunbeam deployment validate
 
-sunbeam cluster bootstrap --manifest manifest.yaml
+tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
 
-sunbeam cluster deploy
+time sunbeam cluster bootstrap --manifest manifest.yaml
 
-sunbeam configure --openrc demo-openrc
+time sunbeam cluster deploy
 
-sunbeam launch ubuntu --name test
+time sunbeam configure --openrc demo-openrc
+
+time sunbeam openrc | tee admin-openrc
+
+time sunbeam launch ubuntu --name test
