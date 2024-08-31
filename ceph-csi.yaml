@@ -1,0 +1,19 @@
+applications:
+  kubernetes-control-plane:
+    options:
+      allow-privileged: "true"
+  ceph-csi:
+    charm: ceph-csi
+    channel: 1.30/stable
+    options:
+      namespace: kube-system
+      provisioner-replicas: 1
+machines:
+  "0": {}
+  "1": {}
+  "2": {}
+relations:
+- - ceph-csi:ceph-client
+  - ceph-mon:client
+- - ceph-csi:kubernetes
+  - kubernetes-control-plane:juju-info

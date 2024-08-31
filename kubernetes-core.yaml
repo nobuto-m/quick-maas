@@ -1,0 +1,93 @@
+description: A minimal two-machine Kubernetes cluster, appropriate for development.
+issues: https://bugs.launchpad.net/charmed-kubernetes-bundles
+series: jammy
+source: https://github.com/charmed-kubernetes/bundle
+website: https://ubuntu.com/kubernetes/charmed-k8s
+name: kubernetes-core
+machines:
+  '0':
+    constraints: cores=2 mem=8G root-disk=16G
+  '1':
+    constraints: cores=2 mem=8G root-disk=16G
+applications:
+  calico:
+    annotations:
+      gui-x: '475'
+      gui-y: '605'
+    channel: stable
+    charm: calico
+    options:
+      vxlan: Always
+  containerd:
+    annotations:
+      gui-x: '475'
+      gui-y: '800'
+    channel: stable
+    charm: containerd
+  easyrsa:
+    annotations:
+      gui-x: '90'
+      gui-y: '420'
+    channel: stable
+    charm: easyrsa
+    num_units: 1
+    to:
+    - lxd:0
+  etcd:
+    annotations:
+      gui-x: '800'
+      gui-y: '420'
+    channel: stable
+    charm: etcd
+    num_units: 1
+    options:
+      channel: 3.4/stable
+    to:
+    - '0'
+  kubernetes-control-plane:
+    annotations:
+      gui-x: '800'
+      gui-y: '850'
+    channel: stable
+    charm: kubernetes-control-plane
+    constraints: cores=2 mem=8G root-disk=16G
+    expose: true
+    num_units: 1
+    options:
+      channel: 1.30/stable
+    to:
+    - '0'
+  kubernetes-worker:
+    annotations:
+      gui-x: '90'
+      gui-y: '850'
+    channel: stable
+    charm: kubernetes-worker
+    constraints: cores=2 mem=8G root-disk=16G
+    expose: true
+    num_units: 1
+    options:
+      channel: 1.30/stable
+    to:
+    - '1'
+relations:
+- - kubernetes-control-plane:kube-control
+  - kubernetes-worker:kube-control
+- - kubernetes-control-plane:certificates
+  - easyrsa:client
+- - kubernetes-control-plane:etcd
+  - etcd:db
+- - kubernetes-worker:certificates
+  - easyrsa:client
+- - etcd:certificates
+  - easyrsa:client
+- - calico:etcd
+  - etcd:db
+- - calico:cni
+  - kubernetes-control-plane:cni
+- - calico:cni
+  - kubernetes-worker:cni
+- - containerd:containerd
+  - kubernetes-worker:container-runtime
+- - containerd:containerd
+  - kubernetes-control-plane:container-runtime

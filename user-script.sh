@@ -244,7 +244,9 @@ juju exec --unit ceph-osd/0 '
     cat "$(readlink -f /etc/ceph/ceph.conf)"
 '
 
-juju deploy ./bundle.yaml --overlay ./microk8s.yaml
+juju deploy ./bundle.yaml \
+    --overlay ./kubernetes-core.yaml \
+    --overlay ./ceph-csi.yaml
 
 time juju-wait -m ceph -w --max_wait 5400
 
