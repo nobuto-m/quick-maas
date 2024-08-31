@@ -10,8 +10,6 @@ applications:
   ceph-csi:
     charm: ceph-csi
     channel: 1.28/stable
-    bindings:
-      "": oam-space
     options:
       namespace: kube-system
 relations:
