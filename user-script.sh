@@ -234,127 +234,29 @@ juju add-model ceph maas
 
 juju deploy ./bundle.yaml
 
+time juju-wait -m ceph -w --max_wait 5400
 
-# COS
+juju exec --unit ceph-osd/0 '
+    set -x
+    ls -alF /etc/ceph/
+    ls -alF /etc/alternatives/ceph.conf
+    update-alternatives --display ceph.conf
+    cat "$(readlink -f /etc/ceph/ceph.conf)"
+'
 
-juju add-model cos-microk8s
-juju deploy ./microk8s_bundle.yaml
+juju deploy ./bundle.yaml --overlay ./microk8s.yaml
 
-time juju-wait -m cos-microk8s -w --max_wait 1800
+time juju-wait -m ceph -w --max_wait 5400
 
-juju exec --unit microk8s/leader -- \
-    microk8s enable metallb:192.168.151.81-192.168.151.100
-
-# TODO: check if enabling ingress and rbac add-ons are necessary
-
-snap install kubectl --classic
-mkdir ~/.kube/
-juju exec --unit microk8s/leader -- microk8s config | tee ~/.kube/config
-
-juju add-k8s \
-    --client --controller maas-controller \
-    --context-name microk8s \
-    cos-microk8s
-
-juju model-defaults --cloud cos-microk8s \
-    test-mode=true \
-    disable-telemetry=true \
-    logging-config='<root>=INFO;unit=DEBUG'
-
-juju add-model cos cos-microk8s
-
-git clone --depth=1 https://github.com/canonical/cos-lite-bundle.git
-
-# use latest/edge for now:
-juju deploy cos-lite --trust --channel latest/edge \
-    --overlay ./cos-lite-bundle/overlays/offers-overlay.yaml
-
-
-# Ceph post-deployment
-
-juju switch ceph
-time juju-wait -m ceph -w --max_wait 5400 \
-    --exclude vault \
-    --exclude ceph-dashboard
-
-VAULT_ADDR="http://$(juju exec --unit vault/leader -- network-get certificates --ingress-address):8200"
-export VAULT_ADDR
-
-vault_init_output="$(vault operator init -key-shares=1 -key-threshold=1 -format json)"
-vault operator unseal -format json "$(echo "$vault_init_output" | jq -r .unseal_keys_b64[])"
-
-VAULT_TOKEN="$(echo "$vault_init_output" | jq -r .root_token)"
-export VAULT_TOKEN
-
-# wait until Vault HA status settles, LP: #1987677
-until vault status -format json | jq -r --exit-status .leader_cluster_address; do
-    sleep 1
-done
-
-juju run --format=yaml vault/leader --wait=10m authorize-charm \
-    token="$(vault token create -ttl=10m -format json | jq -r .auth.client_token)"
-juju run --format=yaml vault/leader --wait=10m generate-root-ca
-#time juju-wait -m ceph -w --max_wait 1800 --retry_errors 3  # LP: #2040351
-time juju-wait -m ceph -w --max_wait 1800
-
-
-# COS post-deployment
-
-time juju-wait -m cos -w --max_wait 300
-
-# TODO: enable MAAS monitoring
-# /usr/share/maas/grafana_agent/agent.yaml.example
-
-# https://github.com/canonical/grafana-agent-operator/issues/20
-juju deploy -m controller grafana-agent --channel latest/edge
-juju integrate -m controller controller:juju-info grafana-agent:juju-info
-juju consume -m controller cos.prometheus-receive-remote-write cos-prometheus-receive-remote-write
-juju integrate -m controller grafana-agent:send-remote-write cos-prometheus-receive-remote-write:receive-remote-write
-
-# LP: #2041773 - no metrics integration
-juju consume -m controller cos.grafana-dashboards cos-grafana-dashboards
-juju integrate -m controller grafana-agent:grafana-dashboards-provider cos-grafana-dashboards:grafana-dashboard
-
-# LP: #2038495 - log spamming
-#juju consume -m controller cos.loki-logging cos-loki-logging
-#juju integrate -m controller grafana-agent:logging-consumer cos-loki-logging:logging
-
-juju deploy ./bundle.yaml \
-    --overlay ./overlay-consume-cos.yaml
-
-juju deploy -m cos-microk8s ./microk8s_bundle.yaml \
-    --overlay ./microk8s-consume-cos.yaml
-
-time juju-wait -m cos-microk8s -w --max_wait 1800
-time juju-wait -m ceph -w --max_wait 1800
+juju exec --unit ceph-osd/0 '
+    set -x
+    ls -alF /etc/ceph/
+    ls -alF /etc/alternatives/ceph.conf
+    update-alternatives --display ceph.conf
+    cat "$(readlink -f /etc/ceph/ceph.conf)"
+'
 
 # be nice to my SSD
 juju model-config update-status-hook-interval=24h
-
-juju run --format=yaml ceph-iscsi/leader --wait=10m create-target \
-   client-initiatorname=iqn.2004-10.com.ubuntu:01:de21d53afe31 \
-   client-username=testclient \
-   client-password=12to16characters \
-   image-size=3G \
-   image-name=disk_test
-
-# do some activities in the Ceph cluster to have some metrics generated
-juju exec --unit ceph-mon/leader -- ceph osd pool create scbench 32 32
-juju exec --unit ceph-mon/leader -- ceph osd pool application enable scbench test
-juju exec --unit ceph-mon/leader -- rados bench -p scbench 60 write -b 4096
-
-
-# print the access info
-juju status -m controller
-# LP: #2039155
-timeout 5 juju dashboard || true
-
-juju status ceph-loadbalancer
-juju run ceph-dashboard/leader add-user \
-    username=admin role=administrator
-
-juju show-unit -m cos catalogue/0 --format json \
-    | jq -r '."catalogue/0"."relation-info"[]."application-data".url'
-juju run -m cos grafana/leader get-admin-password
 
 juju models
