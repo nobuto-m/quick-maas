@@ -1,29 +1,5 @@
 series: jammy
 applications:
-  ceph-dashboard:
-    charm: ceph-dashboard
-    channel: quincy/stable
-  ceph-fs:
-    charm: ceph-fs
-    channel: quincy/stable
-    num_units: 1
-    to:
-    - lxd:0
-  ceph-iscsi:
-    charm: ceph-iscsi
-    channel: quincy/stable
-    num_units: 2
-    to:
-    - "1"
-    - "2"
-  ceph-loadbalancer:
-    charm: openstack-loadbalancer
-    channel: jammy/stable
-    num_units: 1
-    to:
-    - lxd:1
-    options:
-      vip: 192.168.151.51  # LP: #2039678
   ceph-mon:
     charm: ceph-mon
     channel: quincy/stable
@@ -38,13 +14,6 @@ applications:
       expected-osd-count: 3
       monitor-count: 3
       source: distro
-      rbd-stats-pools: "*"
-  ceph-nfs:
-    charm: ceph-nfs
-    channel: quincy/stable
-    num_units: 1
-    to:
-    - lxd:1
   ceph-osd:
     charm: ceph-osd
     channel: quincy/stable
@@ -57,23 +26,6 @@ applications:
       aa-profile-mode: enforce
       osd-devices: /dev/sdb /dev/vdb
       source: distro
-  ceph-radosgw:
-    charm: ceph-radosgw
-    channel: quincy/stable
-    num_units: 1
-    to:
-    - lxd:0
-    options:
-      source: distro
-  ntp:
-    charm: ntp
-    channel: stable
-  vault:
-    charm: vault
-    channel: 1.8/stable
-    num_units: 1
-    to:
-    - lxd:2
 machines:
   "0": {}
   "1": {}
@@ -81,27 +33,3 @@ machines:
 relations:
 - - ceph-osd:mon
   - ceph-mon:osd
-- - ntp:juju-info
-  - ceph-osd:juju-info
-- - ceph-radosgw:mon
-  - ceph-mon:radosgw
-- - vault:certificates
-  - ceph-radosgw:certificates
-- - ceph-dashboard:dashboard
-  - ceph-mon:dashboard
-- - ceph-dashboard:certificates
-  - vault:certificates
-- - ceph-dashboard:loadbalancer
-  - ceph-loadbalancer:loadbalancer
-- - ceph-dashboard:radosgw-dashboard
-  - ceph-radosgw:radosgw-user
-- - ceph-fs:ceph-mds
-  - ceph-mon:mds
-- - ceph-nfs:ceph-client
-  - ceph-mon:client
-- - ceph-iscsi:ceph-client
-  - ceph-mon:client
-- - ceph-iscsi:admin-access
-  - ceph-dashboard:iscsi-dashboard
-- - ceph-iscsi:certificates
-  - vault:certificates
