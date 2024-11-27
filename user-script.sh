@@ -25,7 +25,7 @@ export DEBIAN_FRONTEND=noninteractive
 mkdir -p /root/.local/share/juju/ssh/ # LP: #2029515
 cd ~/
 
-MAAS_PPA='ppa:maas/3.4-next'
+MAAS_PPA='ppa:maas/3.5'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
@@ -217,6 +217,7 @@ EOF
 juju add-credential --client maas -f credentials.yaml
 
 juju bootstrap maas maas-controller --debug \
+    --bootstrap-base ubuntu@22.04 \
     --model-default test-mode=true \
     --model-default disable-telemetry=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
