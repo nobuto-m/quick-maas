@@ -2,16 +2,16 @@ series: jammy
 applications:
   ceph-dashboard:
     charm: ceph-dashboard
-    channel: quincy/stable
+    channel: squid/candidate
   ceph-fs:
     charm: ceph-fs
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 1
     to:
     - lxd:0
   ceph-iscsi:
     charm: ceph-iscsi
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 2
     to:
     - "1"
@@ -26,7 +26,7 @@ applications:
       vip: 192.168.151.51  # LP: #2039678
   ceph-mon:
     charm: ceph-mon
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 3
     to:
     - lxd:0
@@ -41,13 +41,13 @@ applications:
       rbd-stats-pools: "*"
   ceph-nfs:
     charm: ceph-nfs
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 1
     to:
     - lxd:1
   ceph-osd:
     charm: ceph-osd
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 3
     to:
     - "0"
@@ -59,7 +59,7 @@ applications:
       source: distro
   ceph-radosgw:
     charm: ceph-radosgw
-    channel: quincy/stable
+    channel: squid/candidate
     num_units: 1
     to:
     - lxd:0
