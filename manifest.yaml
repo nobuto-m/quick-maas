@@ -1,6 +1,7 @@
 # Generated Sunbeam Deployment Manifest
 
-deployment:
+core:
+  config:
     proxy:
       # Use proxy to access external network resources?
       # This will configure the proxy settings for the deployment. Resources will be fetched from the internet via the proxy.
