@@ -1,32 +1,389 @@
+# Generated Sunbeam Deployment Manifest
+
 deployment:
-  proxy:
-    proxy_required: false
-  external_network:
-    cidr: 10.0.123.0/24
-    gateway: 10.0.123.1
-    start: 10.0.123.51
-    end: 10.0.123.80
-    network_type: flat  # or vlan
-    #segmentation_id:
-  user:
-    remote_access_location: remote
-    run_demo_setup: true
-    username: demo
-    password: demo
-    cidr: 192.168.1.0/24
-    nameservers: 10.0.123.1
-    security_group_rules: true
-software:
-  juju:
-    bootstrap_args:
-      - --debug
-      - --model-default=test-mode=true
-      - --model-default=disable-telemetry=true
-      # LP: #2065490
-      - --model-default=logging-config=<root>=INFO;unit=DEBUG
-  charms:
-    # LP: #2059774 and possibly for other race conditions
-    mysql-k8s:
-      channel: 8.0/edge
-    mysql-router-k8s:
-      channel: 8.0/edge
+    proxy:
+      # Use proxy to access external network resources?
+      # This will configure the proxy settings for the deployment. Resources will be fetched from the internet via the proxy.
+      proxy_required: False
+      # http_proxy
+      # HTTP proxy server to use for fetching resources from the internet.
+      http_proxy: 
+      # https_proxy
+      # HTTPS proxy server to use for fetching resources from the internet. Usually, the same as the HTTP proxy.
+      https_proxy: 
+      # no_proxy
+      # Comma separated list of domain/IP/cidr for which proxy should not be used. Usually, the management network and the internal network of the deployment are part of this list.
+      no_proxy: 
+    # Enter a region name (cannot be changed later)
+    # A region is general division of OpenStack services. It cannot be changed once set.
+    region: RegionOne
+    user:
+      # Populate OpenStack cloud with demo user, default images, flavors etc
+      # If enabled, demonstration resources will be created on the cloud.
+      run_demo_setup: True
+      # Username to use for access to OpenStack
+      # Username for the demonstration user.
+      username: demo
+      # Password to use for access to OpenStack
+      # Password for the demonstration user.
+      password: demo
+      # Project network
+      # Network range for the private network for the demonstration user's project. Typically an unroutable network (RFC 1918).
+      cidr: 192.168.0.0/24
+      # Project network's nameservers
+      # A list of DNS server IP addresses (comma separated) that should be used for external DNS resolution from cloud instances. If not specified, the system's default nameservers will be used.
+      nameservers: 192.168.151.1
+      # Enable ping and SSH access to instances?
+      # If enabled, security groups will be created with rules to allow ICMP and SSH access to instances.
+      security_group_rules: True
+    # Remote Access
+    external_network:
+      # External network
+      # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
+      cidr: 192.168.151.0/24
+      # External network's gateway
+      # Router IP address connecting the network for outside use.
+      gateway: 192.168.151.1
+      # External network's allocation range
+      # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
+      # LP: #2098823
+      range: 192.168.151.31-192.168.151.80
+      # External network's type [flat/vlan]
+      # Type of network to use for external access.
+      network_type: flat
+      # External network's segmentation id
+      # Vlan ID the external network is on.
+      #segmentation_id: 0
+    # # TLS Certificates
+    # certificates:
+    #   <CSR x500UniqueIdentifier>:
+    #     # Base64 encoded Certificate for unit CSR Unique ID: subject
+    #     certificate: 
+  software:
+    juju:
+      bootstrap_args:
+        - --debug
+        - --model-default=test-mode=true
+        - --model-default=disable-telemetry=true
+        # LP: #2065490
+        - --model-default=logging-config=<root>=INFO;unit=DEBUG
+      scale_args: []
+      destroy_args: []
+    charms:
+      cinder-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      glance-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      horizon-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      keystone-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      neutron-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      nova-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      placement-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      ovn-central-k8s:
+        channel: 24.03/edge
+        revision: null
+        config: null
+      ovn-relay-k8s:
+        channel: 24.03/edge
+        revision: null
+        config: null
+      mysql-k8s:
+        channel: 8.0/stable
+        revision: null
+        config: null
+      mysql-router-k8s:
+        channel: 8.0/stable
+        revision: null
+        config: null
+      self-signed-certificates:
+        channel: latest/beta
+        revision: null
+        config: null
+      rabbitmq-k8s:
+        channel: 3.12/stable
+        revision: null
+        config: null
+      traefik-k8s:
+        channel: latest/beta
+        revision: null
+        config: null
+      microceph:
+        channel: squid/edge
+        revision: null
+        config:
+          snap-channel: squid/edge
+      k8s:
+        channel: 1.32/stable
+        revision: null
+        config: null
+      openstack-hypervisor:
+        channel: 2024.1/edge
+        revision: null
+        config:
+          snap-channel: 2024.1/edge
+      sunbeam-machine:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      sunbeam-clusterd:
+        channel: 2024.1/edge
+        revision: null
+        config:
+          snap-channel: 2024.1/edge
+      sunbeam-ssc:
+        channel: latest/beta
+        revision: null
+        config: null
+      cinder-volume:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+      cinder-volume-ceph:
+        channel: 2024.1/edge
+        revision: null
+        config: null
+  #   terraform:
+  #     sunbeam-machine-plan:
+  #       source: null
+  #     k8s-plan:
+  #       source: null
+  #     microceph-plan:
+  #       source: null
+  #     cinder-volume-plan:
+  #       source: null
+  #     openstack-plan:
+  #       source: null
+  #     hypervisor-plan:
+  #       source: null
+  #     demo-setup:
+  #       source: null
+features:
+  caas:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     magnum-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform:
+    #     caas-setup:
+    #       source: null
+  dns:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     designate-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     designate-bind-k8s:
+    #       channel: 9/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  images-sync:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     openstack-images-sync-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  instance-recovery:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     consul-k8s:
+    #       channel: 1.19/edge
+    #       revision: null
+    #       config: null
+    #     consul-client:
+    #       channel: 1.19/edge
+    #       revision: null
+    #       config: null
+    #     masakari-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform:
+    #     consul-client-plan:
+    #       source: null
+  ldap:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     keystone-ldap-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  loadbalancer:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     octavia-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  resource-optimization:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     watcher-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  orchestration:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     heat-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  pro:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms: {}
+    #   terraform:
+    #     ubuntu-pro-plan:
+    #       source: null
+  secrets:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     barbican-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  telemetry:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     aodh-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     gnocchi-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     ceilometer-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #     openstack-exporter-k8s:
+    #       channel: 2024.1/edge
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  validation:
+    # config: null
+    software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+      charms:
+        tempest-k8s:
+          channel: 2024.1/edge
+          revision: null
+          config: null
+    #   terraform: {}
+  vault:
+    # config: null
+    # software:
+    #   juju:
+    #     bootstrap_args: []
+    #     scale_args: []
+    #     destroy_args: []
+    #   charms:
+    #     vault-k8s:
+    #       channel: 1.16/stable
+    #       revision: null
+    #       config: null
+    #   terraform: {}
+  observability:
+    embedded:
+      # config: null
+
+    external:
+      # config: null
+
+  tls:
+    ca:
+      # config:
+        # # TLS Certificates
+        # certificates:
+        #   <CSR x500UniqueIdentifier>:
+        #     # Base64 encoded Certificate for unit CSR Unique ID: subject
+        #     certificate: 
