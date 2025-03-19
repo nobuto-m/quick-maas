@@ -1,59 +1,59 @@
 # Generated Sunbeam Deployment Manifest
 
 deployment:
-    proxy:
-      # Use proxy to access external network resources?
-      # This will configure the proxy settings for the deployment. Resources will be fetched from the internet via the proxy.
-      proxy_required: False
-      # http_proxy
-      # HTTP proxy server to use for fetching resources from the internet.
-      http_proxy: 
-      # https_proxy
-      # HTTPS proxy server to use for fetching resources from the internet. Usually, the same as the HTTP proxy.
-      https_proxy: 
-      # no_proxy
-      # Comma separated list of domain/IP/cidr for which proxy should not be used. Usually, the management network and the internal network of the deployment are part of this list.
-      no_proxy: 
-    # Enter a region name (cannot be changed later)
-    # A region is general division of OpenStack services. It cannot be changed once set.
-    region: RegionOne
-    user:
-      # Populate OpenStack cloud with demo user, default images, flavors etc
-      # If enabled, demonstration resources will be created on the cloud.
-      run_demo_setup: True
-      # Username to use for access to OpenStack
-      # Username for the demonstration user.
-      username: demo
-      # Password to use for access to OpenStack
-      # Password for the demonstration user.
-      password: demo
-      # Project network
-      # Network range for the private network for the demonstration user's project. Typically an unroutable network (RFC 1918).
-      cidr: 192.168.0.0/24
-      # Project network's nameservers
-      # A list of DNS server IP addresses (comma separated) that should be used for external DNS resolution from cloud instances. If not specified, the system's default nameservers will be used.
-      nameservers: 192.168.151.1
-      # Enable ping and SSH access to instances?
-      # If enabled, security groups will be created with rules to allow ICMP and SSH access to instances.
-      security_group_rules: True
-    # Remote Access
-    external_network:
-      # External network
-      # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
-      cidr: 192.168.151.0/24
-      # External network's gateway
-      # Router IP address connecting the network for outside use.
-      gateway: 192.168.151.1
-      # External network's allocation range
-      # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
-      # LP: #2098823
-      range: 192.168.151.31-192.168.151.80
-      # External network's type [flat/vlan]
-      # Type of network to use for external access.
-      network_type: flat
-      # External network's segmentation id
-      # Vlan ID the external network is on.
-      #segmentation_id: 0
+  proxy:
+    # Use proxy to access external network resources?
+    # This will configure the proxy settings for the deployment. Resources will be fetched from the internet via the proxy.
+    proxy_required: False
+    # http_proxy
+    # HTTP proxy server to use for fetching resources from the internet.
+    http_proxy: 
+    # https_proxy
+    # HTTPS proxy server to use for fetching resources from the internet. Usually, the same as the HTTP proxy.
+    https_proxy: 
+    # no_proxy
+    # Comma separated list of domain/IP/cidr for which proxy should not be used. Usually, the management network and the internal network of the deployment are part of this list.
+    no_proxy: 
+  # Enter a region name (cannot be changed later)
+  # A region is general division of OpenStack services. It cannot be changed once set.
+  region: RegionOne
+  user:
+    # Populate OpenStack cloud with demo user, default images, flavors etc
+    # If enabled, demonstration resources will be created on the cloud.
+    run_demo_setup: True
+    # Username to use for access to OpenStack
+    # Username for the demonstration user.
+    username: demo
+    # Password to use for access to OpenStack
+    # Password for the demonstration user.
+    password: demo
+    # Project network
+    # Network range for the private network for the demonstration user's project. Typically an unroutable network (RFC 1918).
+    cidr: 192.168.0.0/24
+    # Project network's nameservers
+    # A list of DNS server IP addresses (comma separated) that should be used for external DNS resolution from cloud instances. If not specified, the system's default nameservers will be used.
+    nameservers: 192.168.151.1
+    # Enable ping and SSH access to instances?
+    # If enabled, security groups will be created with rules to allow ICMP and SSH access to instances.
+    security_group_rules: True
+  # Remote Access
+  external_network:
+    # External network
+    # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
+    cidr: 192.168.151.0/24
+    # External network's gateway
+    # Router IP address connecting the network for outside use.
+    gateway: 192.168.151.1
+    # External network's allocation range
+    # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
+    # LP: #2098823
+    range: 192.168.151.31-192.168.151.80
+    # External network's type [flat/vlan]
+    # Type of network to use for external access.
+    network_type: flat
+    # External network's segmentation id
+    # Vlan ID the external network is on.
+    #segmentation_id: 0
     # # TLS Certificates
     # certificates:
     #   <CSR x500UniqueIdentifier>:
