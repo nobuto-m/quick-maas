@@ -22,10 +22,10 @@ function cleanup () {
 loginctl enable-linger root
 
 export DEBIAN_FRONTEND=noninteractive
-export HOME=/root 
+mkdir -p /root/.local/share/juju/ssh/ # LP: #2029515
 cd ~/
 
-MAAS_PPA='ppa:maas/3.4-next'
+MAAS_PPA='ppa:maas/3.5'
 
 # proxy
 if host squid-deb-proxy.lxd >/dev/null; then
