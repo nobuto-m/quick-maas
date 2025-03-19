@@ -117,10 +117,10 @@ time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
     sleep 15
 done
 
-# add jammy image
+# add noble image
 # LP: #2031842
 sleep 30
-maas admin boot-source-selections create 1 os=ubuntu release=jammy arches=amd64 subarches='*' labels='*'
+maas admin boot-source-selections create 1 os=ubuntu release=noble arches=amd64 subarches='*' labels='*'
 maas admin boot-resources import
 
 # wait image again
@@ -204,7 +204,7 @@ done
 
 maas admin tags create name=openstack-mysunbeam
 maas admin tags create name=juju-controller
-maas admin tags create name=infra
+maas admin tags create name=sunbeam
 maas admin tags create name=control
 maas admin tags create name=compute
 maas admin tags create name=storage
@@ -227,7 +227,7 @@ for i in $(seq 1 "$num_machines"); do
         ;;
         5)
             maas admin tag update-nodes openstack-mysunbeam add="$system_id"
-            maas admin tag update-nodes infra add="$system_id"
+            maas admin tag update-nodes sunbeam add="$system_id"
         ;;
         1|2|3)
             maas admin tag update-nodes openstack-mysunbeam add="$system_id"
@@ -238,7 +238,6 @@ for i in $(seq 1 "$num_machines"); do
             block_device_id="$(maas admin block-devices read "$system_id" | jq -r '.[] | select(.name=="sdb").id')"
             maas admin block-device add-tag "$system_id" "$block_device_id" tag=ceph
 
-            # LP: #2066379
             interface_id="$(maas admin interfaces read "$system_id" | jq -r '.[] | select(.name=="enp2s0").id')"
             maas admin interface add-tag "$system_id" "$interface_id" tag='neutron:physnet1'
         ;;
@@ -250,40 +249,27 @@ snap install openstack --channel 2024.1/edge
 sunbeam prepare-node-script --client | bash -x
 
 # LP: #2066541
-adduser ubuntu snap_daemon
+#adduser ubuntu snap_daemon
 
-sunbeam deployment add maas --name mysunbeam \
-    --token "$(maas apikey --username ubuntu)" \
-    --url 'http://192.168.151.1:5240/MAAS' \
+sunbeam deployment add maas mysunbeam \
+    "$(maas apikey --username ubuntu)" \
+    'http://192.168.151.1:5240/MAAS' \
 
-sunbeam deployment space map space-first data
-sunbeam deployment space map space-first internal
-sunbeam deployment space map space-first management
-sunbeam deployment space map space-first public
-sunbeam deployment space map space-first storage
-sunbeam deployment space map space-first storage-cluster
+sunbeam deployment space map space-first
+#sunbeam deployment space map space-first data
+#sunbeam deployment space map space-first internal
+#sunbeam deployment space map space-first management
+#sunbeam deployment space map space-first public
+#sunbeam deployment space map space-first storage
+#sunbeam deployment space map space-first storage-cluster
 
 time sunbeam deployment validate
 
-tail -n+3 /snap/openstack/current/etc/manifests/edge.yml >> manifest.yaml
-
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-sunbeam cluster deploy &
-    time until juju status -m openstack-machines; do
-        sleep 10
-    done
+time sunbeam cluster deploy
 
-    time until juju status -m openstack; do
-        sleep 10
-    done
-    # LP: #2065490
-    juju model-default --cloud mysunbeam-k8s logging-config='<root>=INFO;unit=DEBUG'
-    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG' \
-        update-status-hook-interval=30m  # LP: #2067451
-time wait -n
-
-time sunbeam --verbose configure --openrc demo-openrc
+time sunbeam configure --openrc demo-openrc
 
 time sunbeam openrc > admin-openrc
 
