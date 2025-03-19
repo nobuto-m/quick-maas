@@ -71,6 +71,10 @@ core:
       scale_args: []
       destroy_args: []
     charms:
+      cinder-k8s:
+        channel: 2024.1/edge
+        revision: null
+        config: null
       glance-k8s:
         channel: 2024.1/edge
         revision: null
