@@ -272,6 +272,6 @@ time sunbeam cluster deploy \
 
 time sunbeam configure --openrc demo-openrc
 
-time sunbeam openrc > admin-openrc
+time sunbeam openrc | tee admin-openrc
 
 time sunbeam launch ubuntu --name test
