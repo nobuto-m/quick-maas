@@ -267,7 +267,8 @@ time sunbeam deployment validate
 
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-time sunbeam cluster deploy
+time sunbeam cluster deploy \
+    --database single # LP: #2066585
 
 time sunbeam configure --openrc demo-openrc
 
