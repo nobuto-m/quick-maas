@@ -20,7 +20,7 @@ core:
     database: single
     # Enter a region name (cannot be changed later)
     # A region is general division of OpenStack services. It cannot be changed once set.
-    region: RegionOne
+    region: MyRegionOne
     user:
       # Populate OpenStack cloud with demo user, default images, flavors etc
       # If enabled, demonstration resources will be created on the cloud.
