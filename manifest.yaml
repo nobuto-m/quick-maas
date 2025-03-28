@@ -15,6 +15,9 @@ core:
       # no_proxy
       # Comma separated list of domain/IP/cidr for which proxy should not be used. Usually, the management network and the internal network of the deployment are part of this list.
       no_proxy: 
+    # Enter database topology: single/multi (cannot be changed later)
+    # This will configure number of databases, single for entire cluster or multiple databases with one per openstack service.
+    database: single
     # Enter a region name (cannot be changed later)
     # A region is general division of OpenStack services. It cannot be changed once set.
     region: RegionOne
