@@ -268,8 +268,8 @@ time sunbeam deployment validate
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
 if ! time sunbeam cluster deploy; then
-    juju ssh -m openstack-machines k8s/leader -- sudo k8s kubectl get pod -A | tee kubectl_get_pod.txt
-    juju ssh -m openstack-machines k8s/leader -- sudo k8s kubectl describe pod -n openstack | tee kubectl_describe_pod.txt
+    juju exec -m openstack-machines --unit k8s/leader -- k8s kubectl get pod -A | tee kubectl_get_pod.txt
+    juju exec -m openstack-machines --unit k8s/leader -- k8s kubectl describe pod -n openstack | tee kubectl_describe_pod.txt
     exit 1
 fi
 
