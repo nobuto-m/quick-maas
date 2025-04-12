@@ -2,16 +2,16 @@ series: jammy
 applications:
   ceph-dashboard:
     charm: ceph-dashboard
-    channel: squid/candidate
+    channel: squid/stable
   ceph-fs:
     charm: ceph-fs
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 1
     to:
     - lxd:0
   ceph-iscsi:
     charm: ceph-iscsi
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 2
     to:
     - "1"
@@ -26,7 +26,7 @@ applications:
       vip: 192.168.151.51  # LP: #2039678
   ceph-mon:
     charm: ceph-mon
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 3
     to:
     - lxd:0
@@ -37,17 +37,17 @@ applications:
       config-flags: '{"mon":{"auth allow insecure global id reclaim":"false"}}'
       expected-osd-count: 3
       monitor-count: 3
-      source: distro
+      source: caracal
       rbd-stats-pools: "*"
   ceph-nfs:
     charm: ceph-nfs
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 1
     to:
     - lxd:1
   ceph-osd:
     charm: ceph-osd
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 3
     to:
     - "0"
@@ -56,15 +56,15 @@ applications:
     options:
       aa-profile-mode: enforce
       osd-devices: /dev/sdb /dev/vdb
-      source: distro
+      source: caracal
   ceph-radosgw:
     charm: ceph-radosgw
-    channel: squid/candidate
+    channel: squid/stable
     num_units: 1
     to:
     - lxd:0
     options:
-      source: distro
+      source: caracal
   ntp:
     charm: ntp
     channel: stable
