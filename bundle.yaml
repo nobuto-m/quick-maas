@@ -33,8 +33,6 @@ applications:
     - lxd:1
     - lxd:2
     options:
-      # LP: #1929262
-      config-flags: '{"mon":{"auth allow insecure global id reclaim":"false"}}'
       expected-osd-count: 3
       monitor-count: 3
       source: caracal
