@@ -33,7 +33,7 @@ applications:
     - lxd:1
     - lxd:2
     options:
-      config-flags: '{"osd":{"bluestore_elastic_shared_blobs":"false"}}'
+      config-flags: '{"global":{"osd_bluestore_elastic_shared_blobs":"false"}}'
       expected-osd-count: 3
       monitor-count: 3
       source: caracal
