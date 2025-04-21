@@ -279,7 +279,7 @@ juju deploy ./bundle.yaml \
 # LP: #1984048
 juju remove-relation vault:certificates mysql-innodb-cluster:certificates
 
-time juju-wait -w --max_wait 5400 \
+time juju-wait -w --max_wait 7200 \
     --exclude vault \
     --exclude neutron-api-plugin-ovn \
     --exclude ovn-central \
