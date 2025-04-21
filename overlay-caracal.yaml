@@ -1,45 +1,45 @@
 barbican:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 cinder:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 designate:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 glance:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 keystone:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 neutron-api:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 nova-cloud-controller:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 nova-compute:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 octavia:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 openstack-dashboard:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 placement:
-  channel: caracal/stable
+  channel: 2024.1/stable
   options:
     openstack-origin: caracal
 ceph-mon:
