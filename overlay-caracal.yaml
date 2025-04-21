@@ -1,84 +1,84 @@
 barbican:
-  charm: barbican
+  charm: ch:barbican
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 cinder:
-  charm: cinder
+  charm: ch:cinder
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 designate:
-  charm: designate
+  charm: ch:designate
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 glance:
-  charm: glance
+  charm: ch:glance
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 keystone:
-  charm: keystone
+  charm: ch:keystone
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 neutron-api:
-  charm: neutron-api
+  charm: ch:neutron-api
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 nova-cloud-controller:
-  charm: nova-cloud-controller
+  charm: ch:nova-cloud-controller
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 nova-compute:
-  charm: nova-compute
+  charm: ch:nova-compute
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 octavia:
-  charm: octavia
+  charm: ch:octavia
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 openstack-dashboard:
-  charm: openstack-dashboard
+  charm: ch:openstack-dashboard
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 placement:
-  charm: placement
+  charm: ch:placement
   channel: 2024.1/stable
   options:
     openstack-origin: caracal
 ceph-mon:
-  charm: ceph-mon
+  charm: ch:ceph-mon
   channel: squid/stable
   options:
     source: caracal
 ceph-osd:
-  charm: ceph-osd
+  charm: ch:ceph-osd
   channel: squid/stable
   options:
     source: caracal
 ceph-radosgw:
-  charm: ceph-radosgw
+  charm: ch:ceph-radosgw
   channel: squid/stable
   options:
     source: caracal
 ovn-central:
-  charm: ovn-central
+  charm: ch:ovn-central
   channel: 24.03/stable
   options:
     source: caracal
 ovn-chassis:
-  charm: ovn-chassis
+  charm: ch:ovn-chassis
   channel: 24.03/stable
   options:
     # LP: #2071391
     prefer-chassis-as-gw: true
 octavia-ovn-chassis:
-  charm: ovn-chassis
+  charm: ch:ovn-chassis
   channel: 24.03/stable
