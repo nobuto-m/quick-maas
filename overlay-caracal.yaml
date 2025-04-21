@@ -1,0 +1,67 @@
+barbican:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+cinder:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+designate:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+glance:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+keystone:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+neutron-api:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+nova-cloud-controller:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+nova-compute:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+octavia:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+openstack-dashboard:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+placement:
+  channel: caracal/stable
+  options:
+    openstack-origin: caracal
+ceph-mon:
+  channel: squid/stable
+  options:
+    source: caracal
+ceph-osd:
+  channel: squid/stable
+  options:
+    source: caracal
+ceph-radosgw:
+  channel: squid/stable
+  options:
+    source: caracal
+ovn-central:
+  channel: 24.03/stable
+  options:
+    source: caracal
+ovn-chassis:
+  channel: 24.03/stable
+  options:
+    # LP: #2071391
+    prefer-chassis-as-gw: true
+octavia-ovn-chassis:
+  channel: 24.03/stable

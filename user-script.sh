@@ -273,7 +273,8 @@ juju deploy ./bundle.yaml \
     --overlay ./overlay-options.yaml \
     --overlay ./loadbalancer-octavia.yaml \
     --overlay ./overlay-octavia-options.yaml \
-    --overlay ./overlay-designate.yaml
+    --overlay ./overlay-designate.yaml \
+    --overlay ./overlay-caracal.yaml
 
 # restarting mysql during tls enablement can cause db_init failures
 # LP: #1984048
