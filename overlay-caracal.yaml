@@ -3,18 +3,26 @@ applications:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  barbican-vault:
+    channel: 2024.1/stable
   cinder:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  cinder-ceph:
+    channel: 2024.1/stable
   designate:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  designate-bind:
+    channel: 2024.1/stable
   glance:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  glance-simplestreams-sync:
+    channel: 2024.1/stable
   keystone:
     channel: 2024.1/stable
     options:
@@ -23,6 +31,8 @@ applications:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  neutron-api-plugin-ovn:
+    channel: 2024.1/stable
   nova-cloud-controller:
     channel: 2024.1/stable
     options:
@@ -35,6 +45,10 @@ applications:
     channel: 2024.1/stable
     options:
       openstack-origin: caracal
+  octavia-dashboard:
+    channel: 2024.1/stable
+  octavia-diskimage-retrofit:
+    channel: 2024.1/stable
   openstack-dashboard:
     channel: 2024.1/stable
     options:
