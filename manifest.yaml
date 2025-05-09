@@ -58,11 +58,6 @@ core:
       # External network's segmentation id
       # Vlan ID the external network is on.
       #segmentation_id: 0
-    # # TLS Certificates
-    # certificates:
-    #   <CSR x500UniqueIdentifier>:
-    #     # Base64 encoded Certificate for unit CSR Unique ID: subject
-    #     certificate: 
   software:
     juju:
       bootstrap_args:
@@ -119,7 +114,7 @@ core:
         revision: null
         config: null
       self-signed-certificates:
-        channel: latest/edge
+        channel: 1/edge
         revision: null
         config: null
       rabbitmq-k8s:
