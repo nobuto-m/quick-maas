@@ -111,23 +111,23 @@ core:
         revision: null
         config: null
       mysql-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       mysql-router-k8s:
-        channel: 8.0/stable
+        channel: 8.0/edge
         revision: null
         config: null
       self-signed-certificates:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       rabbitmq-k8s:
-        channel: 3.12/stable
+        channel: 3.12/edge
         revision: null
         config: null
       traefik-k8s:
-        channel: latest/beta
+        channel: latest/edge
         revision: null
         config: null
       microceph:
@@ -136,7 +136,7 @@ core:
         config:
           snap-channel: squid/edge
       k8s:
-        channel: 1.32/stable
+        channel: 1.32/beta
         revision: null
         config: null
       openstack-hypervisor:
@@ -153,10 +153,6 @@ core:
         revision: null
         config:
           snap-channel: 2024.1/edge
-      sunbeam-ssc:
-        channel: latest/beta
-        revision: null
-        config: null
       cinder-volume:
         channel: 2024.1/edge
         revision: null
