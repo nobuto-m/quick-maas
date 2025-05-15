@@ -269,6 +269,10 @@ time sunbeam cluster bootstrap --manifest manifest.yaml
 
 time sunbeam cluster deploy
 
+# to add --model-default=logging-config=<root>=INFO;unit=DEBUG
+juju clouds
+juju models
+
 time sunbeam configure --openrc demo-openrc
 
 time sunbeam openrc | tee admin-openrc
