@@ -267,11 +267,14 @@ time sunbeam deployment validate
 
 time sunbeam cluster bootstrap --manifest manifest.yaml
 
-time sunbeam cluster deploy
-
-# to add --model-default=logging-config=<root>=INFO;unit=DEBUG
-juju clouds
-juju models
+sunbeam cluster deploy &
+    time until juju status -m openstack 2>/dev/null; do
+        sleep 10
+    done
+    # LP: #2065490
+    juju model-default --cloud mysunbeam-k8s logging-config='<root>=INFO;unit=DEBUG'
+    juju model-config -m openstack logging-config='<root>=INFO;unit=DEBUG'
+time wait -n
 
 time sunbeam configure --openrc demo-openrc
 
