@@ -160,7 +160,7 @@ for i in $(seq 1 "$num_machines"); do
         --boot network,hd \
         --vcpus cores=16 \
         --cpu host-passthrough,cache.mode=passthrough \
-        --memory 16384 \
+        --memory 32768 \
         --disk size=64,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
@@ -365,7 +365,7 @@ openstack router set --external-gateway ext_net provider-router
 
 openstack router add subnet provider-router internal_subnet
 
-openstack flavor create --vcpu 4 --ram 4096 --disk 20 m1.custom
+openstack flavor create --vcpu 4 --ram 8192 --disk 20 m1.custom
 
 openstack project create \
     --domain default \
