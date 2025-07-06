@@ -2,9 +2,11 @@ applications:
   nova-cloud-controller:
     options:
       console-access-protocol: 'novnc'
+      cpu-allocation-ratio: 1.0
   nova-compute:
     options:
       aa-profile-mode: enforce
+      reserved-host-memory: 1024
   ceph-mon:
     options:
       # LP: #1929262
