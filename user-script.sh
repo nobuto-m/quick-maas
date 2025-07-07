@@ -492,6 +492,10 @@ sed -i.bak -e 's/lxd:0/0/' k8s_bundle.yaml
 # https://github.com/charmed-kubernetes/bundle/blob/master/overlays/openstack-lb-overlay.yaml
 cat > openstack-lb-overlay.yaml <<EOF
 applications:
+  calico:
+    options:
+      # the default range as 192.168.0.0/16 overlaps with the host networks
+      cidr: 10.39.0.0/16
   kubeapi-load-balancer: null                            # excludes the kubeapi-load-balancer
   kubernetes-control-plane:
     options:
