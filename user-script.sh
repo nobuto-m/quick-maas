@@ -495,7 +495,8 @@ applications:
   calico:
     options:
       # the default range as 192.168.0.0/16 overlaps with the host networks
-      cidr: 10.39.0.0/16
+      # use the same CIDR with flannel and Cilium
+      cidr: 10.1.0.0/16
   kubeapi-load-balancer: null                            # excludes the kubeapi-load-balancer
   kubernetes-control-plane:
     options:
