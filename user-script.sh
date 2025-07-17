@@ -509,7 +509,7 @@ applications:
     num_units: 1
     trust: true
     to:
-    - '0'
+    - '1'
     options:
       lb-floating-network: ext_net
   openstack-cloud-controller:
