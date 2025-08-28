@@ -2,7 +2,7 @@ series: jammy
 applications:
   grafana-agent:
     charm: grafana-agent
-    channel: latest/edge
+    channel: 1/stable
 
 saas:
   cos-alertmanager-karma-dashboard:
