@@ -51,6 +51,9 @@ cat >> /etc/libvirt/qemu.conf <<EOF
 # Unable to set XATTR trusted.libvirt.security.dac on
 # /var/lib/libvirt/qemu/domain-*: Operation not permitted
 remember_owner = 0
+# https://gitlab.com/libvirt/libvirt/-/issues/556#note_1634384043
+# error: Failed to chown device /dev/urandom: Operation not permitted
+namespaces = []
 EOF
 
 systemctl restart libvirtd.service
