@@ -269,7 +269,7 @@ juju deploy -m controller juju-dashboard --to 0 --channel 0.15/beta --base ubunt
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 # jammy -> noble
-sed -i -e 's/^series: jammy$/base: ubuntu@24.04/' ./bundle.yaml
+sed -i -e 's/^series: jammy$/default-base: ubuntu@24.04/' ./bundle.yaml
 
 juju deploy ./bundle.yaml \
     --overlay ./overlay-options.yaml \
