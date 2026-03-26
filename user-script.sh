@@ -121,14 +121,13 @@ done
 # LP: #2031842
 #sleep 30
 
-# "Boot source selection with this Boot source, Os and Release already exists."
-#maas admin boot-source-selections create 1 os=ubuntu release=noble arches=amd64 subarches='*' labels='*'
-#maas admin boot-resources import
+maas admin boot-source-selections create 1 os=ubuntu release=noble arches=amd64 subarches='*' labels='*'
+maas admin boot-resources import
 
 # wait image again
-#while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
-#    sleep 15
-#done
+while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
+    sleep 15
+done
 
 sleep 120
 
