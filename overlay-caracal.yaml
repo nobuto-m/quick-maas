@@ -100,3 +100,6 @@ applications:
     channel: latest/edge
   vault-mysql-router:
     channel: latest/edge
+  vault:
+    base: ubuntu@22.04
+    channel: 1.8/stable
