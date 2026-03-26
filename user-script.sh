@@ -265,7 +265,7 @@ juju add-model openstack
 juju model-defaults num-container-provision-workers=1
 
 # LP: #2039156
-juju deploy -m controller juju-dashboard --to 0 --base ubuntu@24.04  # LP: #2054375
+juju deploy -m controller juju-dashboard --to 0 --channel 0.15/beta --base ubuntu@24.04  # LP: #2054375
 juju integrate -m controller controller:dashboard juju-dashboard:controller
 
 # jammy -> noble
