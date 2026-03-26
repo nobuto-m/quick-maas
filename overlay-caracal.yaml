@@ -57,6 +57,8 @@ applications:
     channel: latest/edge
     options:
       openstack-origin: caracal
+  rabbitmq-server:
+    channel: 3.12/stable
   ceph-mon:
     channel: squid/stable
     options:
