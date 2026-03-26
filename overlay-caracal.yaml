@@ -82,6 +82,8 @@ applications:
       prefer-chassis-as-gw: true
   octavia-ovn-chassis:
     channel: latest/edge
+  mysql-innodb-cluster:
+    channel: latest/edge
   cinder-mysql-router:
     channel: latest/edge
   glance-mysql-router:
