@@ -14,7 +14,7 @@ applications:
     - lxd:1
   designate-mysql-router:
     charm: ch:mysql-router
-    channel: 8.0/stable
+    channel: latest/edge
   designate-bind:
     charm: ch:designate-bind
     channel: latest/edge

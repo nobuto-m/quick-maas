@@ -1,7 +1,7 @@
 applications:
   barbican-mysql-router:
     charm: ch:mysql-router
-    channel: 8.0/stable
+    channel: latest/edge
   barbican:
     charm: ch:barbican
     channel: latest/edge
@@ -12,10 +12,10 @@ applications:
     channel: latest/edge
   octavia-ovn-chassis:
     charm: ch:ovn-chassis
-    channel: 22.03/stable
+    channel: latest/edge
   octavia-mysql-router:
     charm: ch:mysql-router
-    channel: 8.0/stable
+    channel: latest/edge
   octavia:
     charm: ch:octavia
     channel: latest/edge
