@@ -4,12 +4,12 @@ applications:
     channel: 8.0/stable
   barbican:
     charm: ch:barbican
-    channel: yoga/stable
+    channel: latest/edge
     options:
       openstack-origin: distro
   barbican-vault:
     charm: ch:barbican-vault
-    channel: yoga/stable
+    channel: latest/edge
   octavia-ovn-chassis:
     charm: ch:ovn-chassis
     channel: 22.03/stable
@@ -18,7 +18,7 @@ applications:
     channel: 8.0/stable
   octavia:
     charm: ch:octavia
-    channel: yoga/stable
+    channel: latest/edge
     options:
       openstack-origin: distro
       lb-mgmt-issuing-cacert: include-base64://./certs/issuing_ca.pem
@@ -31,10 +31,10 @@ applications:
       amp-ssh-pub-key: include-base64://./.ssh/id_ed25519.pub
   octavia-dashboard:
     charm: ch:octavia-dashboard
-    channel: yoga/stable
+    channel: latest/edge
   glance-simplestreams-sync:
     charm: ch:glance-simplestreams-sync
-    channel: yoga/stable
+    channel: latest/edge
     annotations:
       gui-x: '-160'
       gui-y: '1550'
@@ -44,4 +44,4 @@ applications:
         item_filters: ['release=noble', 'arch~(x86_64|amd64)', 'ftype~(disk1.img|disk.img)']}]
   octavia-diskimage-retrofit:
     charm: ch:octavia-diskimage-retrofit
-    channel: yoga/stable
+    channel: latest/edge
