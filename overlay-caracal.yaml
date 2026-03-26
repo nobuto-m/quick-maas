@@ -99,7 +99,8 @@ applications:
   dashboard-mysql-router:
     channel: latest/edge
   vault-mysql-router:
-    channel: latest/edge
+    base: ubuntu@22.04
+    channel: 8.0/stable
   vault:
     base: ubuntu@22.04
     channel: 1.8/stable
