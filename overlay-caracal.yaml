@@ -1,60 +1,60 @@
 applications:
   barbican:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   barbican-vault:
-    channel: 2024.1/stable
+    channel: latest/edge
   cinder:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   cinder-ceph:
-    channel: 2024.1/stable
+    channel: latest/edge
   designate:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   designate-bind:
-    channel: 2024.1/stable
+    channel: latest/edge
   glance:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   glance-simplestreams-sync:
-    channel: 2024.1/stable
+    channel: latest/edge
   keystone:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   neutron-api:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   neutron-api-plugin-ovn:
-    channel: 2024.1/stable
+    channel: latest/edge
   nova-cloud-controller:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   nova-compute:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   octavia:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   octavia-dashboard:
-    channel: 2024.1/stable
+    channel: latest/edge
   octavia-diskimage-retrofit:
-    channel: 2024.1/stable
+    channel: latest/edge
   openstack-dashboard:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   placement:
-    channel: 2024.1/stable
+    channel: latest/edge
     options:
       openstack-origin: caracal
   ceph-mon:
@@ -70,13 +70,13 @@ applications:
     options:
       source: caracal
   ovn-central:
-    channel: 24.03/stable
+    channel: latest/edge
     options:
       source: caracal
   ovn-chassis:
-    channel: 24.03/stable
+    channel: latest/edge
     options:
       # LP: #2071391
       prefer-chassis-as-gw: true
   octavia-ovn-chassis:
-    channel: 24.03/stable
+    channel: latest/edge
