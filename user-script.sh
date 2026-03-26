@@ -156,7 +156,7 @@ for i in $(seq 1 "$num_machines"); do
     virt-install \
         --import --noreboot \
         --name "machine-$i"\
-        --osinfo ubuntujammy \
+        --osinfo ubuntunoble \
         --boot network,hd \
         --vcpus cores=16 \
         --cpu host-passthrough,cache.mode=passthrough \
@@ -219,7 +219,7 @@ EOF
 juju add-credential --client maas -f credentials.yaml
 
 juju bootstrap maas maas-controller --debug \
-    --bootstrap-base ubuntu@22.04 \
+    --bootstrap-base ubuntu@24.04 \
     --model-default test-mode=true \
     --model-default disable-telemetry=true \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
@@ -266,8 +266,11 @@ juju add-model openstack
 juju model-defaults num-container-provision-workers=1
 
 # LP: #2039156
-juju deploy -m controller juju-dashboard --to 0 --base ubuntu@22.04  # LP: #2054375
+juju deploy -m controller juju-dashboard --to 0 --base ubuntu@24.04  # LP: #2054375
 juju integrate -m controller controller:dashboard juju-dashboard:controller
+
+# jammy -> noble
+sed -i -e 's/^series: jammy$/base: ubuntu@24.04/' ./bundle.yaml
 
 juju deploy ./bundle.yaml \
     --overlay ./overlay-options.yaml \
