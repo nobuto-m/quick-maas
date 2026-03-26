@@ -24,6 +24,7 @@ applications:
     to:
     - lxd:2
   memcached:
+    base: ubuntu@22.04
     charm: ch:memcached
     num_units: 1
     to:
