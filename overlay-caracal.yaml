@@ -82,3 +82,19 @@ applications:
       prefer-chassis-as-gw: true
   octavia-ovn-chassis:
     channel: latest/edge
+  cinder-mysql-router:
+    channel: latest/edge
+  glance-mysql-router:
+    channel: latest/edge
+  keystone-mysql-router:
+    channel: latest/edge
+  neutron-mysql-router:
+    channel: latest/edge
+  placement-mysql-router:
+    channel: latest/edge
+  nova-mysql-router:
+    channel: latest/edge
+  dashboard-mysql-router:
+    channel: latest/edge
+  vault-mysql-router:
+    channel: latest/edge
