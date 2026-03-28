@@ -131,6 +131,10 @@ done
 
 sleep 120
 
+maas admin maas set-config name=commissioning_distro_series value=noble
+maas admin maas set-config name=default_min_hwe_kernel value=hwe-24.04
+maas admin maas set-config name=default_distro_series value=noble
+
 # MAAS Pod
 sudo -u maas -H ssh-keygen -t ed25519 -f ~maas/.ssh/id_ed25519 -N ''
 install -m 0600 ~maas/.ssh/id_ed25519.pub /root/.ssh/authorized_keys
