@@ -131,9 +131,14 @@ core:
         config:
           snap-channel: squid/stable
       k8s:
-        channel: 1.32/beta
+        channel: 1.32/stable
         revision: null
-        config: null
+        config:
+          containerd-custom-registries: |
+            [{
+              "url": "http://10.0.9.105:8080",
+              "host": "ghcr.io"
+            }]
       openstack-hypervisor:
         channel: 2024.1/stable
         revision: null
