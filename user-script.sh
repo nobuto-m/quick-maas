@@ -244,7 +244,7 @@ for i in $(seq 1 "$num_machines"); do
     esac
 done
 
-snap install openstack --channel 2024.1/edge
+snap install openstack --channel 2024.1/stable
 
 sunbeam prepare-node-script --client | bash -x
 
