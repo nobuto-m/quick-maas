@@ -21,6 +21,17 @@ core:
     # Enter a region name (cannot be changed later)
     # A region is general division of OpenStack services. It cannot be changed once set.
     region: MyRegionOne
+    # LP: #2119425
+    endpoints:
+      ingress-internal:
+        ip:
+        hostname:
+      ingress-public:
+        ip:
+        hostname:
+      ingress-rgw:
+        ip:
+        hostname:
     dpdk:
       enabled: false
     user:
