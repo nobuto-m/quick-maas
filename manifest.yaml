@@ -68,6 +68,10 @@ core:
         - --model-default=disable-telemetry=true
         # LP: #2065490
         - --model-default=logging-config=<root>=INFO;unit=DEBUG
+      bootstrap_model_configs:
+        # LP: #2065490
+        openstack:
+          logging-config: '<root>=INFO;unit=DEBUG'
       scale_args: []
       destroy_args: []
     charms:
