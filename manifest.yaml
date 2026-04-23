@@ -53,24 +53,15 @@ core:
       # Enable ping and SSH access to instances?
       # If enabled, security groups will be created with rules to allow ICMP and SSH access to instances.
       security_group_rules: True
-    # Remote Access
-    external_network:
-      # External network
-      # Network from which the instances will be remotely accessed (outside OpenStack). Takes the form of a CIDR block.
-      cidr: 192.168.151.0/24
-      # External network's gateway
-      # Router IP address connecting the network for outside use.
-      gateway: 192.168.151.1
-      # External network's allocation range
-      # VMs intended to be accessed from remote hosts will be assigned dedicated addresses from a portion of the physical network (outside OpenStack). Takes the form of an IP range.
-      # LP: #2098823
-      range: 192.168.151.31-192.168.151.80
-      # External network's type [flat/vlan]
-      # Type of network to use for external access.
-      network_type: flat
-      # External network's segmentation id
-      # Vlan ID the external network is on.
-      #segmentation_id: 0
+    # LP: #2133766
+    external-networks:
+      physnet1:
+        cidr: 192.168.151.0/24
+        gateway: 192.168.151.1
+        # LP: #2098823
+        range: 192.168.151.31-192.168.151.80
+        network_type: flat
+        #segmentation_id: 0
   software:
     juju:
       bootstrap_args:
