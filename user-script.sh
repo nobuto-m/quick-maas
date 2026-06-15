@@ -73,6 +73,15 @@ EOF
 virsh net-autostart maas
 virsh net-start maas
 
+cat <<EOF | virsh net-define /dev/stdin
+<network>
+  <name>maas2</name>
+  <bridge name='maas2' stp='off'/>
+</network>
+EOF
+virsh net-autostart maas2
+virsh net-start maas2
+
 # maas package install
 echo maas-region-controller maas/default-maas-url string 192.168.151.1 \
     | debconf-set-selections
@@ -111,6 +120,16 @@ maas admin vlan update "$fabric" 0 dhcp_on=true primary_rack="$HOSTNAME"
 maas admin spaces create name=space-first
 fabric_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.151.0/24").vlan.fabric_id')
 maas admin vlan update "$fabric_id" 0 space=space-first
+
+maas admin spaces create name=space-isolated
+maas admin vlans create "$fabric_id" vid=152 space=space-isolated
+maas admin subnets create cidr='192.168.152.0/24' \
+    fabric="$fabric_id" vid=152 \
+    allow_dns=false
+maas admin ipranges create type=reserved \
+    start_ip=192.168.152.1 end_ip=192.168.152.100
+maas admin ipranges create type=dynamic \
+    start_ip=192.168.152.201 end_ip=192.168.152.254
 
 # wait image
 time while [ "$(maas admin boot-resources is-importing)" = 'true' ]; do
@@ -166,7 +185,8 @@ for i in $(seq 1 "$num_machines"); do
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --disk size=16,format=raw,target.rotation_rate=1,target.bus=scsi,cache=unsafe \
         --network network=maas \
-        --network network=maas
+        --network network=maas \
+        --network network=maas2
 
     maas admin machines create \
         hostname="machine-$i" \
@@ -197,6 +217,13 @@ time while true; do
         break
     fi
     sleep 15
+done
+
+vlan_id=$(maas admin vlan read "$fabric_id" 152 | jq -r '.id')
+subnet_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.152.0/24").id')
+for system_id in $(maas admin machines read | jq -r '.[].system_id'); do
+    maas admin interface update "$system_id" ens9 vlan="$vlan_id"
+    maas admin interface link-subnet "$system_id" ens9 mode='AUTO' subnet="$subnet_id"
 done
 
 # bootstrap
