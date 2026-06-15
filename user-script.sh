@@ -222,8 +222,8 @@ done
 vlan_id=$(maas admin vlan read "$fabric_id" 152 | jq -r '.id')
 subnet_id=$(maas admin subnets read | jq -r '.[] | select(.cidr=="192.168.152.0/24").id')
 for system_id in $(maas admin machines read | jq -r '.[].system_id'); do
-    maas admin interface update "$system_id" ens9 vlan="$vlan_id"
-    maas admin interface link-subnet "$system_id" ens9 mode='AUTO' subnet="$subnet_id"
+    maas admin interface update "$system_id" enp3s0 vlan="$vlan_id"
+    maas admin interface link-subnet "$system_id" enp3s0 mode='AUTO' subnet="$subnet_id"
 done
 
 # bootstrap
