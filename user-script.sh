@@ -249,6 +249,7 @@ juju bootstrap maas maas-controller --debug \
     --bootstrap-base ubuntu@22.04 \
     --model-default test-mode=true \
     --model-default disable-telemetry=true \
+    --model-default default-space=space-first \
     --model-default logging-config='<root>=INFO;unit=DEBUG' \
     --model-default apt-http-proxy='http://192.168.151.1:8000/'
 
